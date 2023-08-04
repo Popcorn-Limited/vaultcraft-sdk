@@ -6,9 +6,7 @@ export default async function addProtocolAssets(adapters: Adapter[], chainId: nu
   const filteredAdapters: Adapter[] = adapters.filter(adapter => adapter.chains.includes(chainId))
 
   try {
-    filteredAdapters.forEach(
-      adapter => protocolQueries.push(resolveProtocolAssets({ chainId: chainId, resolver: adapter.resolver }))
-    )
+    
 
     const protocolsResult = await Promise.all(protocolQueries)
     const result = {} as {

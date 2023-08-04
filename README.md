@@ -1,30 +1,69 @@
-<p>
-  <h1 align="center">VaultCraft by Popcorn</h1>
-  <p align="center">
-    <img alt="Loading..." src="./assets/vc-intro.gif">
-  </p>
-  <p align="center">
-    A no-code DeFi protocol for customizing vault strategies.
-  </p>
-</p>
-
-<br>
-
 ## Introducing VaultCraft
 
-Yield-generating token vaults for everyone, arriving April 24th, 2023
-
-Two years ago, Popcorn embarked on a journey to reinvent yield-generating financial products. By automating protocol fees to fund non-profit organizations, users could earn a competitive yield on their crypto assets while generating impact around the world.
-
-While we were building products like Butter, 3x, and POP staking vaults, we came across an earth-shaking discovery — one that could forever change the way that projects manage digital assets. The time has come to take the lid off.
-
-[Read more in Twitter](https://twitter.com/Popcorn_DAO/status/1647952149043638274)
+### YieldOptions
+The YieldOptions class provides data about yield options across all supported chains.
+In order to fetch data one must first call `setupNetwork(chainId)` so the sdk can fetch and store all data for that particular network. This will take a moment but all other calls afterwards will simply read from memory.
+Adresses are dealt with in lowercase.
 
 
-## Run
+For the future: 
+The object can be populated all at once or step by step.
+Each "get"-call checks if the requested data exists already within the main object. If so it simply returns data from it. Otherwise it fetches the data and adds it to the main object. (Should increase loading speed)
 
-1. Install dependencies
-1. Clone [Popcorn-Limited/contracts](https://github.com/Popcorn-Limited/contracts) 
-2. Install dependencies and add env variables
-3. Run `yarn anvil` using and ethereum RPC for `$FORKING_RPC_URL` to fork the ethereum main network
-4. Run `yarn dev` in this repo and connect your Wallet to `localhost:8545` with chainId `1337`
+```
+MainObject {
+  [chain:number]: Chain
+}
+
+Chain {
+  protocols: string[];
+  assetAddresses: string[];
+  assetsByProtocol: {
+    [protocol:string]: Asset[]
+  };
+  protocolsByAsset: {
+    [asset:string]: string[]
+  };
+}
+
+Asset {
+  address: string;
+  yield: Yield[];
+}
+
+Yield {
+  total:number;
+  apys: APY[]
+}
+
+APY {
+  rewardToken:string; 
+  apy:number;
+}
+```
+
+#### SetupNetwork(chainId:number)
+Fetches and stores all data for the specified network.
+
+#### GetProtocols(chainId:number)
+Returns Chain.protocols
+#### GetAssetAddresses(chainId:number)
+Returns Chain.assetAddresses
+
+#### GetAssetsByProtocol(chainId:number, protocol?:string)
+Returns Chain.assetsByProtocol or Chain.assetsByProtocol[protocol] if protocol is specified.
+
+#### GetProtocolsByAsset(chainId:number, asset?:string)
+Returns Chain.protocolsByAsset or Chain.protocolsByAsset[asset] if asset is specified
+
+#### GetApy(chainId:number, protocol:string, asset:string)
+Returns Asset.Yield from the specified protocol and asset.
+
+### Factory
+The Factory Class allows to create new Vaults and provides default configuration data to aid this process.
+
+### VaultManagement
+The VaultManagement Class provides data of a creators vaults and allows management of those vaults.
+
+### Vault
+The Vault Class provides data to display a vault and offers functionality to deposit and withdraw from a vault.

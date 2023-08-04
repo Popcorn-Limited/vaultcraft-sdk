@@ -1,6 +1,8 @@
 
-function helloWorld() {
-  console.log('Hello World!')
-}
 
-export default { helloWorld }
+export default class VaultCraftSDK {
+  
+
+  constructor(){}
+
+}
