@@ -1,0 +1,33 @@
+{
+  "name": "vaultcraft-sdk",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write ."
+  },
+  "dependencies": {
+    "@curvefi/api": "^2.42.0",
+    "@rainbow-me/rainbowkit": "^0.12.9",
+    "autoprefixer": "^10.4.13",
+    "dotenv": "^16.0.3",
+    "ethers": "^5.7.2",
+    "find-config": "^1.0.0",
+    "jotai": "^2.0.1",
+    "next": "^13.3.4",
+    "rc-tooltip": "^5.2.2",
+    "wagmi": "^0.12.0",
+    "wido": "^0.3.5"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.35",
+    "@types/react": "^18.0.9",
+    "eslint": "^8.15.0",
+    "eslint-config-next": "^13.3.4",
+    "prettier": "^2.8.8",
+    "typescript": "^4.9.4"
+  }
+}
