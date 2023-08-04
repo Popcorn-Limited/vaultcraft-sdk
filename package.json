@@ -1,14 +1,11 @@
 {
   "name": "vaultcraft-sdk",
   "version": "0.0.1",
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "format:check": "prettier --check .",
-    "format:write": "prettier --write ."
-  },
+  "description": "TypeScript library for VaultCraft",
+  "main": "src/index.ts",
+  "author": "RedVeil",
+  "license": "MIT",
+  "private": false,
   "dependencies": {
     "@curvefi/api": "^2.42.0",
     "@rainbow-me/rainbowkit": "^0.12.9",
