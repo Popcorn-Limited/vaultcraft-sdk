@@ -1,5 +1,5 @@
-import { RPC_PROVIDERS, networkMap } from "@/lib/connectors";
-import { Contract } from "ethers";
+import { networkMap } from "@/lib/connectors";
+import { Contract, ethers } from "ethers";
 
 interface Pool {
   chain: string;
@@ -10,11 +10,11 @@ interface Pool {
 
 const NETWORK_NAMES = { 1: "Ethereum", 1337: "Ethereum", 10: "Optimism", 137: "Polygon", 250: "Fantom", 42161: "Arbitrum" }
 
-export async function stargate({ chainId, address }: { chainId: number, address: string }): Promise<number> {
+export async function stargate({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<number> {
   const sToken = new Contract(address,
     ["function token() external view returns (address)"],
-    // @ts-ignore
-    RPC_PROVIDERS[chainId])
+    new ethers.providers.JsonRpcProvider(rpcUrl, chainId),
+    )
 
   const token = await sToken.token()
   const pools = await (await fetch("https://yields.llama.fi/pools")).json();

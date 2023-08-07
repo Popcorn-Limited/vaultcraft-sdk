@@ -10,6 +10,6 @@ const AVAILABLE_ASSETS = [
   "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0"  // Matic
 ]
 
-export async function idle({ chainId }: { chainId: number }): Promise<string[]> {
+export async function idle({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }): Promise<string[]> {
   return chainId === mainnet.id ? AVAILABLE_ASSETS : [constants.AddressZero];
 }

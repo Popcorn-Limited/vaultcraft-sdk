@@ -10,6 +10,6 @@ const CDO: { [key: string]: string } = {
   "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0": "0xF87ec7e1Ee467d7d78862089B92dd40497cBa5B8"  // Matic
 }
 
-export async function idle({ chainId, address }: { chainId: number, address: string }): Promise<any[]> {
+export async function idle({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<any[]> {
   return chainId === mainnet.id ? [(CDO[address.toLowerCase()] || constants.AddressZero)] : [constants.AddressZero];
 }

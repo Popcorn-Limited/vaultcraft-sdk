@@ -1,15 +1,13 @@
-import { Contract } from "ethers";
+import { Contract, ethers } from "ethers";
 import { resolveAdapterDefaults } from "@/lib/resolver/adapterDefaults/adapterDefaults";
-import { RPC_PROVIDERS } from "@/lib/connectors";
 
-export async function compoundV2Apy({ chainId, address, resolver }: { chainId: number, address: string, resolver: string }): Promise<number> {
+export async function compoundV2Apy({ chainId, rpcUrl, address, resolver }: { chainId: number, rpcUrl: string, address: string, resolver: string }): Promise<number> {
   const [cTokenAddress] = await resolveAdapterDefaults({ chainId, address, resolver })
   const cToken = new Contract(
     // @ts-ignore
     cTokenAddress,
     ['function supplyRatePerBlock() public view returns (uint)'],
-    // @ts-ignore
-    RPC_PROVIDERS[chainId]
+    new ethers.providers.JsonRpcProvider(rpcUrl, chainId),
   );
 
   const supplyRate = await cToken.supplyRatePerBlock();
@@ -17,6 +15,6 @@ export async function compoundV2Apy({ chainId, address, resolver }: { chainId: n
   return (((Math.pow((Number(supplyRate) / 1e18 * 7200) + 1, 365))) - 1) * 100
 }
 
-export async function compoundV2({ chainId, address }: { chainId: number, address: string }): Promise<number> {
-  return compoundV2Apy({ chainId, address, resolver: "compoundV2" })
+export async function compoundV2({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<number> {
+  return compoundV2Apy({ chainId, rpcUrl, address, resolver: "compoundV2" })
 }

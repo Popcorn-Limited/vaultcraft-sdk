@@ -3,7 +3,7 @@ import { readContracts } from "wagmi"
 import { convexBoosterAbi, CONVEX_BOOSTER_ADDRESS } from "@/lib/external/convex";
 import { BigNumber } from "ethers";
 
-export default async function getConvexPools({ chainId }: { chainId: number }): Promise<string[][]> {
+export default async function getConvexPools({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }): Promise<string[][]> {
   const poolLength = await readContract({
     // @ts-ignore
     address: CONVEX_BOOSTER_ADDRESS[chainId],

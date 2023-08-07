@@ -1,3 +1,3 @@
-export async function yearn({ chainId, address }: { chainId: number, address: string }): Promise<any[]> {
+export async function yearn({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<any[]> {
   return [1]
 }

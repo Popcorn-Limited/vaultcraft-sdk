@@ -6,7 +6,7 @@ import { mainnet } from "wagmi/chains";
 const VAULT_REGISTRY_ADDRESS = { 1: "0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804", 42161: "0x3199437193625DCcD6F9C9e98BDf93582200Eb1f" };
 const VAULT_FACTORY_ADDRESS = "0x21b1FC8A52f179757bf555346130bF27c0C2A17A";
 
-export async function yearn({ chainId }: { chainId: number }): Promise<string[]> {
+export async function yearn({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }): Promise<string[]> {
     const numTokens = await readContract({
         // @ts-ignore
         address: VAULT_REGISTRY_ADDRESS[chainId],

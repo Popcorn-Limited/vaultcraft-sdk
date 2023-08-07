@@ -4,7 +4,7 @@ import {BigNumber, constants} from "ethers";
 
 const STAKING_ADDRESS = "0x5B74C99AA2356B4eAa7B85dC486843eDff8Dfdbe";
 
-export async function ellipsis({ chainId, address }: { chainId: number, address: string }): Promise<any[]> {
+export async function ellipsis({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<any[]> {
     const poolLength = await readContract({
         address: STAKING_ADDRESS,
         abi: abiStaking,

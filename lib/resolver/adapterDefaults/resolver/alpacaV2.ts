@@ -12,7 +12,7 @@ type MoneyMarketResponse = {
     }
 }
 
-export async function alpacaV2({ chainId, address }: { chainId: number, address: string }) {
+export async function alpacaV2({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }) {
     const { data } = await axios.get("https://api.github.com/repos/alpaca-finance/alpaca-v2-money-market/contents/.mainnet.json")
 
     const { moneyMarket } = JSON.parse(atob(data.content)) as MoneyMarketResponse

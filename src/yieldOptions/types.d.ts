@@ -1,23 +1,30 @@
+export interface RpcUrls {
+  [chain: number]: string
+}
 
 export interface YieldData {
   [chain: number]: Chain
 }
 
 export interface Chain {
-  [protocol: string]: Asset[];
-  [asset: string]: Asset;
+  assetsByProtocol: {
+    [protocol: string]: Asset[]
+  };
+  protocolsByAsset: {
+    [asset: string]: string[]
+  };
   assetAddresses: string[];
   protocols: string[];
 }
 
 export interface Asset {
   address: string;
-  yield?: Yield[];
+  yield: Yield;
 }
 
 export interface Yield {
   total: number;
-  apy: Apy[];
+  apy?: Apy[];
 }
 
 export interface Apy {

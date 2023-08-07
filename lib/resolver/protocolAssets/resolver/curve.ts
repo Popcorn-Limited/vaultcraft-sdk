@@ -11,7 +11,7 @@ const ENDPOINTS = {
     42161: ["/arbitrum/main", "/arbitrum/crypto", "/arbitrum/factory"],
 } as { [chainId: number]: string[] }
 
-export async function curve({ chainId }: { chainId: number }): Promise<string[]> {
+export async function curve({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }): Promise<string[]> {
     const pools = (await Promise.all(ENDPOINTS?.[chainId]?.map(async endpoint => {
         const { data } = await axios.get(BASE_URL + endpoint)
         return data?.data?.poolData

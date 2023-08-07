@@ -1,6 +1,6 @@
 const NETWORK_NAMES = { 1: "ethereum", 1337: "ethereum", 10: "optimism", 137: "polygon", 250: "fantom", 42161: "arbitrum" }
 
-export async function curve({ chainId, address }: { chainId: number, address: string }): Promise<number> {
+export async function curve({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<number> {
   // @ts-ignore
   const network = NETWORK_NAMES[chainId]
   const main = await (await fetch(`https://api.curve.fi/api/getPools/${network}/main`)).json()

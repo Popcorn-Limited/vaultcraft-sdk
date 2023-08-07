@@ -4,7 +4,7 @@ import { constants } from "ethers";
 
 const REGISTER_ADDRESS = "0xA50d4E7D8946a7c90652339CDBd262c375d54D99";
 
-export async function gearbox({ chainId, address }: { chainId: number, address: string }) {
+export async function gearbox({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }) {
     const pools = await readContract({
         address: REGISTER_ADDRESS,
         abi: abiRegister,

@@ -1,15 +1,14 @@
-import { Contract } from "ethers";
-import { RPC_PROVIDERS, networkMap } from "@/lib/connectors";
+import { Contract, ethers } from "ethers";
+import { networkMap } from "@/lib/connectors";
 
 
 // TODO - find a more robist way to calculating this apy
 
-export async function convex({ chainId, address }: { chainId: number, address: string }): Promise<number> {
+export async function convex({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<number> {
   const curvePool = new Contract(
     address,
     ["function coins(uint256) view returns (address)"],
-    // @ts-ignore
-    RPC_PROVIDERS[chainId]
+    new ethers.providers.JsonRpcProvider(rpcUrl, chainId),
   )
 
   const underlyings: string[] = [];

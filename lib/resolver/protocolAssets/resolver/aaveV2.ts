@@ -2,7 +2,7 @@ import { readContract } from "@wagmi/core";
 
 const POOL_ADDRESS = "0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9";
 
-export async function aaveV2 ({ chainId }: { chainId: number }) {
+export async function aaveV2 ({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }) {
     return await readContract({
         address: POOL_ADDRESS,
         abi,

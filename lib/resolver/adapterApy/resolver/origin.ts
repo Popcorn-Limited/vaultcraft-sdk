@@ -7,7 +7,7 @@ const ADDRESS_TO_SYMBOL = {
   "0xdcee70654261af21c44c093c300ed3bb97b78192": "oeth", // wOETH
 }
 
-export async function origin({ chainId, address }: { chainId: number, address: string }): Promise<number> {
+export async function origin({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<number> {
 
   try {
     const res = await (await fetch(

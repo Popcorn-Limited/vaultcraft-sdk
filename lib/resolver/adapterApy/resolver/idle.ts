@@ -1,7 +1,7 @@
 
 
 import { RPC_PROVIDERS } from "@/lib/connectors";
-import { BigNumber, Contract } from "ethers";
+import { BigNumber, Contract, ethers } from "ethers";
 
 const tranches = {
   "0x6b175474e89094c44da98b954eedeac495271d0f": { cdo: "0x5dca0b3ed7594a6613c1a2acd367d56e1f74f92d", tranch: "0x38d36353d07cfb92650822d9c31fb4ada1c73d6e" }, // dai junior
@@ -13,7 +13,7 @@ const apr2apy = (apr: BigNumber) => {
   return (1 + (Number(apr) / 1e20) / 365) ** 365 - 1;
 }
 
-export async function idle({ chainId, address }: { chainId: number, address: string }): Promise<number> {
+export async function idle({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<number> {
   // @ts-ignore
   const idleAddresses = tranches[address];
   if (idleAddresses === undefined) return 0
@@ -21,8 +21,7 @@ export async function idle({ chainId, address }: { chainId: number, address: str
   const cdo = new Contract(
     idleAddresses.cdo,
     ["function getApr(address) view returns (uint256)"],
-    // @ts-ignore
-    RPC_PROVIDERS[chainId]
+    new ethers.providers.JsonRpcProvider(rpcUrl, chainId),
   );
   const apr = await cdo.getApr(idleAddresses.tranch)
 

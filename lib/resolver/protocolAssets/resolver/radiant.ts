@@ -2,7 +2,7 @@ import { readContract } from "@wagmi/core";
 
 const LENDING_POOL_ADDRESS = "0xF4B1486DD74D07706052A33d31d7c0AAFD0659E1";
 
-export async function radiant({ chainId }: { chainId: number }) {
+export async function radiant({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }) {
     const reserves = await readContract({
         address: LENDING_POOL_ADDRESS,
         abi,

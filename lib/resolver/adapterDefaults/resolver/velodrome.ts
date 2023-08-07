@@ -3,7 +3,7 @@ import { constants } from "ethers";
 
 const VELODROME_LENSE_ADDRESS = "0x8B70C5E53235AbBd1415957f7110FBFe5d0529d4";
 
-export async function velodrome({ chainId, address }: { chainId: number, address: string }): Promise<any[]> {
+export async function velodrome({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<any[]> {
     const { gauge, gauge_alive } = await readContract({
         address: VELODROME_LENSE_ADDRESS,
         abi,

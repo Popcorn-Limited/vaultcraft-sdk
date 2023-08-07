@@ -6,6 +6,6 @@ const CTOKEN: { [key: number]: { [key: string]: string } } = {
   137: { "0x2791bca1f2de4661ed88a30c99a7a9449aa84174": "0xF25212E676D1F7F89Cd72fFEe66158f541246445" }
 } // Just USDC on each chain at the moment
 
-export async function compoundV3({ chainId, address }: { chainId: number, address: string }): Promise<any[]> {
+export async function compoundV3({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<any[]> {
   return Object.keys(CTOKEN).includes(String(chainId)) ? [(CTOKEN[chainId][address.toLowerCase()] || constants.AddressZero)] : [constants.AddressZero];
 }

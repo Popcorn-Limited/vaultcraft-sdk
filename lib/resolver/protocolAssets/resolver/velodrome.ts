@@ -4,7 +4,7 @@ import { BigNumber } from "ethers";
 
 const PAIR_FACTORY_ADDRESS = "0x25CbdDb98b35ab1FF77413456B31EC81A6B6B746";
 
-export async function velodrome({ chainId }: { chainId: number }) {
+export async function velodrome({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }) {
     const allPairLength = await readContract({
         address: PAIR_FACTORY_ADDRESS,
         abi: abiFactory,

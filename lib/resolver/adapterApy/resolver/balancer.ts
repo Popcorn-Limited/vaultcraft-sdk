@@ -1,6 +1,6 @@
 import getAuraPools from "@/lib/external/aura/getAuraPools"
 
-export async function balancer({ chainId, address }: { chainId: number, address: string }): Promise<number> {
+export async function balancer({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<number> {
   const pools = await getAuraPools(chainId)
   const pool = pools.find(pool => pool.lpToken.address.toLowerCase() === address.toLowerCase())
 

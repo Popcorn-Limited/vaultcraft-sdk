@@ -6,6 +6,6 @@ const AVAILABLE_ASSETS: { [key: number]: string[] } = {
   137: ["0x2791bca1f2de4661ed88a30c99a7a9449aa84174"]
 } // Just USDC on each chain at the moment
 
-export async function compoundV3({ chainId }: { chainId: number }): Promise<string[]> {
+export async function compoundV3({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }): Promise<string[]> {
   return Object.keys(AVAILABLE_ASSETS).includes(String(chainId)) ? AVAILABLE_ASSETS[chainId] : [constants.AddressZero];
 }

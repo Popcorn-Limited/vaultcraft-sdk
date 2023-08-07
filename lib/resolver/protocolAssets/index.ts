@@ -28,7 +28,7 @@ export type ProtocolAssetResolver = (
 
 export type ProtocolAssetResolvers = typeof ProtocolAssetResolvers;
 
-export const ProtocolAssetResolvers: { [key: string]: ({ chainId }: { chainId: number }) => Promise<string[]> } = {
+export const ProtocolAssetResolvers: { [key: string]: ({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }) => Promise<string[]> } = {
   aaveV2,
   aaveV3,
   alpacaV1,

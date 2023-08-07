@@ -1,3 +1,3 @@
-export async function apyDefault({ chainId, address }: { chainId: number, address: string }): Promise<number> {
+export async function apyDefault({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<number> {
   return 0
 }

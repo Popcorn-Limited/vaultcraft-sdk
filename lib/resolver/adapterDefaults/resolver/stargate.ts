@@ -4,7 +4,7 @@ import { BigNumber, constants } from "ethers";
 
 const STAKING_ADDRESS = "0xB0D502E938ed5f4df2E681fE6E419ff29631d62b";
 
-export async function stargate({ chainId, address }: { chainId: number, address: string }) {
+export async function stargate({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }) {
     const poolLength = await readContract({
         address: STAKING_ADDRESS,
         abi,

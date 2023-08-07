@@ -4,7 +4,7 @@ import { constants } from "ethers";
 
 const COMPTROLLER_ADDRESS = "0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B";
 
-export async function compoundV2({ chainId, address }: { chainId: number, address: string }) {
+export async function compoundV2({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }) {
     const cTokens = await readContract({
         address: COMPTROLLER_ADDRESS,
         abi: abiComptroller,

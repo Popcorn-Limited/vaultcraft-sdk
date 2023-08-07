@@ -24,7 +24,7 @@ export type AdapterApyResolver = (
 
 export type AdapterApyResolvers = typeof AdapterApyResolvers;
 
-export const AdapterApyResolvers: { [key: string]: ({ chainId, address }: { chainId: number, address: string }) => Promise<number> } = {
+export const AdapterApyResolvers: { [key: string]: ({ chainId, rpcUrl, address }: { chainId: number, rpcUrl: string, address: string }) => Promise<number> } = {
   aaveV2,
   aaveV3,
   aura,

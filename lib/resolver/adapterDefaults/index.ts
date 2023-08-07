@@ -27,7 +27,7 @@ export type AdapterDefaultResolver = (
 
 export type AdapterDefaultResolvers = typeof AdapterDefaultResolvers;
 
-export const AdapterDefaultResolvers: { [key: string]: ({ chainId, address }: { chainId: number, address: string }) => Promise<any[]> } = {
+export const AdapterDefaultResolvers: { [key: string]: ({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }) => Promise<any[]> } = {
   alpacaV1,
   alpacaV2,
   aura,
