@@ -1,17 +1,17 @@
 export interface RpcUrls {
-  [chain: number]: string
+  [chain: number]: string;
 }
 
 export interface YieldData {
-  [chain: number]: Chain
+  [chain: number]: Chain;
 }
 
 export interface Chain {
   assetsByProtocol: {
-    [protocol: string]: Asset[]
+    [protocol: string]: Asset[];
   };
   protocolsByAsset: {
-    [asset: string]: string[]
+    [asset: string]: string[];
   };
   assetAddresses: string[];
   protocols: string[];
@@ -31,6 +31,14 @@ export interface Apy {
   rewardToken: string;
   apy: number;
 }
+
+type InitParam = {
+  name: string;
+  // TODO: this could be improved to be more specific since we know all possible type strings
+  type: string;
+  requirements: string[];
+  description: string;
+};
 
 export type Adapter = {
   name: string;

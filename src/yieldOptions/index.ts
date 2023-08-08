@@ -1,5 +1,5 @@
 import { resolveProtocolAssets } from "@/lib/resolver/protocolAssets/protocolAssets.js";
-import type { Adapter, Asset, Chain, RpcUrls, YieldData } from "./types.d.ts"
+import type { Adapter, Asset, Chain, RpcUrls, YieldData } from "./types";
 import adapters from "@/lib/constants/adapters.json";
 import { resolveAdapterApy } from "@/lib/resolver/adapterApy/adapterApy.js";
 
