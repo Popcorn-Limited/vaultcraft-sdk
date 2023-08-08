@@ -1,0 +1,20 @@
+name: CI
+run-name: Build and test
+on: pull_request
+
+jobs:
+  full:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # see https://github.com/nodejs/release#release-schedule
+        node: [ 16, 18 ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+      - run: yarn --frozen-lockfile
+      - run: yarn run build
+      - run: yarn run test
