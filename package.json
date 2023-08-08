@@ -6,6 +6,9 @@
   "author": "RedVeil",
   "license": "MIT",
   "private": false,
+  "scripts": {
+    "build": "tsc"
+  },
   "dependencies": {
     "@curvefi/api": "^2.42.0",
     "autoprefixer": "^10.4.13",
