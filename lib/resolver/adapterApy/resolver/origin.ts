@@ -1,3 +1,6 @@
+import { Yield } from "src/yieldOptions/types";
+import { EMPTY_YIELD_RESPONSE } from "..";
+
 const ADDRESS_TO_SYMBOL = {
   "0xc8c88fdf2802733f8c4cd7c0be0557fdc5d2471c": "ousd", // pop-OUSD
   "0x95ca391fb08f612dc6b0cbddcb6708c21d5a8295": "oeth", // pop-OETH
@@ -7,16 +10,22 @@ const ADDRESS_TO_SYMBOL = {
   "0xdcee70654261af21c44c093c300ed3bb97b78192": "oeth", // wOETH
 }
 
-export async function origin({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<number> {
+export async function origin({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<Yield> {
 
   try {
     const res = await (await fetch(
       // @ts-ignore
       `https://analytics.ousd.com/api/v2/${ADDRESS_TO_SYMBOL[address.toLowerCase()]}/apr/trailing/30`
     )).json();
-    return Number(res.apy)
+    return {
+      total: Number(res.apy),
+      apy: [{
+        rewardToken: address.toLowerCase(),
+        apy: Number(res.apy)
+      }]
+    }
   } catch (e) {
     console.log(e)
-    return 0
+    return EMPTY_YIELD_RESPONSE
   }
 };

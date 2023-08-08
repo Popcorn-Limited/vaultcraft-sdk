@@ -4,14 +4,13 @@ import adapters from "@/lib/constants/adapters.json";
 import { resolveAdapterApy } from "@/lib/resolver/adapterApy/adapterApy.js";
 
 
-async function fetchAssetsByAdapter({ chainId, rpcUrl, adapter }: { chainId: number, rpcUrl: string, adapter: Adapter }) {
+async function fetchAssetsByAdapter({ chainId, rpcUrl, adapter }: { chainId: number, rpcUrl: string, adapter: Adapter }):
+  Promise<{ assetAddresses: string[], assets: Asset[] }> {
   const assetAddresses = (await resolveProtocolAssets({ chainId, rpcUrl, resolver: adapter.resolver })).flat().map(address => address.toLowerCase());
   const assets = await Promise.all(assetAddresses.map(async address => {
     return {
       address: address,
-      yield: {
-        total: await resolveAdapterApy({ chainId, rpcUrl, address, resolver: adapter.resolver })
-      }
+      yield: await resolveAdapterApy({ chainId, rpcUrl, address, resolver: adapter.resolver })
     }
   }))
   return { assetAddresses, assets };
@@ -19,6 +18,7 @@ async function fetchAssetsByAdapter({ chainId, rpcUrl, adapter }: { chainId: num
 
 // TODO how to differentiate between adapter and protocol?
 // TODO resolver should fail gracefully and return undefined or similar
+// TODO deal with multichain
 
 export default class YieldOptions {
   private yieldData: YieldData;

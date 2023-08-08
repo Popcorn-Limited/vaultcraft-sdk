@@ -1,5 +1,7 @@
 import { createPublicClient, http } from "viem";
 import { networkMap } from "@/lib/helpers";
+import { Yield } from "src/yieldOptions/types";
+import { EMPTY_YIELD_RESPONSE } from "..";
 
 
 const tranches = {
@@ -12,11 +14,11 @@ const apr2apy = (apr: BigInt) => {
   return (1 + (Number(apr) / 1e20) / 365) ** 365 - 1;
 }
 
-export async function idle({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<number> {
+export async function idle({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<Yield> {
   // @ts-ignore
   const idleAddresses = tranches[address];
-  if (idleAddresses === undefined) return 0
-  
+  if (idleAddresses === undefined) return EMPTY_YIELD_RESPONSE
+
   const client = createPublicClient({
     // @ts-ignore
     chain: networkMap[chainId],
@@ -30,5 +32,13 @@ export async function idle({ chainId, rpcUrl, address, }: { chainId: number, rpc
     args: [address]
   }) as BigInt
 
-  return apr2apy(apr) * 100
+  const apy = apr2apy(apr) * 100;
+
+  return {
+    total: apy,
+    apy: [{
+      rewardToken: address.toLowerCase(),
+      apy: apy
+    }]
+  }
 };

@@ -24,6 +24,7 @@ import {
 
 export type ProtocolAssetResolver = (
   chainId: number,
+  rpcUrl: string,
 ) => Promise<string[]>;
 
 export type ProtocolAssetResolvers = typeof ProtocolAssetResolvers;

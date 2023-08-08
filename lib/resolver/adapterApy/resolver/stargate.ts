@@ -1,15 +1,18 @@
 import { networkNames } from "@/lib/helpers";
 import { Address, createPublicClient, http } from "viem";
 import { networkMap } from "@/lib/helpers";
+import { EMPTY_YIELD_RESPONSE } from "..";
+import { Yield } from "src/yieldOptions/types";
 
 export interface Pool {
   chain: string;
   project: string;
   underlyingTokens: string[];
   apy: number;
+  rewardTokens: string[];
 }
 
-export async function stargate({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<number> {
+export async function stargate({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<Yield> {
   const client = createPublicClient({
     // @ts-ignore
     chain: networkMap[chainId],
@@ -27,5 +30,13 @@ export async function stargate({ chainId, rpcUrl, address, }: { chainId: number,
   // @ts-ignore
   const filteredPools: Pool[] = pools.data.filter((pool: Pool) => pool.chain === networkNames[chainId] && pool.project === "stargate")
   const pool = filteredPools.find(pool => pool.underlyingTokens[0].toLowerCase() === token.toLowerCase())
-  return pool === undefined ? 0 : pool.apy
+
+  return pool === undefined ? EMPTY_YIELD_RESPONSE :
+    {
+      total: pool.apy,
+      apy: [{
+        rewardToken: pool.rewardTokens[0].toLowerCase(),
+        apy: pool.apy
+      }]
+    }
 }

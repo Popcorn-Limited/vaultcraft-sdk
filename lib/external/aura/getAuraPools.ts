@@ -8,6 +8,7 @@ interface AuraPool {
       token: {
         symbol: string;
         name: string;
+        address: string;
       };
       name: string;
       value: number;
@@ -40,6 +41,7 @@ export default async function getAuraPools(chainId: number): Promise<AuraPool[]>
                 token{
                   symbol
                   name
+                  address
                 }
               name
               value

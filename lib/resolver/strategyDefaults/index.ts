@@ -7,6 +7,7 @@ import {
 
 export type StrategyDefaultResolver = (
   chainId: number,
+  rpcUrl: string,
   address: string,
   adapter: string
 ) => Promise<any>;

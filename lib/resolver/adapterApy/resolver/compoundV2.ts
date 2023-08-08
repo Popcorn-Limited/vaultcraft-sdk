@@ -1,8 +1,9 @@
 import { resolveAdapterDefaults } from "@/lib/resolver/adapterDefaults/adapterDefaults";
 import { createPublicClient, http } from "viem";
 import { networkMap } from "@/lib/helpers";
+import { Yield } from "src/yieldOptions/types";
 
-export async function compoundV2Apy({ chainId, rpcUrl, address, resolver }: { chainId: number, rpcUrl: string, address: string, resolver: string }): Promise<number> {
+export async function compoundV2Apy({ chainId, rpcUrl, address, resolver }: { chainId: number, rpcUrl: string, address: string, resolver: string }): Promise<Yield> {
   const [cTokenAddress] = await resolveAdapterDefaults({ chainId, rpcUrl, address, resolver })
 
   const client = createPublicClient({
@@ -18,9 +19,17 @@ export async function compoundV2Apy({ chainId, rpcUrl, address, resolver }: { ch
     functionName: 'supplyRatePerBlock'
   }) as BigInt
 
-  return (((Math.pow((Number(supplyRate) / 1e18 * 7200) + 1, 365))) - 1) * 100
+  const apy = (((Math.pow((Number(supplyRate) / 1e18 * 7200) + 1, 365))) - 1) * 100
+
+  return {
+    total: apy,
+    apy: [{
+      rewardToken: address.toLowerCase(),
+      apy: apy
+    }]
+  }
 }
 
-export async function compoundV2({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<number> {
+export async function compoundV2({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<Yield> {
   return compoundV2Apy({ chainId, rpcUrl, address, resolver: "compoundV2" })
 }

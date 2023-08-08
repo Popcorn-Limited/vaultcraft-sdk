@@ -22,6 +22,7 @@ import {
 
 export type AdapterDefaultResolver = (
   chainId: number,
+  rpcUrl: string,
   address: string
 ) => Promise<any>;
 

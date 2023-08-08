@@ -1,9 +1,10 @@
 import { createPublicClient, http } from "viem";
 import { networkMap } from "@/lib/helpers";
+import { Yield } from "src/yieldOptions/types";
 
 const LENDING_POOL = { 1: "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2" }
 
-export async function aaveV3({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<number> {
+export async function aaveV3({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<Yield> {
   const client = createPublicClient({
     // @ts-ignore
     chain: networkMap[chainId],
@@ -18,5 +19,14 @@ export async function aaveV3({ chainId, rpcUrl, address, }: { chainId: number, r
     args: [address]
   }) as any
 
-  return Number(reserveData[2]) / 1e25;
+  // divided by 1e27 * 100 for percent
+  const apy = Number(reserveData[2]) / 1e25;
+
+  return {
+    total: apy,
+    apy: [{
+      rewardToken: address,
+      apy: apy
+    }]
+  }
 };

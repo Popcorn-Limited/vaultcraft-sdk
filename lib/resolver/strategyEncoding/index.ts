@@ -7,6 +7,7 @@ import {
 
 export type StrategyEncodingResolver = (
   chainId: number,
+  rpcUrl: string,
   address: string,
   params: any[],
 ) => Promise<string>;
