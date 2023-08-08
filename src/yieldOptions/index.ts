@@ -18,7 +18,6 @@ async function fetchAssetsByAdapter({ chainId, rpcUrl, adapter }: { chainId: num
 }
 
 // TODO how to differentiate between adapter and protocol?
-// TODO switch ethers for viem
 // TODO resolver should fail gracefully and return undefined or similar
 
 export default class YieldOptions {

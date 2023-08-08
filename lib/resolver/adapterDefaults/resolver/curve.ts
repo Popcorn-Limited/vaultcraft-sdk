@@ -6,6 +6,6 @@ const CURVE_ADDRESSES = {
     42161: "0x11cdb42b0eb46d95f990bedd4695a6e3fa034978",
 } as { [chainId: number]: string };
 
-export async function curve({ chainId, address }: { chainId: number; address: string }) {
-    return [ CURVE_ADDRESSES[chainId] ]
+export async function curve({ chainId, rpcUrl, address }: { chainId: number, rpcUrl: string, address: string }) {
+    return [CURVE_ADDRESSES[chainId]]
 }

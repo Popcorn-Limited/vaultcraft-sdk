@@ -3,7 +3,7 @@ import { createPublicClient, http } from "viem";
 import { networkMap } from "@/lib/helpers";
 
 export async function compoundV2Apy({ chainId, rpcUrl, address, resolver }: { chainId: number, rpcUrl: string, address: string, resolver: string }): Promise<number> {
-  const [cTokenAddress] = await resolveAdapterDefaults({ chainId, address, resolver })
+  const [cTokenAddress] = await resolveAdapterDefaults({ chainId, rpcUrl, address, resolver })
 
   const client = createPublicClient({
     // @ts-ignore
