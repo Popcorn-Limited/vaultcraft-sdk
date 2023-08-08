@@ -19,7 +19,16 @@
     "baseUrl": ".",
     "paths": {
       "@/lib/*": ["./lib/*"],
-    }
+    },
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "outDir": "dist"
   },
   "include": [
     "**/*.ts"
