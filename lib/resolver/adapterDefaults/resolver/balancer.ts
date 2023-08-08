@@ -1,60 +1,55 @@
-import { readContract } from "@wagmi/core";
-import { readContracts } from "wagmi";
-import {BigNumber, constants} from "ethers";
+import { ADDRESS_ZERO } from "@/lib/helpers";
+import { createPublicClient, http } from "viem";
+import { networkMap } from "@/lib/helpers";
 
 const CONTROLLER_ADDRESS = "0xC128468b7Ce63eA702C1f104D55A2566b13D3ABD";
 
 export async function balancer({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<any[]> {
-    const n_gauges = await readContract({
+    const client = createPublicClient({
+        // @ts-ignore
+        chain: networkMap[chainId],
+        transport: http(rpcUrl)
+    })
+
+    const n_gauges = await client.readContract({
         address: CONTROLLER_ADDRESS,
         abi: abiController,
         functionName: "n_gauges",
-        chainId,
-        args: []
-    }) as BigNumber
+    }) as BigInt
 
-    const gauges = await readContracts({
-        contracts: Array(n_gauges.toNumber()).fill(undefined).map((item, idx) => {
-            return {
-                address: CONTROLLER_ADDRESS,
-                abi: abiController,
-                functionName: "gauges",
-                chainId,
-                args: [idx]
-            }
+    const gauges = await Promise.all(Array(Number(n_gauges)).fill(undefined).map((_, i) =>
+        client.readContract({
+            address: CONTROLLER_ADDRESS,
+            abi: abiController,
+            functionName: "gauges",
+            args: [i]
         })
-    }) as string[]
+    )) as string[]
 
-    const areGaugesKilled = await readContracts({
-        contracts: gauges.map((gauge: any) => {
-            return {
-                address: gauge,
-                abi: abiGauge,
-                functionName: "is_killed",
-                chainId,
-                args: []
-            }
+    const areGaugesKilled = await Promise.all(gauges.map((gauge: any) =>
+        client.readContract({
+            address: gauge,
+            abi: abiGauge,
+            functionName: "is_killed",
+            args: []
         })
-    }) as boolean[]
+    )) as boolean[]
 
-    const aliveGauges = gauges.filter((gauge: any, idx: number) => !areGaugesKilled[idx])
+    const aliveGauges = gauges.filter((gauge: any, i: number) => !areGaugesKilled[i])
 
-    const lpTokens = await readContracts({
-        contracts: aliveGauges.map((gauge: any) => {
-            return {
-                address: gauge,
-                abi: abiGauge,
-                functionName: "lp_token",
-                chainId,
-                args: [],
-            }
+    const lpTokens = await Promise.all(aliveGauges.map((gauge: any) =>
+        client.readContract({
+            address: gauge,
+            abi: abiGauge,
+            functionName: "lp_token",
+            args: [],
         })
-    }) as (string | null)[]
+    )) as (string | null)[]
 
     const tokenIdx = lpTokens.findIndex(lpToken => lpToken?.toLowerCase() === address.toLowerCase())
 
     return [
-        tokenIdx !== -1 ? aliveGauges[tokenIdx] : constants.AddressZero,
+        tokenIdx !== -1 ? aliveGauges[tokenIdx] : ADDRESS_ZERO,
     ]
 }
 

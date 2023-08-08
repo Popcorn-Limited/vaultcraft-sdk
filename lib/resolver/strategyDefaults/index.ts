@@ -13,7 +13,7 @@ export type StrategyDefaultResolver = (
 
 export type StrategyDefaultResolvers = typeof StrategyDefaultResolvers;
 
-export const StrategyDefaultResolvers: { [key: string]: ({ chainId, address, adapter }: { chainId: number, address: string, adapter: string }) => Promise<any[]> } = {
+export const StrategyDefaultResolvers: { [key: string]: ({ chainId, rpcUrl, address, adapter }: { chainId: number, rpcUrl: string, address: string, adapter: string }) => Promise<any[]> } = {
   curveStargateCompounder,
   curveCompounder,
   balancerLpCompounder

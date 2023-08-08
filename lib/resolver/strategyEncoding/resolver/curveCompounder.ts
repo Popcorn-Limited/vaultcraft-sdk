@@ -1,7 +1,6 @@
 import { curveApiCallToBytes } from "@/lib/external/curve/router/call";
-import { BigNumber } from "ethers";
 
-export async function curveCompounder({ chainId, address, params }: { chainId: number, address: string, params: any[] }): Promise<string> {
+export async function curveCompounder({ chainId, rpcUrl, address, params }: { chainId: number, rpcUrl: string, address: string, params: any[] }): Promise<string> {
   const data = await curveApiCallToBytes({
     depositAsset: address,
     rewardTokens: params[0],

@@ -1,4 +1,4 @@
-import { constants } from "ethers";
+import { ADDRESS_ZERO } from "@/lib/helpers";
 import { mainnet } from "wagmi";
 
 // @dev dont forget to lowercase the keys when you add a new one
@@ -11,5 +11,5 @@ const CDO: { [key: string]: string } = {
 }
 
 export async function idle({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<any[]> {
-  return chainId === mainnet.id ? [(CDO[address.toLowerCase()] || constants.AddressZero)] : [constants.AddressZero];
+  return chainId === mainnet.id ? [(CDO[address.toLowerCase()] || ADDRESS_ZERO)] : [ADDRESS_ZERO];
 }

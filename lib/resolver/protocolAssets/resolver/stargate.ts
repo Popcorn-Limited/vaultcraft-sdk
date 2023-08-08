@@ -1,32 +1,32 @@
-import { readContract } from "@wagmi/core";
-import { readContracts } from "wagmi";
-import { BigNumber } from "ethers";
+import { createPublicClient, http } from "viem";
+import { networkMap } from "@/lib/helpers";
 
 const STARGATE_ADDRESS = { 1: "0xB0D502E938ed5f4df2E681fE6E419ff29631d62b", 42161: "0xeA8DfEE1898a7e0a59f7527F076106d7e44c2176" }
 
 export async function stargate({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }): Promise<string[]> {
-    const poolLength = await readContract({
+    const client = createPublicClient({
+        // @ts-ignore
+        chain: networkMap[chainId],
+        transport: http(rpcUrl)
+    })
+
+    const poolLength = await client.readContract({
         // @ts-ignore
         address: STARGATE_ADDRESS[chainId],
         abi,
         functionName: "poolLength",
-        chainId,
-        args: []
-    }) as BigNumber
+    }) as BigInt
 
-    const tokens = await readContracts({
-        contracts: Array(poolLength.toNumber()).fill(undefined).map((item, idx) => {
-            return {
-                // @ts-ignore
-                address: STARGATE_ADDRESS[chainId],
-                abi,
-                functionName: "poolInfo",
-                chainId,
-                args: [idx]
-            }
+    const tokens = await Promise.all(Array(Number(poolLength)).fill(undefined).map((_, i) =>
+        client.readContract({
+            // @ts-ignore
+            address: STARGATE_ADDRESS[chainId],
+            abi,
+            functionName: "poolInfo",
+            args: [i]
         })
-    }) as string[][]
-    
+    )) as string[][]
+
     return tokens.map(item => item?.[0]).filter(item => Boolean(item)) ?? []
 }
 

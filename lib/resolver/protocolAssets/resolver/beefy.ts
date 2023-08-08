@@ -1,5 +1,4 @@
-import { SUPPORTED_NETWORKS } from "@/lib/connectors";
-import { transformNetwork } from "@/lib/helpers";
+import { SUPPORTED_NETWORKS, transformNetwork } from "@/lib/helpers";
 
 interface Vault {
   tokenAddress: string;

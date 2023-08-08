@@ -1,7 +1,8 @@
-import { constants, ethers } from "ethers";
 import { useAccount, useContractWrite, useNetwork, usePrepareContractWrite } from "wagmi";
 import { useAtom } from "jotai";
 import { adapterDeploymentAtom, assetAtom, feeAtom, limitAtom, metadataAtom } from "@/lib/atoms"
+import { stringToHex } from "viem";
+import { ADDRESS_ZERO, MAX_UINT256 } from "../helpers";
 
 const VAULT_CONTROLLER = {
   "1": "0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb",
@@ -29,7 +30,7 @@ export const useDeployVault = () => {
       {
         // @ts-ignore
         asset: asset.address[chain?.id],
-        adapter: constants.AddressZero,
+        adapter: ADDRESS_ZERO,
         fees: {
           deposit: fees.deposit,
           withdrawal: fees.withdrawal,
@@ -37,32 +38,32 @@ export const useDeployVault = () => {
           performance: fees.performance,
         },
         feeRecipient: fees.recipient,
-        depositLimit: Number(limit) > 0 ? limit : constants.MaxUint256,
+        depositLimit: Number(limit) > 0 ? limit : MAX_UINT256,
         owner: account,
       },
       adapterData,
       {
-        id: ethers.utils.formatBytes32String(""),
+        id: stringToHex("", { size: 32 }),
         data: "0x",
       },
       false,
       "0x",
       {
-        vault: constants.AddressZero,
-        staking: constants.AddressZero,
+        vault: ADDRESS_ZERO,
+        staking: ADDRESS_ZERO,
         creator: account,
         metadataCID: metadata?.ipfsHash,
         swapTokenAddresses: [
-          constants.AddressZero,
-          constants.AddressZero,
-          constants.AddressZero,
-          constants.AddressZero,
-          constants.AddressZero,
-          constants.AddressZero,
-          constants.AddressZero,
-          constants.AddressZero,
+          ADDRESS_ZERO,
+          ADDRESS_ZERO,
+          ADDRESS_ZERO,
+          ADDRESS_ZERO,
+          ADDRESS_ZERO,
+          ADDRESS_ZERO,
+          ADDRESS_ZERO,
+          ADDRESS_ZERO,
         ],
-        swapAddress: constants.AddressZero,
+        swapAddress: ADDRESS_ZERO,
         exchange: 0,
       },
       0,

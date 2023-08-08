@@ -1,6 +1,4 @@
-import { constants } from "ethers";
-import { transformNetwork } from "@/lib/helpers";
-import { SUPPORTED_NETWORKS } from "@/lib/connectors";
+import { ADDRESS_ZERO, SUPPORTED_NETWORKS, transformNetwork } from "@/lib/helpers";
 
 interface Vault {
   tokenAddress: string;
@@ -22,5 +20,5 @@ export async function beefy({ chainId, rpcUrl, address, }: { chainId: number, rp
   const vaultAddress = vaults.find(vault => vault.tokenAddress.toLowerCase() === address.toLowerCase())?.earnContractAddress;
   const boost = boosts.find(boost => boost.tokenAddress.toLowerCase() === vaultAddress?.toLowerCase());
 
-  return [vaultAddress, boost && boost.status === "active" ? boost.earnContractAddress : constants.AddressZero]
+  return [vaultAddress, boost && boost.status === "active" ? boost.earnContractAddress : ADDRESS_ZERO]
 }

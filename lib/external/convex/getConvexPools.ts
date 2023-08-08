@@ -1,7 +1,7 @@
 import { readContract } from "@wagmi/core";
 import { readContracts } from "wagmi"
 import { convexBoosterAbi, CONVEX_BOOSTER_ADDRESS } from "@/lib/external/convex";
-import { BigNumber } from "ethers";
+
 
 export default async function getConvexPools({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }): Promise<string[][]> {
   const poolLength = await readContract({
@@ -11,7 +11,7 @@ export default async function getConvexPools({ chainId, rpcUrl }: { chainId: num
     chainId,
     functionName: "poolLength",
     args: []
-  }) as BigNumber
+  }) as BigInt
 
   const poolInfos = await readContracts({
     contracts: Array(poolLength.toNumber()).fill(undefined).map((item, idx) => {

@@ -1,28 +1,28 @@
-import { readContract } from "@wagmi/core";
-import { readContracts } from "wagmi";
+import { createPublicClient, http } from "viem";
+import { networkMap } from "@/lib/helpers";
 
 const REGISTER_ADDRESS = "0xA50d4E7D8946a7c90652339CDBd262c375d54D99";
 
 export async function gearbox({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }): Promise<string[]> {
-    const pools = await readContract({
+    const client = createPublicClient({
+        // @ts-ignore
+        chain: networkMap[chainId],
+        transport: http(rpcUrl)
+    })
+
+    const pools = await client.readContract({
         address: REGISTER_ADDRESS,
         abi: abiRegister,
         functionName: "getPools",
-        chainId,
-        args: [],
     }) as `0x${string}`[]
 
-    const tokens = await readContracts({
-        contracts: pools.map(pool => ({
+    return await Promise.all(pools.map(pool =>
+        client.readContract({
             address: pool,
             abi: abiPool,
             functionName: "underlyingToken",
-            chainId,
-            args: [],
-        })),
-    });
-
-    return tokens as string[];
+        }),
+    )) as string[];
 }
 
 const abiRegister = [

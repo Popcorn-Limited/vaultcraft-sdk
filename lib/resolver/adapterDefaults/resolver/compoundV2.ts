@@ -1,34 +1,36 @@
-import { readContract } from "@wagmi/core";
-import { readContracts } from "wagmi";
-import { constants } from "ethers";
+import { ADDRESS_ZERO } from "@/lib/helpers";
+import { createPublicClient, http } from "viem";
+import { networkMap } from "@/lib/helpers";
 
 const COMPTROLLER_ADDRESS = "0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B";
 
 export async function compoundV2({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }) {
-    const cTokens = await readContract({
+    const client = createPublicClient({
+        // @ts-ignore
+        chain: networkMap[chainId],
+        transport: http(rpcUrl)
+    })
+
+    const cTokens = await client.readContract({
         address: COMPTROLLER_ADDRESS,
         abi: abiComptroller,
         functionName: "getAllMarkets",
-        chainId,
         args: []
     }) as `0x${string}`[];
 
-    const underlying = (await readContracts({
-        contracts: cTokens.map(item => {
-            return {
-                address: item,
-                abi: abiMarket,
-                functionName: "underlying",
-                chainId,
-                args: []
-            }
+    let underlying = await Promise.all(cTokens.map(item =>
+        client.readContract({
+            address: item,
+            abi: abiMarket,
+            functionName: "underlying",
         })
-    }) as string[]).map(item => item ? item.toLowerCase() : item)
+    )) as string[]
+    underlying = underlying.map(item => item?.toLowerCase())
 
     return [
         underlying.includes(address.toLowerCase())
             ? cTokens[underlying.indexOf(address.toLowerCase())]
-            : constants.AddressZero
+            : ADDRESS_ZERO
     ]
 }
 

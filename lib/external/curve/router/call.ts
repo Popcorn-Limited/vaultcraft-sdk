@@ -1,14 +1,15 @@
 import { IRoute, CurveRoute } from "@/lib/external/curve/router/interfaces";
+import { ADDRESS_ZERO, ZERO } from "@/lib/helpers";
 import curve from '@curvefi/api'
-import { BigNumber, constants, ethers } from "ethers";
+import { encodeAbiParameters } from "viem";
 
-const EMPTY_ROUTE = [constants.AddressZero, constants.AddressZero, constants.AddressZero, constants.AddressZero, constants.AddressZero, constants.AddressZero, constants.AddressZero, constants.AddressZero, constants.AddressZero]
+const EMPTY_ROUTE = [ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO]
 
 const EMPTY_SWAP_PARAMS = [
-    [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)],
-    [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)],
-    [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)],
-    [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)]
+    [ZERO, ZERO, ZERO],
+    [ZERO, ZERO, ZERO],
+    [ZERO, ZERO, ZERO],
+    [ZERO, ZERO, ZERO]
 ]
 
 const curveInit: () => Promise<void> = async () => {
@@ -22,9 +23,9 @@ const curveInit: () => Promise<void> = async () => {
 
 function processRoute(route: IRoute): CurveRoute {
     const routeSteps: string[] = [];
-    const swapParams: BigNumber[][] = [];
+    const swapParams: BigInt[][] = [];
     for (let i = 0; i < route.length; i++) {
-        swapParams[i] = [BigNumber.from(route[i].i), BigNumber.from(route[i].j), BigNumber.from(route[i].swapType)];
+        swapParams[i] = [BigInt(route[i].i),BigInt(route[i].j), BigInt(route[i].swapType)];
         if (i === 0) {
             routeSteps.push(route[i].inputCoinAddress);
             routeSteps.push(route[i].poolAddress);
@@ -37,13 +38,13 @@ function processRoute(route: IRoute): CurveRoute {
     if (routeSteps.length < 9) {
         const addZeroAddresses = 9 - routeSteps.length;
         for (let i = 0; i < addZeroAddresses; i++) {
-            routeSteps.push(constants.AddressZero)
+            routeSteps.push(ADDRESS_ZERO)
         }
     }
     if (swapParams.length < 4) {
         const addEmptySwapParams = 4 - swapParams.length;
         for (let i = swapParams.length; i < addEmptySwapParams; i++) {
-            swapParams[i] = [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)];
+            swapParams[i] = [ZERO, ZERO, ZERO];
         }
     }
 
@@ -67,9 +68,9 @@ export const curveApiCall = async ({
     rewardTokens: string[],
     baseAsset: string,
     router: string,
-    minTradeAmounts: BigNumber[],
+    minTradeAmounts: BigInt[],
     optionalData: string
-}): Promise<{ baseAsset: string, router: string, toBaseAssetRoutes: CurveRoute[], toAssetRoute: CurveRoute, minTradeAmounts: BigNumber[], optionalData: string }> => {
+}): Promise<{ baseAsset: string, router: string, toBaseAssetRoutes: CurveRoute[], toAssetRoute: CurveRoute, minTradeAmounts: BigInt[], optionalData: string }> => {
     if (rewardTokens.length !== minTradeAmounts.length) {
         throw new Error("rewardTokens and minTradeAmounts must be the same length");
     }
@@ -113,7 +114,7 @@ export const curveApiCallToBytes = async ({
     rewardTokens: string[],
     baseAsset: string,
     router: string,
-    minTradeAmounts: BigNumber[],
+    minTradeAmounts: BigInt[],
     optionalData: string
 }): Promise<string> => {
     const curveData = await curveApiCall({ depositAsset, rewardTokens, baseAsset, router, minTradeAmounts, optionalData });
@@ -145,5 +146,5 @@ export const curveApiCallToBytes = async ({
         'string'
     ];
 
-    return ethers.utils.defaultAbiCoder.encode(types, values);
+    return encodeAbiParameters(types, values);
 }

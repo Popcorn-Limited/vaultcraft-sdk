@@ -1,7 +1,6 @@
-import { ethers } from "ethers";
-import { atomWithStorage } from "jotai/utils";
 import adapters from "@/lib/constants/adapters.json";
-import { atom, useAtom } from "jotai";
+import { atom } from "jotai";
+import { stringToHex } from "viem";
 
 export type Adapter = {
   name: string;
@@ -42,4 +41,4 @@ export const DEFAULT_ADAPTER: Adapter = { name: "Choose an Adapter", key: "none"
 export const adapterAtom = atom<Adapter>(DEFAULT_ADAPTER);
 
 export const adapterConfigAtom = atom<Array<string>>([]);
-export const adapterDeploymentAtom = atom<AdapterConfig>({ id: ethers.utils.formatBytes32String(""), data: "0x" });
+export const adapterDeploymentAtom = atom<AdapterConfig>({ id: stringToHex("", { size: 32 }), data: "0x" });

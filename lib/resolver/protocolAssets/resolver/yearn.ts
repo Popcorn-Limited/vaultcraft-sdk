@@ -1,55 +1,49 @@
-import { readContract } from "@wagmi/core";
-import { readContracts } from "wagmi";
-import { BigNumber } from "ethers";
+import { createPublicClient, http } from "viem";
 import { mainnet } from "wagmi/chains";
+import { networkMap } from "@/lib/helpers";
 
 const VAULT_REGISTRY_ADDRESS = { 1: "0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804", 42161: "0x3199437193625DCcD6F9C9e98BDf93582200Eb1f" };
 const VAULT_FACTORY_ADDRESS = "0x21b1FC8A52f179757bf555346130bF27c0C2A17A";
 
 export async function yearn({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }): Promise<string[]> {
-    const numTokens = await readContract({
+    const client = createPublicClient({
+        // @ts-ignore
+        chain: networkMap[chainId],
+        transport: http(rpcUrl)
+    })
+
+    const numTokens = await client.readContract({
         // @ts-ignore
         address: VAULT_REGISTRY_ADDRESS[chainId],
         abi: abiRegistry,
         functionName: "numTokens",
-        chainId,
-        args: []
-    }) as BigNumber
+    }) as BigInt
 
-    const registryTokens = await readContracts({
-        contracts: Array(numTokens.toNumber()).fill(undefined).map((item, idx) => {
-            return {
-                // @ts-ignore
-                address: VAULT_REGISTRY_ADDRESS[chainId],
-                abi: abiRegistry,
-                functionName: "tokens",
-                chainId,
-                args: [idx]
-            }
+    const registryTokens = await Promise.all(Array(Number(numTokens)).fill(undefined).map((_, i) =>
+        client.readContract({
+            // @ts-ignore
+            address: VAULT_REGISTRY_ADDRESS[chainId],
+            abi: abiRegistry,
+            functionName: "tokens",
+            args: [i]
         })
-    }) as string[]
+    )) as string[]
 
     let factoryTokens: string[] = []
     if (chainId === mainnet.id) {
-        const allDeployedVaults = await readContract({
+        const allDeployedVaults = await client.readContract({
             address: VAULT_FACTORY_ADDRESS,
             abi: abiFactory,
             functionName: "allDeployedVaults",
-            chainId,
-            args: []
         }) as `0x${string}`[]
 
-        factoryTokens = await readContracts({
-            contracts: allDeployedVaults.map(item => {
-                return {
-                    address: item,
-                    abi: abiVault,
-                    functionName: "token",
-                    chainId,
-                    args: []
-                }
+        factoryTokens = await Promise.all(allDeployedVaults.map(item =>
+            client.readContract({
+                address: item,
+                abi: abiVault,
+                functionName: "token",
             })
-        }) as string[]
+        )) as string[]
     }
 
     return [...registryTokens, ...factoryTokens].filter((item, idx, arr) => arr.indexOf(item) === idx)

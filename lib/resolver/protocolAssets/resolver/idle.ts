@@ -1,4 +1,4 @@
-import { constants } from "ethers";
+import { ADDRESS_ZERO } from "@/lib/helpers";
 import { mainnet } from "wagmi";
 
 // @dev dont forget to lowercase the keys when you add a new one
@@ -11,5 +11,5 @@ const AVAILABLE_ASSETS = [
 ]
 
 export async function idle({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }): Promise<string[]> {
-  return chainId === mainnet.id ? AVAILABLE_ASSETS : [constants.AddressZero];
+  return chainId === mainnet.id ? AVAILABLE_ASSETS : [ADDRESS_ZERO];
 }

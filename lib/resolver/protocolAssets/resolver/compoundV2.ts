@@ -1,29 +1,29 @@
-import { readContract } from "@wagmi/core";
-import { readContracts } from "wagmi";
+import { createPublicClient, http } from "viem";
+import { networkMap } from "@/lib/helpers";
 
 const COMPOUND_PROXY_CONTRACT = "0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B";
 
 export async function compoundV2({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }): Promise<string[]> {
-    const allMarkets = await readContract({
+    const client = createPublicClient({
+        // @ts-ignore
+        chain: networkMap[chainId],
+        transport: http(rpcUrl)
+    })
+
+    const allMarkets = await client.readContract({
         address: COMPOUND_PROXY_CONTRACT,
         abi: abiProxy,
-        chainId,
         functionName: "getAllMarkets",
-        args: []
     }) as `0x${string}`[]
 
-    return await readContracts({
-        // filter out cETH
-        contracts: allMarkets.filter(item => item !== "0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5").map(item => {
-            return {
+    return await Promise.all(
+        allMarkets.filter(item => item !== "0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5").map(item =>
+            client.readContract({
                 address: item,
                 abi: abiMarket,
-                chainId,
                 functionName: "underlying",
-                args: []
-            }
-        })
-    }) as string[]
+            })
+        )) as string[]
 }
 
 const abiProxy = [

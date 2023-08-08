@@ -1,29 +1,31 @@
-import { readContract } from "@wagmi/core";
-import { readContracts } from "wagmi";
-import { BigNumber, constants } from "ethers";
+import { ADDRESS_ZERO } from "@/lib/helpers";
+import { createPublicClient, http } from "viem";
+import { networkMap } from "@/lib/helpers";
 
 const STAKING_ADDRESS = "0xB0D502E938ed5f4df2E681fE6E419ff29631d62b";
 
 export async function stargate({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }) {
-    const poolLength = await readContract({
+    const client = createPublicClient({
+        // @ts-ignore
+        chain: networkMap[chainId],
+        transport: http(rpcUrl)
+    })
+
+    const poolLength = await client.readContract({
         address: STAKING_ADDRESS,
         abi,
         functionName: "poolLength",
-        chainId,
         args: []
-    }) as BigNumber
+    }) as BigInt
 
-    const tokens = await readContracts({
-        contracts: Array(poolLength.toNumber()).fill(undefined).map((item, idx) => {
-            return {
-                address: STAKING_ADDRESS,
-                abi,
-                functionName: "poolInfo",
-                chainId,
-                args: [idx]
-            }
+    const tokens = await Promise.all(Array(Number(poolLength)).fill(undefined).map((_, i) =>
+        client.readContract({
+            address: STAKING_ADDRESS,
+            abi,
+            functionName: "poolInfo",
+            args: [i]
         })
-    }) as Array<{
+    )) as Array<{
         lpToken: string,
     }>
 
@@ -31,8 +33,8 @@ export async function stargate({ chainId, rpcUrl, address, }: { chainId: number,
 
     return [
         lpTokens.includes(address.toLowerCase())
-          ? lpTokens.indexOf(address.toLowerCase())
-          : constants.AddressZero
+            ? lpTokens.indexOf(address.toLowerCase())
+            : ADDRESS_ZERO
     ]
 }
 

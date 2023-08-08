@@ -1,10 +1,16 @@
 import { readContract } from "@wagmi/core";
-import { readContracts } from "wagmi";
-import { BigNumber } from "ethers";
+import { createPublicClient, http } from "viem";
+import { networkMap } from "@/lib/helpers";
 
 const CONVEX_BOOSTER_ADDRESS = { 1: "0xF403C135812408BFbE8713b5A23a04b3D48AAE31", 42161: "0xF403C135812408BFbE8713b5A23a04b3D48AAE31" }
 
 export async function convex({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }) {
+    const client = createPublicClient({
+        // @ts-ignore
+        chain: networkMap[chainId],
+        transport: http(rpcUrl)
+    })
+
     const poolLength = await readContract({
         // @ts-ignore
         address: CONVEX_BOOSTER_ADDRESS[chainId],
@@ -12,20 +18,17 @@ export async function convex({ chainId, rpcUrl }: { chainId: number, rpcUrl: str
         functionName: "poolLength",
         chainId,
         args: []
-    }) as BigNumber
+    }) as BigInt
 
-    const poolInfo = await readContracts({
-        contracts: Array(poolLength.toNumber()).fill(undefined).map((item, idx) => {
-            return {
-                // @ts-ignore
-                address: CONVEX_BOOSTER_ADDRESS[chainId],
-                abi,
-                functionName: "poolInfo",
-                chainId,
-                args: [idx]
-            }
+    const poolInfo = await Promise.all(Array(Number(poolLength)).fill(undefined).map((_, i) =>
+        client.readContract({
+            // @ts-ignore
+            address: CONVEX_BOOSTER_ADDRESS[chainId],
+            abi,
+            functionName: "poolInfo",
+            args: [i]
         })
-    }) as { lptoken: string, gauge: string, rewards: string, factory: string, shutdown: boolean }[]
+    )) as { lptoken: string, gauge: string, rewards: string, factory: string, shutdown: boolean }[]
 
     return poolInfo.map(item => item.lptoken);
 }

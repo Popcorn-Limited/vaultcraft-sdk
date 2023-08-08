@@ -1,7 +1,6 @@
+import { createPublicClient, http } from "viem";
+import { networkMap } from "@/lib/helpers";
 
-
-import { RPC_PROVIDERS } from "@/lib/connectors";
-import { BigNumber, Contract, ethers } from "ethers";
 
 const tranches = {
   "0x6b175474e89094c44da98b954eedeac495271d0f": { cdo: "0x5dca0b3ed7594a6613c1a2acd367d56e1f74f92d", tranch: "0x38d36353d07cfb92650822d9c31fb4ada1c73d6e" }, // dai junior
@@ -9,7 +8,7 @@ const tranches = {
   "0xdac17f958d2ee523a2206206994597c13d831ec7": { cdo: "0xc4574C60a455655864aB80fa7638561A756C5E61", tranch: "0x3Eb6318b8D9f362a0e1D99F6032eDB1C4c602500" }, // usdt junior
 }
 
-const apr2apy = (apr: BigNumber) => {
+const apr2apy = (apr: BigInt) => {
   return (1 + (Number(apr) / 1e20) / 365) ** 365 - 1;
 }
 
@@ -18,12 +17,18 @@ export async function idle({ chainId, rpcUrl, address, }: { chainId: number, rpc
   const idleAddresses = tranches[address];
   if (idleAddresses === undefined) return 0
   
-  const cdo = new Contract(
-    idleAddresses.cdo,
-    ["function getApr(address) view returns (uint256)"],
-    new ethers.providers.JsonRpcProvider(rpcUrl, chainId),
-  );
-  const apr = await cdo.getApr(idleAddresses.tranch)
+  const client = createPublicClient({
+    // @ts-ignore
+    chain: networkMap[chainId],
+    transport: http(rpcUrl)
+  })
+
+  const apr = await client.readContract({
+    address: idleAddresses.cdo,
+    abi: ["function getApr(address) view returns (uint256)"],
+    functionName: 'getApr',
+    args: [address]
+  }) as BigInt
 
   return apr2apy(apr) * 100
 };

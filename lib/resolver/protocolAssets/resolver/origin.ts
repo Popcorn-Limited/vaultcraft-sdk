@@ -1,4 +1,4 @@
-import { constants } from "ethers";
+import { ADDRESS_ZERO } from "@/lib/helpers";
 import { mainnet } from "wagmi";
 
 // @dev dont forget to lowercase the keys when you add a new one
@@ -6,5 +6,5 @@ const ORIGIN_TOKENS = ["0x856c4efb76c1d1ae02e20ceb03a2a6a08b0b8dc3", "0x2a8e1e67
 
 
 export async function origin({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }): Promise<string[]> {
-  return chainId === mainnet.id ? ORIGIN_TOKENS : [constants.AddressZero];
+  return chainId === mainnet.id ? ORIGIN_TOKENS : [ADDRESS_ZERO];
 }

@@ -1,33 +1,34 @@
-import { readContract } from "@wagmi/core";
-import { readContracts } from "wagmi";
-import {BigNumber, constants} from "ethers";
+import { ADDRESS_ZERO } from "@/lib/helpers";
+import { createPublicClient, http } from "viem";
+import { networkMap } from "@/lib/helpers";
 
 const STAKING_ADDRESS = "0x5B74C99AA2356B4eAa7B85dC486843eDff8Dfdbe";
 
 export async function ellipsis({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<any[]> {
-    const poolLength = await readContract({
+    const client = createPublicClient({
+        // @ts-ignore
+        chain: networkMap[chainId],
+        transport: http(rpcUrl)
+    })
+
+    const poolLength = await client.readContract({
         address: STAKING_ADDRESS,
         abi: abiStaking,
         functionName: "poolLength",
-        chainId,
-        args: [],
-    }) as BigNumber;
+    }) as BigInt;
 
-    const registeredTokens = await readContracts({
-        contracts: Array(poolLength.toNumber()).fill(undefined).map((item, idx) => {
-            return {
-                address: STAKING_ADDRESS,
-                abi: abiStaking,
-                functionName: "registeredTokens",
-                chainId,
-                args: [idx],
-            }
+    const registeredTokens = await Promise.all(Array(Number(poolLength)).fill(undefined).map((_, i) =>
+        client.readContract({
+            address: STAKING_ADDRESS,
+            abi: abiStaking,
+            functionName: "registeredTokens",
+            args: [i],
         })
-    }) as string[]
+    )) as string[]
 
     const assetIdx = registeredTokens.findIndex(item => item.toLowerCase() === address.toLowerCase())
 
-    return [ assetIdx !== -1 ? assetIdx : constants.AddressZero ];
+    return [assetIdx !== -1 ? assetIdx : ADDRESS_ZERO];
 }
 
 const abiStaking = [

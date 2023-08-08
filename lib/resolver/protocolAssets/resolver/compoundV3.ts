@@ -1,4 +1,4 @@
-import { constants } from "ethers";
+import { ADDRESS_ZERO } from "@/lib/helpers";
 
 const AVAILABLE_ASSETS: { [key: number]: string[] } = {
   1: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
@@ -7,5 +7,5 @@ const AVAILABLE_ASSETS: { [key: number]: string[] } = {
 } // Just USDC on each chain at the moment
 
 export async function compoundV3({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }): Promise<string[]> {
-  return Object.keys(AVAILABLE_ASSETS).includes(String(chainId)) ? AVAILABLE_ASSETS[chainId] : [constants.AddressZero];
+  return Object.keys(AVAILABLE_ASSETS).includes(String(chainId)) ? AVAILABLE_ASSETS[chainId] : [ADDRESS_ZERO];
 }
