@@ -10,6 +10,8 @@ jobs:
         # see https://github.com/nodejs/release#release-schedule
         node: [ 18, 20 ]
     steps:
+      - name: Set up foundry
+        uses: foundry-rs/foundry-toolchain@v1
       - uses: actions/checkout@v3
       - name: Setup node
         uses: actions/setup-node@v3
