@@ -1,6 +1,4 @@
-import { Abi } from "viem";
-
-export const IVaultABI: Abi = [
+export const IVaultABI = [
     {
         "anonymous": false,
         "inputs": [

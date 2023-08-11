@@ -1,81 +1,327 @@
-import { Address, PublicClient, SimulateContractReturnType, WalletClient, WriteContractParameters, WriteContractReturnType } from "viem";
+import { Address, ParseAbi, PublicClient, WriteContractParameters, parseAbi } from "viem";
 import { IVaultABI } from "./abi/IVault";
 
 const ABI = IVaultABI;
 
+type Fees = {
+    deposit: bigint;
+    withdrawal: bigint;
+    management: bigint;
+    performance: bigint;
+};
+
 export class Vault {
     address: Address;
     private client: PublicClient;
+    private baseObj;
 
     constructor(address: Address, publicClient: PublicClient) {
         this.address = address;
         this.client = publicClient;
+        this.baseObj = {
+            address,
+            abi: ABI,
+        };
     }
 
-    // The type of `args` and return value are unknown. But, the function
-    // that calls `read()`, which is exposed to the user should know them.
-    private read(functionName: string, args: unknown[]): Promise<unknown> {
+    // ERC4626
+
+    totalSupply(): Promise<bigint> {
         return this.client.readContract({
-            functionName,
-            args,
-            address: this.address,
-            abi: ABI,
+            ...this.baseObj,
+            functionName: "totalSupply",
         });
     }
 
-    totalSupply(): Promise<BigInt> {
-        return this.read("totalSupply", []) as Promise<BigInt>;
+    totalAssets(): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "totalAssets",
+        });
     }
 
-    totalAssets(): Promise<BigInt> {
-        return this.read("totalAssets", []) as Promise<BigInt>;
+    balanceOf(who: Address): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "balanceOf",
+            args: [who],
+        });
     }
 
-    balanceOf(who: Address): Promise<BigInt> {
-        return this.read("balanceOf", [who]) as Promise<BigInt>;
+    asset(): Promise<Address> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "asset",
+        });
     }
 
-    adapter(): Promise<Address> {
-        return this.read("adapter", []) as Promise<Address>;
+    convertToShares(amount: bigint): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "convertToShares",
+            args: [amount],
+        });
     }
 
-    getDepositReq(account: Address, amount: BigInt, receiver: Address): WriteContractParameters {
+    convertToAssets(amount: bigint): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "convertToAssets",
+            args: [amount],
+        });
+    }
+
+    maxDeposit(receiver: Address): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "maxDeposit",
+            args: [receiver],
+        });
+    }
+
+    maxMint(receiver: Address): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "maxMint",
+            args: [receiver],
+        });
+    }
+
+    maxWithdraw(owner: Address): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "maxWithdraw",
+            args: [owner],
+        });
+    }
+
+    maxRedeem(owner: Address): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "maxRedeem",
+            args: [owner],
+        });
+    }
+
+    previewDeposit(amount: bigint): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "previewDeposit",
+            args: [amount],
+        });
+    }
+
+    previewMint(amount: bigint): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "previewMint",
+            args: [amount],
+        });
+    }
+
+    previewWithdraw(amount: bigint): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "previewWithdraw",
+            args: [amount],
+        });
+    }
+
+    previewRedeem(amount: bigint): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "previewRedeem",
+            args: [amount],
+        });
+    }
+
+    getDepositReq(account: Address, amount: bigint, receiver: Address): WriteContractParameters {
         return {
+            ...this.baseObj,
             account,
-            address: this.address,
             functionName: "deposit",
-            abi: ABI,
             args: [amount, receiver],
         };
     }
 
-    getMintReq(account: Address, shares: BigInt, receiver: Address): WriteContractParameters {
+    getMintReq(account: Address, shares: bigint, receiver: Address): WriteContractParameters {
         return {
+            ...this.baseObj,
             account,
-            address: this.address,
             functionName: "mint",
-            abi: ABI,
             args: [shares, receiver],
         };
     }
 
-    getWithdrawReq(account: Address, amount: BigInt, receiver: Address, owner: Address): WriteContractParameters {
+    getWithdrawReq(account: Address, amount: bigint, receiver: Address, owner: Address): WriteContractParameters {
         return {
+            ...this.baseObj,
             account,
-            address: this.address,
             functionName: "withdraw",
-            abi: ABI,
             args: [amount, receiver, owner],
         };
     }
 
-    getRedeemReq(account: Address, shares: BigInt, receiver: Address, owner: Address): WriteContractParameters {
+    getRedeemReq(account: Address, shares: bigint, receiver: Address, owner: Address): WriteContractParameters {
         return {
+            ...this.baseObj,
             account,
-            address: this.address,
             functionName: "redeem",
-            abi: ABI,
             args: [shares, receiver, owner],
         };
+    }
+
+    // Vault
+
+    adapter(): Promise<Address> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "adapter",
+        });
+    }
+
+    proposedAdapter(): Promise<Address> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "proposedAdapter",
+        });
+    }
+
+    proposedAdapterTime(): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "proposedAdapterTime",
+        });
+    }
+
+    getProposeAdapterReq(account: Address, adapter: Address): WriteContractParameters {
+        return {
+            ...this.baseObj,
+            account,
+            functionName: "proposeAdapter",
+            args: [adapter],
+        };
+    }
+
+    getChangeAdapterReq(account: Address): WriteContractParameters {
+        return {
+            ...this.baseObj,
+            account,
+            functionName: "changeAdapter",
+        };
+    }
+
+    fees(): Promise<Fees> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "fees",
+        });
+    }
+
+    proposedFees(): Promise<Fees> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "proposedFees",
+        });
+    }
+
+    proposedFeeTime(): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "proposedFeeTime",
+        });
+    }
+
+    getProposeFeesReq(account: Address, fees: Fees): WriteContractParameters {
+        return {
+            ...this.baseObj,
+            account,
+            functionName: "proposeFees",
+            args: [fees],
+        };
+    }
+
+    getChangeFeesReq(account: Address): WriteContractParameters {
+        return {
+            ...this.baseObj,
+            account,
+            functionName: "changeFees",
+        };
+    }
+
+    getSetFeeRecipientReq(account: Address, recipient: Address): WriteContractParameters {
+        return {
+            ...this.baseObj,
+            account,
+            functionName: "setFeeRecipient",
+            args: [recipient],
+        };
+    }
+
+    quitPeriod(): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "quitPeriod",
+        });
+    }
+
+    getSetQuitPeriodReq(account: Address, quitPeriod: bigint): WriteContractParameters {
+        return {
+            ...this.baseObj,
+            account,
+            functionName: "setQuitPeriod",
+            args: [quitPeriod],
+        };
+    }
+
+    depositLimit(): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "depositLimit",
+        });
+    }
+
+    getSetDepositLimitReq(account: Address, limit: bigint): WriteContractParameters {
+        return {
+            ...this.baseObj,
+            account,
+            functionName: "setDepositLimit",
+            args: [limit],
+        };
+    }
+
+    accruedManagementFee(): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "accruedManagementFee",
+        });
+    }
+
+    accruedPerformanceFee(): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "accruedPerformanceFee",
+        });
+    }
+
+    highWaterMark(): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "highWaterMark",
+        });
+    }
+
+    feeUpdatedAt(): Promise<bigint> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "feesUpdatedAt"
+        });
+    }
+
+    feeRecipient(): Promise<Address> {
+        return this.client.readContract({
+            ...this.baseObj,
+            functionName: "feeRecipient",
+        });
     }
 }
