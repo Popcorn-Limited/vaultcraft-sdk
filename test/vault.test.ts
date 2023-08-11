@@ -1,4 +1,4 @@
-import { describe, test, expect } from "vitest";
+import { describe, test, expect, beforeAll } from "vitest";
 
 import { client } from "./setup";
 
@@ -7,6 +7,12 @@ import { IVaultABI } from "../src/abi/IVault";
 import { zeroAddress } from "viem";
 
 let vault = new Vault("0x5d344226578DC100b2001DA251A4b154df58194f", client);
+
+beforeAll(async () => {
+    await client.reset({
+        blockNumber: BigInt(17883751),
+    });
+})
 
 describe.concurrent("Vault tests", () => {
     test("getDepositReq() should return correct object", () => {
