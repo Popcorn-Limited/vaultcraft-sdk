@@ -3,15 +3,17 @@ import { describe, test, expect, beforeAll } from "vitest";
 import { client } from "./setup";
 
 import { Vault } from "../src/vault";
-import { IVaultABI } from "../src/abi/IVault";
+import { IVaultABI } from "../src/abi/IVaultABI";
 import { zeroAddress } from "viem";
 
-let vault = new Vault("0x5d344226578DC100b2001DA251A4b154df58194f", client);
+let vault: Vault;
 
 beforeAll(async () => {
     await client.reset({
         blockNumber: BigInt(17883751),
     });
+
+    vault = new Vault("0x5d344226578DC100b2001DA251A4b154df58194f", client);
 })
 
 describe.concurrent("Vault tests", () => {

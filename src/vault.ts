@@ -1,23 +1,22 @@
 import { Address, ParseAbi, PublicClient, WriteContractParameters, parseAbi } from "viem";
-import { IVaultABI } from "./abi/IVault";
+import { IVaultABI } from "./abi/IVaultABI";
+import { Base } from "./base";
 
 const ABI = IVaultABI;
 
-type Fees = {
+export type VaultFees = {
     deposit: bigint;
     withdrawal: bigint;
     management: bigint;
     performance: bigint;
 };
 
-export class Vault {
-    address: Address;
-    private client: PublicClient;
+export class Vault extends Base {
     private baseObj;
 
     constructor(address: Address, publicClient: PublicClient) {
-        this.address = address;
-        this.client = publicClient;
+        super(address, publicClient);
+
         this.baseObj = {
             address,
             abi: ABI,
@@ -211,14 +210,14 @@ export class Vault {
         };
     }
 
-    fees(): Promise<Fees> {
+    fees(): Promise<VaultFees> {
         return this.client.readContract({
             ...this.baseObj,
             functionName: "fees",
         });
     }
 
-    proposedFees(): Promise<Fees> {
+    proposedFees(): Promise<VaultFees> {
         return this.client.readContract({
             ...this.baseObj,
             functionName: "proposedFees",
@@ -232,7 +231,7 @@ export class Vault {
         });
     }
 
-    getProposeFeesReq(account: Address, fees: Fees): WriteContractParameters {
+    getProposeFeesReq(account: Address, fees: VaultFees): WriteContractParameters {
         return {
             ...this.baseObj,
             account,
