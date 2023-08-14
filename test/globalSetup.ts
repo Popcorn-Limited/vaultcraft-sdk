@@ -1,5 +1,3 @@
-import 'dotenv/config';
-
 import { startProxy } from "@viem/anvil";
 export default async function () {
     return await startProxy({
