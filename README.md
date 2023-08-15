@@ -67,3 +67,7 @@ The VaultManagement Class provides data of a creators vaults and allows manageme
 
 ### Vault
 The Vault Class provides data to display a vault and offers functionality to deposit and withdraw from a vault.
+
+## Dev Environment
+
+To run the tests you need to have Anvil installed. See https://book.getfoundry.sh/getting-started/installation for details.
