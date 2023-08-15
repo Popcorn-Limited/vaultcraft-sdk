@@ -1,133 +1,210 @@
-import { describe, test, expect, beforeAll } from "vitest";
+import { describe, test, expect, beforeEach } from "vitest";
+import { decodeFunctionData } from "viem";
 
-import { client } from "./setup";
+import { publicClient, walletClient } from "./setup";
+import { increaseTime } from "./utils";
 
 import { VaultControllerABI } from "../src/abi/VaultControllerABI";
 import { VaultController } from "../src/vaultController";
+import { VaultFees } from "../src/types";
 
 
-let controller: VaultController;
+let controller = new VaultController("0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb", publicClient, walletClient);
+const FORK_BLOCK_NUMBER = BigInt(17883751);
+const ADMIN_ADDRESS = "0x22f5413C075Ccd56D575A54763831C4c27A37Bdb";
+const VAULT_ADDRESS = "0x5d344226578DC100b2001DA251A4b154df58194f";
 
-beforeAll(async () => {
-    await client.reset({
-        blockNumber: BigInt(17883751),
-    });
+describe("write-only", () => {
+    beforeEach(async () => {
+        await publicClient.reset({
+            blockNumber: FORK_BLOCK_NUMBER,
+        });
+        await walletClient.reset({
+            blockNumber: FORK_BLOCK_NUMBER,
+        });
 
-    controller = new VaultController("0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb", client);
-});
-
-describe.concurrent("VaultController tests", () => {
-    test("getProposeVaultAdaptersReq() should return correct object", () => {
-        const req = controller.getProposeVaultAdaptersReq("0x1", ["0x2"], ["0x3"]);
-
-        expect(req).toEqual({
-            account: "0x1",
-            address: controller.address,
-            functionName: "proposeVaultAdapters",
-            abi: VaultControllerABI,
-            args: [["0x2"], ["0x3"]],
+        // public client has to impersonate as well because of the simulation request
+        await publicClient.impersonateAccount({
+            address: ADMIN_ADDRESS
+        });
+        await walletClient.impersonateAccount({
+            address: ADMIN_ADDRESS
         });
     });
-
-    test("getChangeVaultAdaptersReq() should return correct object", () => {
-        const req = controller.getChangeVaultAdaptersReq("0x1", ["0x2"]);
-
-        expect(req).toEqual({
-            account: "0x1",
-            address: controller.address,
-            functionName: "changeVaultAdapters",
-            abi: VaultControllerABI,
-            args: [["0x2"]],
+    test("proposeVaultAdapters() should propose the given adapters for the given vaults", async () => {
+        const hash = await controller.proposeVaultAdapters([VAULT_ADDRESS], ["0x612465C8d6F1B2Bc85DF43224a8A3b5e04F634fc"], { account: ADMIN_ADDRESS });
+        const tx = await publicClient.getTransaction({
+            hash,
         });
+
+        const { functionName, args } = decodeFunctionData({
+            abi: VaultControllerABI,
+            data: tx.input,
+        });
+
+        expect(tx.from).toBe(ADMIN_ADDRESS.toLowerCase());
+        expect(tx.to).toBe(controller.address.toLowerCase());
+        expect(functionName).toBe("proposeVaultAdapters");
+        expect(args).toEqual([[VAULT_ADDRESS], ["0x612465C8d6F1B2Bc85DF43224a8A3b5e04F634fc"]]);
     });
 
-    test("getProposeVaultFeesReq() should return correct object", () => {
-        const fees = {
+    test("changeVaultAdapters() should change the adapters for the given vaults", async () => {
+        // got to propose fees first before we can change them.
+        await controller.proposeVaultAdapters([VAULT_ADDRESS], ["0x612465C8d6F1B2Bc85DF43224a8A3b5e04F634fc"], { account: ADMIN_ADDRESS });
+        await increaseTime(86400 * 2);
+
+        const hash = await controller.changeVaultAdapters([VAULT_ADDRESS], { account: ADMIN_ADDRESS });
+        const tx = await publicClient.getTransaction({
+            hash,
+        });
+
+        const { functionName, args } = decodeFunctionData({
+            abi: VaultControllerABI,
+            data: tx.input,
+        });
+
+        expect(tx.from).toBe(ADMIN_ADDRESS.toLowerCase());
+        expect(tx.to).toBe(controller.address.toLowerCase());
+        expect(functionName).toBe("changeVaultAdapters");
+        expect(args).toEqual([[VAULT_ADDRESS]]);
+    });
+
+    test("proposeVaultFees() should propose the fees for the given vaults", async () => {
+        const fees: VaultFees = {
             deposit: BigInt(0),
             withdrawal: BigInt(0),
-            management: BigInt(0),
-            performance: BigInt(100),
+            performance: BigInt(0),
+            management: BigInt(10),
         };
-        const req = controller.getProposeVaultFeesReq("0x1", ["0x2"], [fees]);
-
-        expect(req).toEqual({
-            account: "0x1",
-            address: controller.address,
-            functionName: "proposeVaultFees",
-            abi: VaultControllerABI,
-            args: [["0x2"], [fees]],
+        const hash = await controller.proposeVaultFees([VAULT_ADDRESS], [fees], { account: ADMIN_ADDRESS });
+        const tx = await publicClient.getTransaction({
+            hash,
         });
+
+        const { functionName, args } = decodeFunctionData({
+            abi: VaultControllerABI,
+            data: tx.input,
+        });
+
+        expect(tx.from).toBe(ADMIN_ADDRESS.toLowerCase());
+        expect(tx.to).toBe(controller.address.toLowerCase());
+        expect(functionName).toBe("proposeVaultFees");
+        expect(args).toEqual([[VAULT_ADDRESS], [fees]]);
     });
 
-    test("getChangeVaultFeesReq() should return correct object", () => {
-        const req = controller.getChangeVaultFeesReq("0x1", ["0x2"]);
+    test("changeVaultFees() should return correct object", async () => {
+        // got to propose fees first before we can change them.
+        const fees: VaultFees = {
+            deposit: BigInt(0),
+            withdrawal: BigInt(0),
+            performance: BigInt(0),
+            management: BigInt(10),
+        };
+        await controller.proposeVaultFees([VAULT_ADDRESS], [fees], { account: ADMIN_ADDRESS });
+        await increaseTime(86400 * 2);
 
-        expect(req).toEqual({
-            account: "0x1",
-            address: controller.address,
-            functionName: "changeVaultFees",
-            abi: VaultControllerABI,
-            args: [["0x2"]],
+        const hash = await controller.changeVaultFees([VAULT_ADDRESS], { account: ADMIN_ADDRESS });
+        const tx = await publicClient.getTransaction({
+            hash,
         });
+
+        const { functionName, args } = decodeFunctionData({
+            abi: VaultControllerABI,
+            data: tx.input,
+        });
+
+        expect(tx.from).toBe(ADMIN_ADDRESS.toLowerCase());
+        expect(tx.to).toBe(controller.address.toLowerCase());
+        expect(functionName).toBe("changeVaultFees");
+        expect(args).toEqual([[VAULT_ADDRESS]]);
     });
 
-    test("getSetVaultQuitPeriodsReq() should return correct object", () => {
-        const req = controller.getSetVaultQuitPeriodsReq("0x1", ["0x2"], [BigInt(3600)]);
-
-        expect(req).toEqual({
-            account: "0x1",
-            address: controller.address,
-            functionName: "setVaultQuitPeriods",
-            abi: VaultControllerABI,
-            args: [["0x2"], [BigInt(3600)]]
+    test("setVaultQuitPeriods() should return correct object", async () => {
+        const newQuitPeriod = BigInt(86400 * 2);
+        const hash = await controller.setVaultQuitPeriods([VAULT_ADDRESS], [newQuitPeriod], { account: ADMIN_ADDRESS });
+        const tx = await publicClient.getTransaction({
+            hash,
         });
+
+        const { functionName, args } = decodeFunctionData({
+            abi: VaultControllerABI,
+            data: tx.input,
+        });
+
+        expect(tx.from).toBe(ADMIN_ADDRESS.toLowerCase());
+        expect(tx.to).toBe(controller.address.toLowerCase());
+        expect(functionName).toBe("setVaultQuitPeriods");
+        expect(args).toEqual([[VAULT_ADDRESS], [newQuitPeriod]]);
     });
 
-    test("getSetVaultFeeRecipientsReq() should return correct object", () => {
-        const req = controller.getSetVaultFeeRecipientsReq("0x1", ["0x2"], ["0x1"]);
-
-        expect(req).toEqual({
-            account: "0x1",
-            address: controller.address,
-            functionName: "setVaultFeeRecipients",
-            abi: VaultControllerABI,
-            args: [["0x2"], ["0x1"]]
+    test("setVaultFeeRecipients() should return correct object", async () => {
+        const hash = await controller.setVaultFeeRecipients([VAULT_ADDRESS], [VAULT_ADDRESS], { account: ADMIN_ADDRESS });
+        const tx = await publicClient.getTransaction({
+            hash,
         });
+
+        const { functionName, args } = decodeFunctionData({
+            abi: VaultControllerABI,
+            data: tx.input,
+        });
+
+        expect(tx.from).toBe(ADMIN_ADDRESS.toLowerCase());
+        expect(tx.to).toBe(controller.address.toLowerCase());
+        expect(functionName).toBe("setVaultFeeRecipients");
+        expect(args).toEqual([[VAULT_ADDRESS], [VAULT_ADDRESS]]);
     });
 
-    test("getPauseVaultsReq() should return correct object", () => {
-        const req = controller.getPauseVaultsReq("0x1", ["0x2"]);
-
-        expect(req).toEqual({
-            account: "0x1",
-            address: controller.address,
-            functionName: "pauseVaults",
-            abi: VaultControllerABI,
-            args: [["0x2"]],
+    test("pauseVaults() should return correct object", async () => {
+        const hash = await controller.pauseVaults([VAULT_ADDRESS], { account: ADMIN_ADDRESS });
+        const tx = await publicClient.getTransaction({
+            hash,
         });
+
+        const { functionName, args } = decodeFunctionData({
+            abi: VaultControllerABI,
+            data: tx.input,
+        });
+
+        expect(tx.from).toBe(ADMIN_ADDRESS.toLowerCase());
+        expect(tx.to).toBe(controller.address.toLowerCase());
+        expect(functionName).toBe("pauseVaults");
+        expect(args).toEqual([[VAULT_ADDRESS]]);
     });
 
-    test("getUnpauseVaultsReq() should return correct object", () => {
-        const req = controller.getUnpauseVaultsReq("0x1", ["0x2"]);
+    test("unpauseVaults() should return correct object", async () => {
+        // got to pause first so that unpause doesn't revert
+        await controller.pauseVaults([VAULT_ADDRESS], { account: ADMIN_ADDRESS });
 
-        expect(req).toEqual({
-            account: "0x1",
-            address: controller.address,
-            functionName: "unpauseVaults",
-            abi: VaultControllerABI,
-            args: [["0x2"]],
+        const hash = await controller.unpauseVaults([VAULT_ADDRESS], { account: ADMIN_ADDRESS });
+        const tx = await publicClient.getTransaction({
+            hash,
         });
+
+        const { functionName, args } = decodeFunctionData({
+            abi: VaultControllerABI,
+            data: tx.input,
+        });
+
+        expect(tx.from).toBe(ADMIN_ADDRESS.toLowerCase());
+        expect(tx.to).toBe(controller.address.toLowerCase());
+        expect(functionName).toBe("unpauseVaults");
+        expect(args).toEqual([[VAULT_ADDRESS]]);
     });
 
-    test("getSetVaultDepositLimits() should return correct object", () => {
-        const req = controller.getSetVaultDepositLimits("0x1", ["0x2"], [BigInt(3600)]);
-
-        expect(req).toEqual({
-            account: "0x1",
-            address: controller.address,
-            functionName: "setVaultDepositLimits",
-            abi: VaultControllerABI,
-            args: [["0x2"], [BigInt(3600)]]
+    test("setVaultDepositLimits() should return correct object", async () => {
+        const hash = await controller.setVaultDepositLimits([VAULT_ADDRESS], [BigInt(10)], { account: ADMIN_ADDRESS });
+        const tx = await publicClient.getTransaction({
+            hash,
         });
+
+        const { functionName, args } = decodeFunctionData({
+            abi: VaultControllerABI,
+            data: tx.input,
+        });
+
+        expect(tx.from).toBe(ADMIN_ADDRESS.toLowerCase());
+        expect(tx.to).toBe(controller.address.toLowerCase());
+        expect(functionName).toBe("setVaultDepositLimits");
+        expect(args).toEqual([[VAULT_ADDRESS], [BigInt(10)]]);
     });
 });

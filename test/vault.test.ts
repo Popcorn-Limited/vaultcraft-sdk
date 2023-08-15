@@ -2,7 +2,7 @@ import { describe, test, expect, beforeAll, beforeEach } from "vitest";
 import { zeroAddress, decodeFunctionData } from "viem";
 
 import { publicClient, walletClient } from "./setup";
-import { ERC20ABI } from "./utils/erc20ABI";
+import { ERC20ABI } from "./abis/erc20ABI";
 import { Vault } from "../src/vault";
 import { IVaultABI } from "../src/abi/IVaultABI";
 
@@ -183,6 +183,7 @@ describe("write-only", () => {
             blockNumber: FORK_BLOCK_NUMBER,
         });
 
+        // public client has to impersonate as well because of the simulation request
         await publicClient.impersonateAccount({
             address: USER_ADDRESS,
         });
@@ -277,7 +278,6 @@ describe("write-only", () => {
         expect(args).toEqual([BigInt(1e18), user, user]);
     });
 });
-
 
 function approve(amount: bigint) {
     return walletClient.writeContract({

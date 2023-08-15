@@ -1,16 +1,16 @@
-import { Address, PublicClient, WriteContractParameters } from "viem";
+import { Hash, Address, PublicClient, WalletClient, Transport, Chain, ParseAccount, Account, WriteContractParameters } from "viem";
 
 import { VaultControllerABI } from "./abi/VaultControllerABI";
 import { Base } from "./base";
-import { VaultFees } from "./vault";
+import { VaultFees, WriteOptions } from "./types";
 
 const ABI = VaultControllerABI;
 
 export class VaultController extends Base {
     private baseObj;
 
-    constructor(address: Address, publicClient: PublicClient) {
-        super(address, publicClient);
+    constructor(address: Address, publicClient: PublicClient, walletClient: WalletClient<Transport, Chain>) {
+        super(address, publicClient, walletClient);
 
         this.baseObj = {
             address,
@@ -18,84 +18,93 @@ export class VaultController extends Base {
         };
     }
 
-    getProposeVaultAdaptersReq(account: Address, vaults: Address[], adapters: Address[]): WriteContractParameters {
-        return {
+    async proposeVaultAdapters(vaults: Address[], adapters: Address[], options: WriteOptions): Promise<Hash> {
+        const { request } = await this.publicClient.simulateContract({
+            ...options,
             ...this.baseObj,
-            account,
             functionName: "proposeVaultAdapters",
             args: [vaults, adapters],
-        };
+        });
+        return this.walletClient.writeContract(request);
     }
 
-    getChangeVaultAdaptersReq(account: Address, vaults: Address[]): WriteContractParameters {
-        return {
+    async changeVaultAdapters(vaults: Address[], options: WriteOptions): Promise<Hash> {
+        const { request } = await this.publicClient.simulateContract({
+            ...options,
             ...this.baseObj,
-            account,
             functionName: "changeVaultAdapters",
             args: [vaults],
-        };
+        });
+        return this.walletClient.writeContract(request);
     }
 
-    getProposeVaultFeesReq(account: Address, vaults: Address[], fees: VaultFees[]): WriteContractParameters {
-        return {
+    async proposeVaultFees(vaults: Address[], fees: VaultFees[], options: WriteOptions): Promise<Hash> {
+        const { request } = await this.publicClient.simulateContract({
+            ...options,
             ...this.baseObj,
-            account,
             functionName: "proposeVaultFees",
             args: [vaults, fees],
-        };
+        });
+        return this.walletClient.writeContract(request);
     }
 
-    getChangeVaultFeesReq(account: Address, vaults: Address[]): WriteContractParameters {
-        return {
+    async changeVaultFees(vaults: Address[], options: WriteOptions): Promise<Hash> {
+        const { request } = await this.publicClient.simulateContract({
+            ...options,
             ...this.baseObj,
-            account,
             functionName: "changeVaultFees",
             args: [vaults],
-        };
+        });
+        return this.walletClient.writeContract(request);
     }
 
-    getSetVaultQuitPeriodsReq(account: Address, vaults: Address[], quitPeriods: BigInt[]): WriteContractParameters {
-        return {
+    async setVaultQuitPeriods(vaults: Address[], quitPeriods: bigint[], options: WriteOptions): Promise<Hash> {
+        const { request } = await this.publicClient.simulateContract({
+            ...options,
             ...this.baseObj,
-            account,
             functionName: "setVaultQuitPeriods",
             args: [vaults, quitPeriods],
-        };
+        });
+        return this.walletClient.writeContract(request);
     }
 
-    getSetVaultFeeRecipientsReq(account: Address, vaults: Address[], recipients: Address[]): WriteContractParameters {
-        return {
+    async setVaultFeeRecipients(vaults: Address[], recipients: Address[], options: WriteOptions): Promise<Hash> {
+        const { request } = await this.publicClient.simulateContract({
+            ...options,
             ...this.baseObj,
-            account,
             functionName: "setVaultFeeRecipients",
             args: [vaults, recipients],
-        };
+        });
+        return this.walletClient.writeContract(request);
     }
 
-    getPauseVaultsReq(account: Address, vaults: Address[]): WriteContractParameters {
-        return {
+    async pauseVaults(vaults: Address[], options: WriteOptions): Promise<Hash> {
+        const { request } = await this.publicClient.simulateContract({
+            ...options,
             ...this.baseObj,
-            account,
             functionName: "pauseVaults",
             args: [vaults],
-        };
+        });
+        return this.walletClient.writeContract(request);
     }
 
-    getUnpauseVaultsReq(account: Address, vaults: Address[]): WriteContractParameters {
-        return {
+    async unpauseVaults(vaults: Address[], options: WriteOptions): Promise<Hash> {
+        const { request } = await this.publicClient.simulateContract({
+            ...options,
             ...this.baseObj,
-            account,
             functionName: "unpauseVaults",
             args: [vaults],
-        };
+        });
+        return this.walletClient.writeContract(request);
     }
 
-    getSetVaultDepositLimits(account: Address, vaults: Address[], limits: BigInt[]): WriteContractParameters {
-        return {
+    async setVaultDepositLimits(vaults: Address[], limits: bigint[], options: WriteOptions): Promise<Hash> {
+        const { request } = await this.publicClient.simulateContract({
+            ...options,
             ...this.baseObj,
-            account,
             functionName: "setVaultDepositLimits",
             args: [vaults, limits],
-        };
+        });
+        return this.walletClient.writeContract(request);
     }
 }
