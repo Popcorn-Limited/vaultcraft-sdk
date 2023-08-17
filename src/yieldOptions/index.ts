@@ -17,7 +17,6 @@ async function fetchAssetsByAdapter({ chainId, rpcUrl, adapter }: { chainId: num
 }
 
 // TODO how to differentiate between adapter and protocol?
-// TODO resolver should fail gracefully and return undefined or similar
 // TODO deal with multichain
 
 export default class YieldOptions {
@@ -32,7 +31,7 @@ export default class YieldOptions {
   }
 
   async setupNetwork(chainId: number): Promise<void> {
-    if (!this.chainIds.includes(chainId)) return // TODO should throw error
+    if (!this.chainIds.includes(chainId)) throw new Error("Network not supported")
 
     this.yieldData[chainId] = {} as Chain;
 
@@ -51,22 +50,27 @@ export default class YieldOptions {
   }
 
   getProtocols(chainId: number): string[] {
+    if (!this.yieldData[chainId]) throw new Error("Network needs to be setup first")
     return this.yieldData[chainId].protocols;
   }
 
   getAssetAdresses(chainId: number): string[] {
+    if (!this.yieldData[chainId]) throw new Error("Network needs to be setup first")
     return this.yieldData[chainId].assetAddresses;
   }
 
   getAssetsByProtocol(chainId: number, protocol: string): Asset[] {
+    if (!this.yieldData[chainId]) throw new Error("Network needs to be setup first")
     return this.yieldData[chainId].assetsByProtocol[protocol];
   }
 
   getProtocolsByAsset(chainId: number, asset: string): string[] {
+    if (!this.yieldData[chainId]) throw new Error("Network needs to be setup first")
     return this.yieldData[chainId].protocolsByAsset[asset];
   }
 
   getApy(chainId: number, protocol: string, asset: string): number | undefined {
+    if (!this.yieldData[chainId]) throw new Error("Network needs to be setup first")
     const assetData = this.yieldData[chainId].assetsByProtocol[protocol].find(a => a.address === asset);
     return assetData === undefined ? undefined : assetData.yield.total;
   }
