@@ -4,25 +4,32 @@ import { networkMap } from "@/lib/helpers";
 const REGISTER_ADDRESS = "0xA50d4E7D8946a7c90652339CDBd262c375d54D99";
 
 export async function gearbox({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }): Promise<string[]> {
-    const client = createPublicClient({
-        // @ts-ignore
-        chain: networkMap[chainId],
-        transport: http(rpcUrl)
-    })
+    let result: string[];
+    try {
+        const client = createPublicClient({
+            // @ts-ignore
+            chain: networkMap[chainId],
+            transport: http(rpcUrl)
+        })
 
-    const pools = await client.readContract({
-        address: REGISTER_ADDRESS,
-        abi: abiRegister,
-        functionName: "getPools",
-    }) as `0x${string}`[]
+        const pools = await client.readContract({
+            address: REGISTER_ADDRESS,
+            abi: abiRegister,
+            functionName: "getPools",
+        }) as `0x${string}`[]
 
-    return await Promise.all(pools.map(pool =>
-        client.readContract({
-            address: pool,
-            abi: abiPool,
-            functionName: "underlyingToken",
-        }),
-    )) as string[];
+        result = await Promise.all(pools.map(pool =>
+            client.readContract({
+                address: pool,
+                abi: abiPool,
+                functionName: "underlyingToken",
+            }),
+        )) as string[];
+    } catch (e) {
+        console.error(e)
+        result = [];
+    }
+    return result;
 }
 
 const abiRegister = [

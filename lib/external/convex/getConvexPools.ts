@@ -1,5 +1,3 @@
-import { readContract } from "@wagmi/core";
-import { readContracts } from "wagmi"
 import { convexBoosterAbi, CONVEX_BOOSTER_ADDRESS } from "@/lib/external/convex";
 import { createPublicClient, http } from "viem";
 

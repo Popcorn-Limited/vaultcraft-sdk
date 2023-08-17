@@ -3,27 +3,34 @@ import { networkMap } from "@/lib/helpers";
 
 const PAIR_FACTORY_ADDRESS = "0x25CbdDb98b35ab1FF77413456B31EC81A6B6B746";
 
-export async function velodrome({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }) {
-    const client = createPublicClient({
-        // @ts-ignore
-        chain: networkMap[chainId],
-        transport: http(rpcUrl)
-    })
+export async function velodrome({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }): Promise<string[]> {
+    let result: string[];
+    try {
+        const client = createPublicClient({
+            // @ts-ignore
+            chain: networkMap[chainId],
+            transport: http(rpcUrl)
+        })
 
-    const allPairLength = await client.readContract({
-        address: PAIR_FACTORY_ADDRESS,
-        abi: abiFactory,
-        functionName: "allPairsLength",
-    }) as BigInt
-
-    return await Promise.all(Array(Number(allPairLength)).fill(undefined).map((_, i) =>
-        client.readContract({
+        const allPairLength = await client.readContract({
             address: PAIR_FACTORY_ADDRESS,
             abi: abiFactory,
-            functionName: "allPairs",
-            args: [i]
-        })
-    )) as string[];
+            functionName: "allPairsLength",
+        }) as BigInt
+
+        result = await Promise.all(Array(Number(allPairLength)).fill(undefined).map((_, i) =>
+            client.readContract({
+                address: PAIR_FACTORY_ADDRESS,
+                abi: abiFactory,
+                functionName: "allPairs",
+                args: [i]
+            })
+        )) as string[];
+    } catch (e) {
+        console.error(e)
+        result = [];
+    }
+    return result;
 }
 
 const abiFactory = [

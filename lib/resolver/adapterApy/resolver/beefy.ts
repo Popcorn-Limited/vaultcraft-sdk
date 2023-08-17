@@ -15,15 +15,23 @@ interface VaultApy {
 }
 
 export async function beefy({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<Yield> {
-  const beefyVaults: BeefyVault[] = await (await fetch("https://api.beefy.finance/vaults")).json();
-  const apyRes: ApyBreakdown = await (await fetch("https://api.beefy.finance/apy/breakdown")).json();
-  const beefyVaultObj = beefyVaults.find(vault => vault.tokenAddress?.toLowerCase() === address.toLowerCase());
+  let result;
+  try {
+    const beefyVaults: BeefyVault[] = await (await fetch("https://api.beefy.finance/vaults")).json();
+    const apyRes: ApyBreakdown = await (await fetch("https://api.beefy.finance/apy/breakdown")).json();
+    const beefyVaultObj = beefyVaults.find(vault => vault.tokenAddress?.toLowerCase() === address.toLowerCase());
 
-  return beefyVaultObj === undefined ? EMPTY_YIELD_RESPONSE : {
-    total: apyRes[beefyVaultObj.id].totalApy * 100,
-    apy: [{
-      rewardToken: address.toLowerCase(),
-      apy: apyRes[beefyVaultObj.id].totalApy * 100
-    }]
+    result = beefyVaultObj === undefined ? EMPTY_YIELD_RESPONSE : {
+      total: apyRes[beefyVaultObj.id].totalApy * 100,
+      apy: [{
+        rewardToken: address.toLowerCase(),
+        apy: apyRes[beefyVaultObj.id].totalApy * 100
+      }]
+    }
+  } catch (e) {
+    console.error(e)
+    result = EMPTY_YIELD_RESPONSE
   }
+
+  return result
 };

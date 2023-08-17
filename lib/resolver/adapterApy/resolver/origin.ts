@@ -12,12 +12,13 @@ const ADDRESS_TO_SYMBOL = {
 
 export async function origin({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<Yield> {
 
+  let result;
   try {
     const res = await (await fetch(
       // @ts-ignore
       `https://analytics.ousd.com/api/v2/${ADDRESS_TO_SYMBOL[address.toLowerCase()]}/apr/trailing/30`
     )).json();
-    return {
+    result = {
       total: Number(res.apy),
       apy: [{
         rewardToken: address.toLowerCase(),
@@ -25,7 +26,9 @@ export async function origin({ chainId, rpcUrl, address, }: { chainId: number, r
       }]
     }
   } catch (e) {
-    console.log(e)
-    return EMPTY_YIELD_RESPONSE
+    console.error(e)
+    result = EMPTY_YIELD_RESPONSE
   }
+
+  return result
 };

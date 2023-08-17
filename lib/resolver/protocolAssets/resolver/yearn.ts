@@ -6,47 +6,54 @@ const VAULT_REGISTRY_ADDRESS = { 1: "0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804"
 const VAULT_FACTORY_ADDRESS = "0x21b1FC8A52f179757bf555346130bF27c0C2A17A";
 
 export async function yearn({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }): Promise<string[]> {
-    const client = createPublicClient({
-        // @ts-ignore
-        chain: networkMap[chainId],
-        transport: http(rpcUrl)
-    })
+    let result: string[];
+    try {
+        const client = createPublicClient({
+            // @ts-ignore
+            chain: networkMap[chainId],
+            transport: http(rpcUrl)
+        })
 
-    const numTokens = await client.readContract({
-        // @ts-ignore
-        address: VAULT_REGISTRY_ADDRESS[chainId],
-        abi: abiRegistry,
-        functionName: "numTokens",
-    }) as BigInt
-
-    const registryTokens = await Promise.all(Array(Number(numTokens)).fill(undefined).map((_, i) =>
-        client.readContract({
+        const numTokens = await client.readContract({
             // @ts-ignore
             address: VAULT_REGISTRY_ADDRESS[chainId],
             abi: abiRegistry,
-            functionName: "tokens",
-            args: [i]
-        })
-    )) as string[]
+            functionName: "numTokens",
+        }) as BigInt
 
-    let factoryTokens: string[] = []
-    if (chainId === mainnet.id) {
-        const allDeployedVaults = await client.readContract({
-            address: VAULT_FACTORY_ADDRESS,
-            abi: abiFactory,
-            functionName: "allDeployedVaults",
-        }) as `0x${string}`[]
-
-        factoryTokens = await Promise.all(allDeployedVaults.map(item =>
+        const registryTokens = await Promise.all(Array(Number(numTokens)).fill(undefined).map((_, i) =>
             client.readContract({
-                address: item,
-                abi: abiVault,
-                functionName: "token",
+                // @ts-ignore
+                address: VAULT_REGISTRY_ADDRESS[chainId],
+                abi: abiRegistry,
+                functionName: "tokens",
+                args: [i]
             })
         )) as string[]
-    }
 
-    return [...registryTokens, ...factoryTokens].filter((item, idx, arr) => arr.indexOf(item) === idx)
+        let factoryTokens: string[] = []
+        if (chainId === mainnet.id) {
+            const allDeployedVaults = await client.readContract({
+                address: VAULT_FACTORY_ADDRESS,
+                abi: abiFactory,
+                functionName: "allDeployedVaults",
+            }) as `0x${string}`[]
+
+            factoryTokens = await Promise.all(allDeployedVaults.map(item =>
+                client.readContract({
+                    address: item,
+                    abi: abiVault,
+                    functionName: "token",
+                })
+            )) as string[]
+        }
+
+        result = [...registryTokens, ...factoryTokens].filter((item, idx, arr) => arr.indexOf(item) === idx)
+    } catch (e) {
+        console.error(e)
+        result = [];
+    }
+    return result;
 }
 
 

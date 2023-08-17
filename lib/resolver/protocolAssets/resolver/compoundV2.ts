@@ -4,26 +4,33 @@ import { networkMap } from "@/lib/helpers";
 const COMPOUND_PROXY_CONTRACT = "0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B";
 
 export async function compoundV2({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }): Promise<string[]> {
-    const client = createPublicClient({
-        // @ts-ignore
-        chain: networkMap[chainId],
-        transport: http(rpcUrl)
-    })
+    let result: string[];
+    try {
+        const client = createPublicClient({
+            // @ts-ignore
+            chain: networkMap[chainId],
+            transport: http(rpcUrl)
+        })
 
-    const allMarkets = await client.readContract({
-        address: COMPOUND_PROXY_CONTRACT,
-        abi: abiProxy,
-        functionName: "getAllMarkets",
-    }) as `0x${string}`[]
+        const allMarkets = await client.readContract({
+            address: COMPOUND_PROXY_CONTRACT,
+            abi: abiProxy,
+            functionName: "getAllMarkets",
+        }) as `0x${string}`[]
 
-    return await Promise.all(
-        allMarkets.filter(item => item !== "0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5").map(item =>
-            client.readContract({
-                address: item,
-                abi: abiMarket,
-                functionName: "underlying",
-            })
-        )) as string[]
+        result = await Promise.all(
+            allMarkets.filter(item => item !== "0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5").map(item =>
+                client.readContract({
+                    address: item,
+                    abi: abiMarket,
+                    functionName: "underlying",
+                })
+            )) as string[]
+    } catch (e) {
+        console.error(e)
+        result = [];
+    }
+    return result;
 }
 
 const abiProxy = [

@@ -15,30 +15,38 @@ const apr2apy = (apr: BigInt) => {
 }
 
 export async function idle({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<Yield> {
-  // @ts-ignore
-  const idleAddresses = tranches[address];
-  if (idleAddresses === undefined) return EMPTY_YIELD_RESPONSE
-
-  const client = createPublicClient({
+  let result;
+  try {
     // @ts-ignore
-    chain: networkMap[chainId],
-    transport: http(rpcUrl)
-  })
+    const idleAddresses = tranches[address];
+    if (idleAddresses === undefined) return EMPTY_YIELD_RESPONSE
 
-  const apr = await client.readContract({
-    address: idleAddresses.cdo,
-    abi: ["function getApr(address) view returns (uint256)"],
-    functionName: 'getApr',
-    args: [address]
-  }) as BigInt
+    const client = createPublicClient({
+      // @ts-ignore
+      chain: networkMap[chainId],
+      transport: http(rpcUrl)
+    })
 
-  const apy = apr2apy(apr) * 100;
+    const apr = await client.readContract({
+      address: idleAddresses.cdo,
+      abi: ["function getApr(address) view returns (uint256)"],
+      functionName: 'getApr',
+      args: [address]
+    }) as BigInt
 
-  return {
-    total: apy,
-    apy: [{
-      rewardToken: address.toLowerCase(),
-      apy: apy
-    }]
+    const apy = apr2apy(apr) * 100;
+
+    result = {
+      total: apy,
+      apy: [{
+        rewardToken: address.toLowerCase(),
+        apy: apy
+      }]
+    }
+  } catch (e) {
+    console.error(e)
+    result = EMPTY_YIELD_RESPONSE
   }
+
+  return result
 };

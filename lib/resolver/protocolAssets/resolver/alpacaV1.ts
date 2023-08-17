@@ -18,6 +18,6 @@ const ADDRESSES = {
     ] // ftm
 } as { [chainId: number]: string[] };
 
-export async function alpacaV1({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }) {
+export async function alpacaV1({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }):Promise<string[]> {
     return ADDRESSES[chainId] || [];
 }
