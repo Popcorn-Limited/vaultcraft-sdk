@@ -1,65 +1,22 @@
-import { describe, test, expect, beforeAll } from "vitest";
+import { describe, test, expect, beforeAll, beforeEach } from "vitest";
+import { zeroAddress, decodeFunctionData } from "viem";
 
-import { client } from "./setup";
-
+import { publicClient, walletClient } from "./setup";
+import { ERC20ABI } from "./abis/erc20ABI";
 import { Vault } from "../src/vault";
-import { IVaultABI } from "../src/abi/IVault";
-import { zeroAddress } from "viem";
+import { IVaultABI } from "../src/abi/IVaultABI";
 
-let vault = new Vault("0x5d344226578DC100b2001DA251A4b154df58194f", client);
+let vault = new Vault("0x5d344226578DC100b2001DA251A4b154df58194f", publicClient, walletClient);
+const FORK_BLOCK_NUMBER = BigInt(17883751);
+// some random address that has a lot of ETH & DAI
+const USER_ADDRESS = "0x6FF8E4DB500cBd77d1D181B8908E022E29e0Ec4A";
+const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
 
-beforeAll(async () => {
-    await client.reset({
-        blockNumber: BigInt(17883751),
-    });
-})
+describe.concurrent("read-only", () => {
 
-describe.concurrent("Vault tests", () => {
-    test("getDepositReq() should return correct object", () => {
-        const req = vault.getDepositReq("0x1", BigInt(100), "0x2");
-
-        expect(req).toEqual({
-            account: "0x1",
-            address: vault.address,
-            functionName: "deposit",
-            abi: IVaultABI,
-            args: [BigInt(100), "0x2"],
-        });
-    });
-
-    test("getMintReq() should return correct object", () => {
-        const req = vault.getMintReq("0x1", BigInt(100), "0x2");
-
-        expect(req).toEqual({
-            account: "0x1",
-            address: vault.address,
-            functionName: "mint",
-            abi: IVaultABI,
-            args: [BigInt(100), "0x2"],
-        });
-    });
-
-    test("getWithdrawReq() should return correct object", () => {
-        const req = vault.getWithdrawReq("0x1", BigInt(100), "0x2", "0x3");
-
-        expect(req).toEqual({
-            account: "0x1",
-            address: vault.address,
-            functionName: "withdraw",
-            abi: IVaultABI,
-            args: [BigInt(100), "0x2", "0x3"],
-        });
-    });
-
-    test("getRedeemReq() should return correct object", () => {
-        const req = vault.getRedeemReq("0x1", BigInt(100), "0x2", "0x3");
-
-        expect(req).toEqual({
-            account: "0x1",
-            address: vault.address,
-            functionName: "redeem",
-            abi: IVaultABI,
-            args: [BigInt(100), "0x2", "0x3"],
+    beforeAll(async () => {
+        await publicClient.reset({
+            blockNumber: FORK_BLOCK_NUMBER,
         });
     });
 
@@ -151,29 +108,6 @@ describe.concurrent("Vault tests", () => {
         expect(time).toBe(BigInt(0));
     });
 
-    test("getProposeAdapterReq() should return correct object", () => {
-        const req = vault.getProposeAdapterReq("0x1", "0x2");
-
-        expect(req).toEqual({
-            account: "0x1",
-            address: vault.address,
-            functionName: "proposeAdapter",
-            abi: IVaultABI,
-            args: ["0x2"],
-        });
-    });
-
-    test("changeAdapter() should return correct object", () => {
-        const req = vault.getChangeAdapterReq("0x1");
-
-        expect(req).toEqual({
-            account: "0x1",
-            address: vault.address,
-            functionName: "changeAdapter",
-            abi: IVaultABI,
-        });
-    });
-
     test("fees() should return correct value", async () => {
         const expected = {
             deposit: BigInt(0),
@@ -201,78 +135,14 @@ describe.concurrent("Vault tests", () => {
         expect(time).toBe(BigInt(0));
     });
 
-    test("getProposeFeesReq() should return correct value", async () => {
-        const fees = {
-            deposit: BigInt(0),
-            withdrawal: BigInt(0),
-            management: BigInt(0),
-            performance: BigInt(0),
-        };
-        const req = vault.getProposeFeesReq("0x1", fees);
-        expect(req).toEqual({
-            account: "0x1",
-            address: vault.address,
-            functionName: "proposeFees",
-            abi: IVaultABI,
-            args: [fees],
-        });
-    });
-
-    test("getChangeFeesReq() should return correct object", () => {
-        const req = vault.getChangeFeesReq("0x1");
-
-        expect(req).toEqual({
-            account: "0x1",
-            address: vault.address,
-            functionName: "changeFees",
-            abi: IVaultABI,
-        });
-    });
-
-    test("getSetFeeRecipientReq() should return correct object", () => {
-        const req = vault.getSetFeeRecipientReq("0x1", "0x2");
-
-        expect(req).toEqual({
-            account: "0x1",
-            address: vault.address,
-            functionName: "setFeeRecipient",
-            abi: IVaultABI,
-            args: ["0x2"],
-        });
-    });
-
     test("quitPeriod() should return correct value", async () => {
         const time = await vault.quitPeriod();
         expect(time).toBe(BigInt(86400));
     });
 
-    test("getSetQuitPeriodReq() should return correct object", () => {
-        const req = vault.getSetQuitPeriodReq("0x1", BigInt(1));
-
-        expect(req).toEqual({
-            account: "0x1",
-            address: vault.address,
-            functionName: "setQuitPeriod",
-            abi: IVaultABI,
-            args: [BigInt(1)],
-        });
-    });
-
     test("depositLimit() should return correct value", async () => {
         const amount = await vault.depositLimit();
         expect(amount).toBe(BigInt("115792089237316195423570985008687907853269984665640564039457584007913129639935"));
-    });
-
-    test("getSetDepositLimitReq() should return correct object", () => {
-        const req = vault.getSetDepositLimitReq("0x1", BigInt(1));
-
-        expect(req).toEqual({
-            account: "0x1",
-            address: vault.address,
-            functionName: "setDepositLimit",
-            abi: IVaultABI,
-            args: [BigInt(1)],
-        });
     });
 
     test("accruedManagementFee() should return correct value", async () => {
@@ -299,4 +169,122 @@ describe.concurrent("Vault tests", () => {
         const recipient = await vault.feeRecipient();
         expect(recipient).toBe("0x74bb390786072ea1329f270CA6C0058b2D1Afe3f");
     });
+
 });
+
+describe("write-only", () => {
+    beforeEach(async () => {
+        // TODO: is revert() faster?
+        await publicClient.reset({
+            blockNumber: FORK_BLOCK_NUMBER,
+        });
+
+        await walletClient.reset({
+            blockNumber: FORK_BLOCK_NUMBER,
+        });
+
+        // public client has to impersonate as well because of the simulation request
+        await publicClient.impersonateAccount({
+            address: USER_ADDRESS,
+        });
+        await walletClient.impersonateAccount({
+            address: USER_ADDRESS,
+        });
+    });
+
+    test("deposit() should deposit funds into the vault", async () => {
+        await approve(BigInt(1e18));
+
+        const hash = await vault.deposit(BigInt(1e18), USER_ADDRESS, { account: USER_ADDRESS });
+        const tx = await publicClient.getTransaction({
+            hash,
+        });
+
+        const { functionName, args } = decodeFunctionData({
+            abi: IVaultABI,
+            data: tx.input,
+        });
+
+        expect(tx.from).toBe(USER_ADDRESS.toLowerCase());
+        expect(tx.to).toBe(vault.address.toLowerCase());
+        expect(functionName).toBe("deposit");
+        expect(args).toEqual([BigInt(1e18), USER_ADDRESS]);
+    });
+
+    test("mint() should mint vault shares", async () => {
+        await approve(BigInt(1e18));
+
+        const hash = await vault.mint(BigInt(1e18), USER_ADDRESS, { account: USER_ADDRESS });
+        const tx = await publicClient.getTransaction({
+            hash,
+        });
+
+        const { functionName, args } = decodeFunctionData({
+            abi: IVaultABI,
+            data: tx.input,
+        });
+
+        expect(tx.from).toBe(USER_ADDRESS.toLowerCase());
+        expect(tx.to).toBe(vault.address.toLowerCase());
+        expect(functionName).toBe("mint");
+        expect(args).toEqual([BigInt(1e18), USER_ADDRESS]);
+    });
+
+    test("withdraw() should withdraw from vault", async () => {
+        // user holds vault shares already
+        const user = "0xE92cbe5be7631557bF990d7Ff38277047561191f";
+        // user doesn't have enough ETH for the tx so we add them for the test
+        await publicClient.setBalance({ address: user, value: BigInt(1e18) });
+        await publicClient.impersonateAccount({
+            address: user,
+        });
+        const hash = await vault.withdraw(BigInt(1e18), user, user, { account: user });
+        const tx = await publicClient.getTransaction({
+            hash,
+        });
+
+        const { functionName, args } = decodeFunctionData({
+            abi: IVaultABI,
+            data: tx.input,
+        });
+
+        expect(tx.from).toBe(user.toLowerCase());
+        expect(tx.to).toBe(vault.address.toLowerCase());
+        expect(functionName).toBe("withdraw");
+        expect(args).toEqual([BigInt(1e18), user, user]);
+    });
+
+    test("redeem() should redeem vault shares", async () => {
+        // user holds vault shares already
+        const user = "0xE92cbe5be7631557bF990d7Ff38277047561191f";
+        // user doesn't have enough ETH for the tx so we add them for the test
+        await publicClient.setBalance({ address: user, value: BigInt(1e18) });
+        await publicClient.impersonateAccount({
+            address: user,
+        });
+        const hash = await vault.redeem(BigInt(1e18), user, user, { account: user });
+        const tx = await publicClient.getTransaction({
+            hash,
+        });
+
+        const { functionName, args } = decodeFunctionData({
+            abi: IVaultABI,
+            data: tx.input,
+        });
+
+        expect(tx.from).toBe(user.toLowerCase());
+        expect(tx.to).toBe(vault.address.toLowerCase());
+        expect(functionName).toBe("redeem");
+        expect(args).toEqual([BigInt(1e18), user, user]);
+    });
+});
+
+function approve(amount: bigint) {
+    return walletClient.writeContract({
+        account: USER_ADDRESS,
+        address: DAI_ADDRESS,
+        abi: ERC20ABI,
+        functionName: "approve",
+        args: [vault.address, amount],
+    });
+}

@@ -1,23 +1,16 @@
-import { Address, ParseAbi, PublicClient, WriteContractParameters, parseAbi } from "viem";
-import { IVaultABI } from "./abi/IVault";
+import { Address, PublicClient, WalletClient, Transport, Hash, Chain, Account, ParseAccount } from "viem";
+import { IVaultABI } from "./abi/IVaultABI";
+import { Base } from "./base";
+import { WriteOptions, VaultFees } from "./types";
 
 const ABI = IVaultABI;
 
-type Fees = {
-    deposit: bigint;
-    withdrawal: bigint;
-    management: bigint;
-    performance: bigint;
-};
-
-export class Vault {
-    address: Address;
-    private client: PublicClient;
+export class Vault extends Base {
     private baseObj;
 
-    constructor(address: Address, publicClient: PublicClient) {
-        this.address = address;
-        this.client = publicClient;
+    constructor(address: Address, publicClient: PublicClient, walletClient: WalletClient<Transport, Chain>) {
+        super(address, publicClient, walletClient);
+
         this.baseObj = {
             address,
             abi: ABI,
@@ -27,21 +20,21 @@ export class Vault {
     // ERC4626
 
     totalSupply(): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "totalSupply",
         });
     }
 
     totalAssets(): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "totalAssets",
         });
     }
 
     balanceOf(who: Address): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "balanceOf",
             args: [who],
@@ -49,14 +42,14 @@ export class Vault {
     }
 
     asset(): Promise<Address> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "asset",
         });
     }
 
     convertToShares(amount: bigint): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "convertToShares",
             args: [amount],
@@ -64,7 +57,7 @@ export class Vault {
     }
 
     convertToAssets(amount: bigint): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "convertToAssets",
             args: [amount],
@@ -72,7 +65,7 @@ export class Vault {
     }
 
     maxDeposit(receiver: Address): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "maxDeposit",
             args: [receiver],
@@ -80,7 +73,7 @@ export class Vault {
     }
 
     maxMint(receiver: Address): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "maxMint",
             args: [receiver],
@@ -88,7 +81,7 @@ export class Vault {
     }
 
     maxWithdraw(owner: Address): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "maxWithdraw",
             args: [owner],
@@ -96,7 +89,7 @@ export class Vault {
     }
 
     maxRedeem(owner: Address): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "maxRedeem",
             args: [owner],
@@ -104,7 +97,7 @@ export class Vault {
     }
 
     previewDeposit(amount: bigint): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "previewDeposit",
             args: [amount],
@@ -112,7 +105,7 @@ export class Vault {
     }
 
     previewMint(amount: bigint): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "previewMint",
             args: [amount],
@@ -120,7 +113,7 @@ export class Vault {
     }
 
     previewWithdraw(amount: bigint): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "previewWithdraw",
             args: [amount],
@@ -128,198 +121,142 @@ export class Vault {
     }
 
     previewRedeem(amount: bigint): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "previewRedeem",
             args: [amount],
         });
     }
 
-    getDepositReq(account: Address, amount: bigint, receiver: Address): WriteContractParameters {
-        return {
+    async deposit(amount: bigint, receiver: Address, options: WriteOptions): Promise<Hash> {
+        const { request } = await this.publicClient.simulateContract({
+            ...options,
             ...this.baseObj,
-            account,
             functionName: "deposit",
             args: [amount, receiver],
-        };
-    }
+        });
 
-    getMintReq(account: Address, shares: bigint, receiver: Address): WriteContractParameters {
-        return {
+        return this.walletClient.writeContract(request);
+    };
+
+    async mint(amount: bigint, receiver: Address, options: WriteOptions) {
+        const { request } = await this.publicClient.simulateContract({
+            ...options,
             ...this.baseObj,
-            account,
             functionName: "mint",
-            args: [shares, receiver],
-        };
+            args: [amount, receiver],
+        });
+        return this.walletClient.writeContract(request);
     }
 
-    getWithdrawReq(account: Address, amount: bigint, receiver: Address, owner: Address): WriteContractParameters {
-        return {
+    async withdraw(amount: bigint, receiver: Address, owner: Address, options: WriteOptions) {
+        const { request } = await this.publicClient.simulateContract({
+            ...options,
             ...this.baseObj,
-            account,
             functionName: "withdraw",
             args: [amount, receiver, owner],
-        };
+        });
+        return this.walletClient.writeContract(request);
     }
 
-    getRedeemReq(account: Address, shares: bigint, receiver: Address, owner: Address): WriteContractParameters {
-        return {
+    async redeem(amount: bigint, receiver: Address, owner: Address, options: WriteOptions) {
+        const { request } = await this.publicClient.simulateContract({
+            ...options,
             ...this.baseObj,
-            account,
             functionName: "redeem",
-            args: [shares, receiver, owner],
-        };
+            args: [amount, receiver, owner],
+        });
+        return this.walletClient.writeContract(request);
     }
 
     // Vault
 
     adapter(): Promise<Address> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "adapter",
         });
     }
 
     proposedAdapter(): Promise<Address> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "proposedAdapter",
         });
     }
 
     proposedAdapterTime(): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "proposedAdapterTime",
         });
     }
 
-    getProposeAdapterReq(account: Address, adapter: Address): WriteContractParameters {
-        return {
-            ...this.baseObj,
-            account,
-            functionName: "proposeAdapter",
-            args: [adapter],
-        };
-    }
-
-    getChangeAdapterReq(account: Address): WriteContractParameters {
-        return {
-            ...this.baseObj,
-            account,
-            functionName: "changeAdapter",
-        };
-    }
-
-    fees(): Promise<Fees> {
-        return this.client.readContract({
+    fees(): Promise<VaultFees> {
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "fees",
         });
     }
 
-    proposedFees(): Promise<Fees> {
-        return this.client.readContract({
+    proposedFees(): Promise<VaultFees> {
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "proposedFees",
         });
     }
 
     proposedFeeTime(): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "proposedFeeTime",
         });
     }
 
-    getProposeFeesReq(account: Address, fees: Fees): WriteContractParameters {
-        return {
-            ...this.baseObj,
-            account,
-            functionName: "proposeFees",
-            args: [fees],
-        };
-    }
-
-    getChangeFeesReq(account: Address): WriteContractParameters {
-        return {
-            ...this.baseObj,
-            account,
-            functionName: "changeFees",
-        };
-    }
-
-    getSetFeeRecipientReq(account: Address, recipient: Address): WriteContractParameters {
-        return {
-            ...this.baseObj,
-            account,
-            functionName: "setFeeRecipient",
-            args: [recipient],
-        };
-    }
-
     quitPeriod(): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "quitPeriod",
         });
     }
 
-    getSetQuitPeriodReq(account: Address, quitPeriod: bigint): WriteContractParameters {
-        return {
-            ...this.baseObj,
-            account,
-            functionName: "setQuitPeriod",
-            args: [quitPeriod],
-        };
-    }
-
     depositLimit(): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "depositLimit",
         });
     }
 
-    getSetDepositLimitReq(account: Address, limit: bigint): WriteContractParameters {
-        return {
-            ...this.baseObj,
-            account,
-            functionName: "setDepositLimit",
-            args: [limit],
-        };
-    }
-
     accruedManagementFee(): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "accruedManagementFee",
         });
     }
 
     accruedPerformanceFee(): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "accruedPerformanceFee",
         });
     }
 
     highWaterMark(): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "highWaterMark",
         });
     }
 
     feeUpdatedAt(): Promise<bigint> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "feesUpdatedAt"
         });
     }
 
     feeRecipient(): Promise<Address> {
-        return this.client.readContract({
+        return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "feeRecipient",
         });
