@@ -1,3 +1,5 @@
+import { Address } from "viem";
+
 export type WriteOptions = {
     account?: Address | Account;
     accessList?: AccessList;
@@ -13,3 +15,18 @@ export type VaultFees = {
     performance: bigint;
 };
 
+export type Vault = {
+    address: Address;
+    name: string;
+    symbol: string;
+    decimals: number;
+    asset: Address;
+    adapter: Address;
+    totalAssets: bigint;
+    totalSupply: bigint;
+    pricePerShare: bigint;
+    fees: VaultFees;
+    depositLimit: bigint;
+    creator: Address;
+    metadataCID: string;
+}
