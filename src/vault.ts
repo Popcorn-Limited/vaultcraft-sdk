@@ -17,6 +17,29 @@ export class Vault extends Base {
         };
     }
 
+    // ERC20
+
+    name(): Promise<string> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "name",
+        });
+    }
+
+    symbol(): Promise<string> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "symbol",
+        });
+    }
+
+    decimals(): Promise<number> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "decimals",
+        });
+    }
+
     // ERC4626
 
     totalSupply(): Promise<bigint> {
