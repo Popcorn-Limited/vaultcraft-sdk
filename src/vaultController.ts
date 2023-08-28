@@ -1,10 +1,28 @@
-import type { Hash, Address, PublicClient, WalletClient, Transport, Chain } from "viem";
+import { Hash, Address, PublicClient, WalletClient, Transport, Chain, maxUint256, pad, zeroAddress } from "viem";
 
 import { VaultControllerABI } from "./abi/VaultControllerABI.js";
 import { Base } from "./base.js";
 import type { VaultFees, WriteOptions } from "./types.js";
 
 const ABI = VaultControllerABI;
+
+export type VaultOptions = {
+    asset: Address;
+    adapter: Address;
+    fees: VaultFees;
+    feeRecipient: Address;
+    depositLimit?: bigint;
+    owner: Address;
+    staking: boolean;
+    initialDeposit: bigint;
+};
+
+export type VaultMetadata = {
+    metadataCID: string;
+    swapTokenAddresses: [Address, Address, Address, Address, Address, Address, Address, Address];
+    swapAddress: Address;
+    exchange: bigint;
+};
 
 export class VaultController extends Base {
     private baseObj;
@@ -16,6 +34,47 @@ export class VaultController extends Base {
             address,
             abi: ABI,
         };
+    }
+
+    // We assume that the adapter was already created.
+    async createVault(vault: VaultOptions, metadata: VaultMetadata, options: WriteOptions): Promise<Hash> {
+        const { request } = await this.publicClient.simulateContract({
+            ...options,
+            ...this.baseObj,
+            functionName: "deployVault",
+            args: [
+                {
+                    asset: vault.asset,
+                    adapter: vault.adapter,
+                    fees: vault.fees,
+                    feeRecipient: vault.feeRecipient,
+                    depositLimit: vault.depositLimit ? vault.depositLimit : maxUint256 - BigInt(1),
+                    owner: vault.owner,
+                },
+                {
+                    // we expect the adapter to be deployed already
+                    id: pad("0x"),
+                    data: "0x",
+                },
+                {
+                    // we expect the strategy to be deployed already
+                    id: pad("0x"),
+                    data: "0x",
+                },
+                vault.staking,
+                "0x", // reward data should be added in a separate step
+                {
+                    ...metadata,
+                    // these three will be overriden by the VaultController. Specifying them here is pointless.
+                    // But, we have to include them in the type so that viem doesn't throw an error
+                    vault: zeroAddress,
+                    staking: zeroAddress,
+                    creator: zeroAddress,
+                },
+                vault.initialDeposit,
+            ]
+        });
+        return this.walletClient.writeContract(request);
     }
 
     async proposeVaultAdapters(vaults: Address[], adapters: Address[], options: WriteOptions): Promise<Hash> {
