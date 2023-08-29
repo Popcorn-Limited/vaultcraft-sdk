@@ -30,7 +30,7 @@ export default class YieldOptions {
     this.chainIds = Object.keys(_rpcUrls).map(chainId => Number(chainId));
   }
 
-  async setupNetwork(chainId: number): Promise<void> {
+  async setupNetwork(chainId: number): Promise<boolean> {
     if (!this.chainIds.includes(chainId)) throw new Error("Network not supported")
 
     this.yieldData[chainId] = {} as Chain;
@@ -47,6 +47,8 @@ export default class YieldOptions {
     this.yieldData[chainId].assetAddresses = res.map(p => p.assetAddresses).flat()
     res.forEach((p, i) => this.yieldData[chainId].assetsByProtocol[adaptersByChain[i].protocol].push(...p.assets))
     res.forEach((p, i) => p.assetAddresses.forEach(a => this.yieldData[chainId].protocolsByAsset[a].push(adaptersByChain[i].protocol)))
+    
+    return true;
   }
 
   getProtocols(chainId: number): string[] {
