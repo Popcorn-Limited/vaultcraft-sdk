@@ -1,3 +1,5 @@
+import { Address, Account, AccessList, Hex } from "viem";
+
 export type WriteOptions = {
     account?: Address | Account;
     accessList?: AccessList;
