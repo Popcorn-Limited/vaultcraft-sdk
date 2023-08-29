@@ -2,10 +2,13 @@
   "name": "vaultcraft-sdk",
   "version": "0.0.2",
   "description": "TypeScript library for VaultCraft",
-  "main": "src/index.ts",
+  "main": "dist/src/index.js",
+  "types": "./dist/types/index.d.ts",
+  "typings": "./dist/types/index.d.ts",
   "author": "RedVeil",
   "license": "MIT",
   "private": false,
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "test": "vitest run"
