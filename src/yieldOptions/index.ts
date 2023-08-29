@@ -1,5 +1,5 @@
 import { resolveProtocolAssets } from "@/lib/resolver/protocolAssets/protocolAssets.js";
-import type { Adapter, Asset, Chain, RpcUrls, YieldData } from "./types.d.ts"
+import type { Adapter, Asset, Chain, RpcUrls, YieldData } from "./types";
 import adapters from "@/lib/constants/adapters.json";
 import { resolveAdapterApy } from "@/lib/resolver/adapterApy/adapterApy.js";
 
@@ -19,7 +19,7 @@ async function fetchAssetsByAdapter({ chainId, rpcUrl, adapter }: { chainId: num
 // TODO how to differentiate between adapter and protocol?
 // TODO deal with multichain
 
-export default class YieldOptions {
+export class YieldOptions {
   private yieldData: YieldData;
   private rpcUrls: RpcUrls;
   private chainIds: number[];
@@ -77,3 +77,5 @@ export default class YieldOptions {
     return assetData === undefined ? undefined : assetData.yield.total;
   }
 }
+
+export type * from "./types";
