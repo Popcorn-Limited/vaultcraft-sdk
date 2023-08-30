@@ -15,11 +15,14 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/lib/*": ["./lib/*"],
+      "@/lib/*": [
+        "./src/lib/*"
+      ],
     },
     "outDir": "dist",
     "sourceMap": true,
-    "declaration": true
+    "declaration": true,
+    "emitDeclarationOnly": true,
   },
   "include": ["src","lib"],
   "exclude": ["node_modules"]
