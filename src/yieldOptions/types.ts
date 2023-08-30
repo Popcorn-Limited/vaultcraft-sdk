@@ -1,17 +1,17 @@
 export interface RpcUrls {
-  [chain: number]: string
+  [chain: number]: string;
 }
 
 export interface YieldData {
-  [chain: number]: Chain
+  [chain: number]: Chain;
 }
 
 export interface Chain {
   assetsByProtocol: {
-    [protocol: string]: Asset[]
+    [protocol: string]: Asset[];
   };
   protocolsByAsset: {
-    [asset: string]: string[]
+    [asset: string]: string[];
   };
   assetAddresses: string[];
   protocols: string[];
@@ -42,3 +42,15 @@ export type Adapter = {
   initParams?: InitParam[];
   resolver?: string;
 };
+export type InitParam = {
+  name: string;
+  type: string;
+  requirements?: InitParamRequirement[];
+  description?: string;
+  multiple?: boolean;
+};
+export enum InitParamRequirement {
+  "Required",
+  "NotAddressZero",
+  "NotZero",
+}
