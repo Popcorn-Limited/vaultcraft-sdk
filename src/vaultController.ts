@@ -1,8 +1,8 @@
-import { Hash, Address, PublicClient, WalletClient, Transport, Chain, ParseAccount, Account, WriteContractParameters } from "viem";
+import type { Hash, Address, PublicClient, WalletClient, Transport, Chain } from "viem";
 
-import { VaultControllerABI } from "./abi/VaultControllerABI";
-import { Base } from "./base";
-import { VaultFees, WriteOptions } from "./types";
+import { VaultControllerABI } from "./abi/VaultControllerABI.js";
+import { Base } from "./base.js";
+import type { VaultFees, WriteOptions } from "./types.js";
 
 const ABI = VaultControllerABI;
 

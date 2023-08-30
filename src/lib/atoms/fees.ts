@@ -1,6 +1,6 @@
 
 import { atom } from "jotai";
-import { ZERO } from "../helpers";
+import { ZERO } from "../helpers.js";
 
 export type VaultFees = {
   deposit: BigInt;

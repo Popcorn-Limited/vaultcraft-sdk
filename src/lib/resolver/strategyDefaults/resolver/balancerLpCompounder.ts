@@ -1,5 +1,6 @@
-import { Address, createPublicClient, http } from "viem";
-import { networkMap } from "@/lib/helpers";
+import { createPublicClient, http } from "viem";
+import type { Address } from "viem";
+import { networkMap } from "@/lib/helpers.js";
 
 const BAL = { 1: "0xba100000625a3754423978a60c9317c58a424e3D" }
 const AURA = { 1: "0xC0c293ce456fF0ED870ADd98a0828Dd4d2903DBF" }

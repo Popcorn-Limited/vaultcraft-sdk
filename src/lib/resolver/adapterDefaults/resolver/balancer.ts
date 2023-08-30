@@ -1,6 +1,5 @@
-import { ADDRESS_ZERO } from "@/lib/helpers";
+import { ADDRESS_ZERO, networkMap } from "@/lib/helpers.js";
 import { createPublicClient, http } from "viem";
-import { networkMap } from "@/lib/helpers";
 
 const CONTROLLER_ADDRESS = "0xC128468b7Ce63eA702C1f104D55A2566b13D3ABD";
 

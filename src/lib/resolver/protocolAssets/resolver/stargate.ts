@@ -1,5 +1,5 @@
 import { createPublicClient, http } from "viem";
-import { networkMap } from "@/lib/helpers";
+import { networkMap } from "@/lib/helpers.js";
 
 const STARGATE_ADDRESS = { 1: "0xB0D502E938ed5f4df2E681fE6E419ff29631d62b", 42161: "0xeA8DfEE1898a7e0a59f7527F076106d7e44c2176" }
 

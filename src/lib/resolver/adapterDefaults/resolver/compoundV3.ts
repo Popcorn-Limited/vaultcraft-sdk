@@ -1,4 +1,4 @@
-import { ADDRESS_ZERO } from "@/lib/helpers";
+import { ADDRESS_ZERO } from "@/lib/helpers.js";
 
 const CTOKEN: { [key: number]: { [key: string]: string } } = {
   1: { "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": "0xc3d688B66703497DAA19211EEdff47f25384cdc3" },

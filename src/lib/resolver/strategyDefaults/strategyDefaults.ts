@@ -1,5 +1,5 @@
 import { localhost, mainnet } from "wagmi/chains";
-import StrategyDefaultResolvers from ".";
+import StrategyDefaultResolvers from "./index.js";
 
 export async function resolveStrategyDefaults({ chainId, rpcUrl, address, adapter, resolver }: { chainId: number, rpcUrl: string, address: string, adapter: string, resolver?: string }): Promise<any[]> {
   if (chainId === localhost.id) chainId = mainnet.id;

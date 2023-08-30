@@ -1,4 +1,4 @@
-import { ADDRESS_ZERO } from "@/lib/helpers";
+import { ADDRESS_ZERO } from "@/lib/helpers.js";
 import axios from "axios"
 
 type MoneyMarketResponse = {

@@ -1,4 +1,4 @@
-import { getConvexPools } from "@/lib/external/convex";
+import { getConvexPools } from "@/lib/external/convex/index.js";
 
 export async function convex({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<any[]> {
     const pools = await getConvexPools({ chainId, rpcUrl });

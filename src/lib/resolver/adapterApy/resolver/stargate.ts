@@ -1,8 +1,9 @@
-import { networkNames } from "@/lib/helpers";
-import { Address, createPublicClient, http } from "viem";
-import { networkMap } from "@/lib/helpers";
-import { EMPTY_YIELD_RESPONSE } from "..";
-import { Yield } from "src/yieldOptions/types";
+import { networkNames } from "@/lib/helpers.js";
+import { createPublicClient, http } from "viem";
+import type { Address } from "viem";
+import { networkMap } from "@/lib/helpers.js";
+import { EMPTY_YIELD_RESPONSE } from "../index.js";
+import type { Yield } from "src/yieldOptions/types.js";
 
 export interface Pool {
   chain: string;

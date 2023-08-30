@@ -18,7 +18,7 @@ import {
   stargate,
   velodrome,
   yearn,
-} from "./resolver";
+} from "./resolver/index.js";
 
 export type AdapterDefaultResolver = (
   chainId: number,

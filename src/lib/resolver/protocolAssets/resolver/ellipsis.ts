@@ -1,5 +1,5 @@
 import { createPublicClient, http } from "viem";
-import { networkMap } from "@/lib/helpers";
+import { networkMap } from "@/lib/helpers.js";
 
 const STAKING_ADDRESS = "0x5B74C99AA2356B4eAa7B85dC486843eDff8Dfdbe";
 

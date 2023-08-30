@@ -1,6 +1,6 @@
-import { Yield } from "src/yieldOptions/types"
-import { EMPTY_YIELD_RESPONSE } from ".."
-import { CURVE_ADDRESS } from "@/lib/external/curve"
+import type { Yield } from "src/yieldOptions/types.js";
+import { EMPTY_YIELD_RESPONSE } from "../index.js";
+import { CURVE_ADDRESS } from "@/lib/external/curve/index.js"
 
 const NETWORK_NAMES = { 1: "ethereum", 1337: "ethereum", 10: "optimism", 137: "polygon", 250: "fantom", 42161: "arbitrum" }
 

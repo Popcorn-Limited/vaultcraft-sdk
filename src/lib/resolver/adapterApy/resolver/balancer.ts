@@ -1,7 +1,7 @@
-import getAuraPools from "@/lib/external/aura/getAuraPools"
-import { ADDRESS_ZERO } from "@/lib/helpers"
-import { Yield } from "src/yieldOptions/types"
-import { EMPTY_YIELD_RESPONSE } from ".."
+import getAuraPools from "@/lib/external/aura/getAuraPools.js";
+import { ADDRESS_ZERO } from "@/lib/helpers.js";
+import type { Yield } from "src/yieldOptions/types.js";
+import { EMPTY_YIELD_RESPONSE } from "../index.js"
 
 export async function balancer({ chainId, rpcUrl, address, }: { chainId: number, rpcUrl: string, address: string }): Promise<Yield> {
   let result;

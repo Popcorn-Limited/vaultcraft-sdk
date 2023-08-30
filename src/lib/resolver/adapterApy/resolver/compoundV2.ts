@@ -1,8 +1,8 @@
-import { resolveAdapterDefaults } from "@/lib/resolver/adapterDefaults/adapterDefaults";
+import { resolveAdapterDefaults } from "@/lib/resolver/adapterDefaults/adapterDefaults.js";
 import { createPublicClient, http } from "viem";
-import { networkMap } from "@/lib/helpers";
-import { Yield } from "src/yieldOptions/types";
-import { EMPTY_YIELD_RESPONSE } from "..";
+import { networkMap } from "@/lib/helpers.js";
+import type { Yield } from "src/yieldOptions/types.js";
+import { EMPTY_YIELD_RESPONSE } from "../index.js";
 
 export async function compoundV2Apy({ chainId, rpcUrl, address, resolver }: { chainId: number, rpcUrl: string, address: string, resolver: string }): Promise<Yield> {
   let result;

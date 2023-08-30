@@ -1,5 +1,5 @@
 import { createPublicClient, http } from "viem";
-import { networkMap } from "@/lib/helpers";
+import { networkMap } from "@/lib/helpers.js";
 
 const POOL_ADDRESS = { 1: "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2", 42161: "0x794a61358D6845594F94dc1DB02A252b5b4814aD" };
 

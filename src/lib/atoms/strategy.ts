@@ -1,4 +1,4 @@
-import { AdapterConfig, InitParam } from "./adapter";
+import type { AdapterConfig, InitParam } from "./adapter.js";
 import strategies from "@/lib/constants/strategies.json";
 import { atom } from "jotai";
 import { stringToHex } from "viem";

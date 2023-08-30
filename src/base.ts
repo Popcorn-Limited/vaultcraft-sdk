@@ -1,4 +1,4 @@
-import { Address, PublicClient, WalletClient, Transport, Chain, Account, ParseAccount } from "viem";
+import type { Address, PublicClient, WalletClient, Transport, Chain } from "viem";
 
 export class Base {
     address: Address;

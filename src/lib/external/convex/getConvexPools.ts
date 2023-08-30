@@ -1,4 +1,4 @@
-import { convexBoosterAbi, CONVEX_BOOSTER_ADDRESS } from "@/lib/external/convex";
+import { convexBoosterAbi, CONVEX_BOOSTER_ADDRESS } from "./constants.js";
 import { createPublicClient, http } from "viem";
 
 

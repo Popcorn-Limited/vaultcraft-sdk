@@ -1,7 +1,7 @@
-import { InitParam, InitParamRequirement } from "@/lib/atoms/adapter"
+import { InitParamRequirement } from "@/lib/atoms/adapter.js";
+import type { InitParam } from "@/lib/atoms/adapter.js";
 import { isAddress } from "viem";
-import { mainnet } from "wagmi";
-import { arbitrum, bsc, goerli, localhost, optimism, polygon } from "wagmi/dist/chains";
+import { mainnet, arbitrum, bsc, goerli, localhost, optimism, polygon } from "wagmi/chains";
 
 export function noOp() { }
 

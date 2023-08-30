@@ -1,4 +1,4 @@
-import { ADDRESS_ZERO } from "@/lib/helpers";
+import { ADDRESS_ZERO } from "@/lib/helpers.js";
 
 const AVAILABLE_ASSETS: { [key: number]: string[] } = {
   1: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],

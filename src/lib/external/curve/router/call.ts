@@ -1,5 +1,5 @@
-import { IRoute, CurveRoute } from "@/lib/external/curve/router/interfaces";
-import { ADDRESS_ZERO, ZERO } from "@/lib/helpers";
+import type { IRoute, CurveRoute } from "@/lib/external/curve/router/interfaces.js";
+import { ADDRESS_ZERO, ZERO } from "@/lib/helpers.js";
 import curve from '@curvefi/api'
 import { encodeAbiParameters } from "viem";
 

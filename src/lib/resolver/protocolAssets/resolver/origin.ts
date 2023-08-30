@@ -1,4 +1,4 @@
-import { ADDRESS_ZERO } from "@/lib/helpers";
+import { ADDRESS_ZERO } from "@/lib/helpers.js";
 import { mainnet } from "wagmi";
 
 // @dev dont forget to lowercase the keys when you add a new one

@@ -1,5 +1,5 @@
 import { createPublicClient, http } from "viem";
-import { networkMap } from "@/lib/helpers";
+import { networkMap } from "@/lib/helpers.js";
 
 const PAIR_FACTORY_ADDRESS = "0x25CbdDb98b35ab1FF77413456B31EC81A6B6B746";
 

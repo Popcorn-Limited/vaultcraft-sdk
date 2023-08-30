@@ -1,5 +1,6 @@
-import axios, { AxiosResponse } from "axios";
-import { cleanFileName } from "../helpers";
+import axios from "axios";
+import type { AxiosResponse } from "axios";
+import { cleanFileName } from "../helpers.js";
 
 export interface IIpfsClient {
   get: <T>(cid: string) => Promise<T>;

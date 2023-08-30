@@ -1,4 +1,4 @@
-import { Asset } from "./atoms";
+import type { Asset } from "./atoms/index.js";
 
 export default async function getTokenMetadata(address: string, chainId: number): Promise<Asset> {
   const metadata = {

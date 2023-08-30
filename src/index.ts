@@ -1,4 +1,4 @@
-export type * from "./types";
-export * from "./vault";
-export * from "./vaultController";
-export * from "./yieldOptions";
+export type * from "./types.js";
+export * from "./vault.js";
+export * from "./vaultController.js";
+export * from "./yieldOptions/index.js";
