@@ -1,4 +1,4 @@
-[
+const adapters = [
   {
     "logoURI": "https://forum.popcorn.network/uploads/default/optimized/1X/4ad0b80c41129e6d8b04d49799bbbfcc6c8e9a91_2_32x32.png",
     "name": "AaveV2 Adapter",
@@ -426,3 +426,4 @@
     "resolver": "yearn"
   }
 ]
+export default adapters;

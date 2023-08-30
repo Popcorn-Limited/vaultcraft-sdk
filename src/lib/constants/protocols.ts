@@ -1,4 +1,4 @@
-[
+const protocols = [
   {
     "chains": [1, 1337, 42161],
     "name": "Aave V2",
@@ -132,3 +132,4 @@
     "logoURI": "https://cryptologos.cc/logos/yearn-finance-yfi-logo.png?v=024"
   }
 ]
+export default protocols;

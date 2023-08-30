@@ -1,4 +1,4 @@
-[
+const strategies = [
   {
     "name": "Compounder",
     "key": "CurveStargateCompounder",
@@ -113,3 +113,4 @@
     ]
   }
 ]
+export default strategies;

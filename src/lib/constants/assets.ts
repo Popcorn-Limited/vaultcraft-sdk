@@ -1,4 +1,4 @@
-[
+const assets = [
   {
     "chains": [1, 1337, 42161],
     "address": {
@@ -152,7 +152,7 @@
     "logoURI": "https://icons.llamao.fi/icons/protocols/origin-ether"
   },
   {
-    "chains": [1,1337],
+    "chains": [1, 1337],
     "address": {
       "1": "0xD533a949740bb3306d119CC777fa900bA034cd52",
       "1337": "0xD533a949740bb3306d119CC777fa900bA034cd52"
@@ -163,7 +163,7 @@
     "logoURI": "https://etherscan.io/token/images/Curvefi_32.png"
   },
   {
-    "chains": [1,1337],
+    "chains": [1, 1337],
     "address": {
       "1": "0xba100000625a3754423978a60c9317c58a424e3D",
       "1337": "0xba100000625a3754423978a60c9317c58a424e3D"
@@ -285,7 +285,7 @@
     "logoURI": "https://icons.llamao.fi/icons/chains/rsz_polygon"
   },
   {
-    "chains": [1,1337],
+    "chains": [1, 1337],
     "address": {
       "1": "0x76FCf0e8C7Ff37A47a799FA2cd4c13cDe0D981C9",
       "1337": "0x76FCf0e8C7Ff37A47a799FA2cd4c13cDe0D981C9"
@@ -296,3 +296,4 @@
     "logoURI": "https://cdn.furucombo.app/assets/img/token/OHM.png"
   }
 ]
+export default assets;
