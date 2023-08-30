@@ -1,4 +1,4 @@
-import protocols from "@/lib/constants/protocols.json";
+import protocols from "@/lib/constants/protocols.json" assert{ type: 'json' };
 import { atom } from "jotai";
 
 export type Protocol = {

@@ -1,5 +1,5 @@
 import type { AdapterConfig, InitParam } from "./adapter.js";
-import strategies from "@/lib/constants/strategies.json";
+import strategies from "@/lib/constants/strategies.json" assert{ type: 'json' };
 import { atom } from "jotai";
 import { stringToHex } from "viem";
 

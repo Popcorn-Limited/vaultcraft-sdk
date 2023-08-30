@@ -1,4 +1,4 @@
-import assets from "@/lib/constants/assets.json";
+import assets from "@/lib/constants/assets.json" assert{ type: 'json' };
 
 export async function assetDefault({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }):Promise<string[]> {
   // @ts-ignore

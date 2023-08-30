@@ -1,4 +1,5 @@
-import adapters from "@/lib/constants/adapters.json";
+// @ts-ignore
+import adapters from "@/lib/constants/adapters.json" assert { type: "json" };
 import { atom } from "jotai";
 import { stringToHex } from "viem";
 

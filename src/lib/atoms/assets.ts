@@ -1,4 +1,4 @@
-import assetsJson from "@/lib/constants/assets.json";
+import assetsJson from "@/lib/constants/assets.json" assert{ type: 'json' };
 import { atom } from "jotai";
 
 export type Asset = {
