@@ -1,4 +1,4 @@
-import { ADDRESS_ZERO, SUPPORTED_NETWORKS, transformNetwork } from "@/lib/helpers";
+import { ADDRESS_ZERO, SUPPORTED_NETWORKS, transformNetwork } from "@/lib/helpers.js";
 
 interface Vault {
   tokenAddress: string;

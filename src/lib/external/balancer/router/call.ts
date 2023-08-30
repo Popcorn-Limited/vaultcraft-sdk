@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { BalancerData, BalanceSORResponse } from './interfaces';
+import type { BalancerData, BalanceSORResponse } from './interfaces.js';
 
 export const balancerApiProxyCall = async (balancerParams: BalancerData): Promise<BalanceSORResponse> => {
     const endpointUrl = "/api/balancerProxy/sor/1";

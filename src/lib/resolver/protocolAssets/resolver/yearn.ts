@@ -1,6 +1,6 @@
 import { createPublicClient, http } from "viem";
 import { mainnet } from "wagmi/chains";
-import { networkMap } from "@/lib/helpers";
+import { networkMap } from "@/lib/helpers.js";
 
 const VAULT_REGISTRY_ADDRESS = { 1: "0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804", 42161: "0x3199437193625DCcD6F9C9e98BDf93582200Eb1f" };
 const VAULT_FACTORY_ADDRESS = "0x21b1FC8A52f179757bf555346130bF27c0C2A17A";

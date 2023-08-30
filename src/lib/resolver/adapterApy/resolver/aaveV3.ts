@@ -1,7 +1,7 @@
 import { createPublicClient, http } from "viem";
-import { networkMap } from "@/lib/helpers";
-import { Yield } from "src/yieldOptions/types";
-import { EMPTY_YIELD_RESPONSE } from "..";
+import { networkMap } from "@/lib/helpers.js";
+import type { Yield } from "src/yieldOptions/types.js";
+import { EMPTY_YIELD_RESPONSE } from "../index.js";
 
 const LENDING_POOL = { 1: "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2" }
 

@@ -1,5 +1,5 @@
-import { Yield } from "src/yieldOptions/types";
-import { EMPTY_YIELD_RESPONSE } from "..";
+import type { Yield } from "src/yieldOptions/types.js";
+import { EMPTY_YIELD_RESPONSE } from "../index.js";
 
 interface BeefyVault {
   id: string;

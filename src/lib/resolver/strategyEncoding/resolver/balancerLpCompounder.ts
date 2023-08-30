@@ -1,7 +1,8 @@
-import { balancerApiProxyCall } from "@/lib/external/balancer/router/call";
-import { BatchSwapStep } from "@/lib/external/balancer/router/interfaces";
-import { ADDRESS_ZERO, MAX_INT256, MINUS_ONE, networkMap } from "@/lib/helpers";
-import { Address, createPublicClient, encodeAbiParameters, http, parseAbiParameters, parseUnits, stringToHex } from "viem";
+import { balancerApiProxyCall } from "@/lib/external/balancer/router/call.js";
+import type { BatchSwapStep } from "@/lib/external/balancer/router/interfaces.js";
+import { ADDRESS_ZERO, MAX_INT256, MINUS_ONE, networkMap } from "@/lib/helpers.js";
+import { createPublicClient, encodeAbiParameters, http, parseAbiParameters, parseUnits, stringToHex } from "viem";
+import type { Address } from "viem";
 
 interface BalancerRoute {
   swaps: BatchSwapStep[];

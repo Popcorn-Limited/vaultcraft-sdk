@@ -1,7 +1,7 @@
 import { createPublicClient, http } from "viem";
-import { networkMap } from "@/lib/helpers";
-import { Yield } from "src/yieldOptions/types";
-import { EMPTY_YIELD_RESPONSE } from "..";
+import { networkMap } from "@/lib/helpers.js";
+import type { Yield } from "src/yieldOptions/types.js";
+import { EMPTY_YIELD_RESPONSE } from "../index.js";
 
 
 const tranches = {

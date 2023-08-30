@@ -1,4 +1,4 @@
-import { curveApiCallToBytes } from "./router";
+import { curveApiCallToBytes } from "./router/index.js";
 
 
 export const CURVE_ADDRESS = {

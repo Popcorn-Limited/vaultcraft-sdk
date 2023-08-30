@@ -1,4 +1,4 @@
-import getAuraPools from "@/lib/external/aura/getAuraPools";
+import getAuraPools from "@/lib/external/aura/getAuraPools.js";
 
 export async function aura({ chainId, rpcUrl }: { chainId: number, rpcUrl: string }): Promise<string[]> {
     let result: string[];

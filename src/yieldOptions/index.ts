@@ -1,5 +1,5 @@
 import { resolveProtocolAssets } from "@/lib/resolver/protocolAssets/protocolAssets.js";
-import type { Adapter, Asset, Chain, RpcUrls, YieldData } from "./types";
+import type { Adapter, Asset, Chain, RpcUrls, YieldData } from "./types.js";
 import adapters from "@/lib/constants/adapters.json";
 import { resolveAdapterApy } from "@/lib/resolver/adapterApy/adapterApy.js";
 
@@ -78,4 +78,4 @@ export class YieldOptions {
   }
 }
 
-export type * from "./types";
+export type * from "./types.js";

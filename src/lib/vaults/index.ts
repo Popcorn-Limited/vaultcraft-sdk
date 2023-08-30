@@ -1,8 +1,8 @@
 import { useAccount, useContractWrite, useNetwork, usePrepareContractWrite } from "wagmi";
 import { useAtom } from "jotai";
-import { adapterDeploymentAtom, assetAtom, feeAtom, limitAtom, metadataAtom } from "@/lib/atoms"
+import { adapterDeploymentAtom, assetAtom, feeAtom, limitAtom, metadataAtom } from "@/lib/atoms/index.js";
 import { stringToHex } from "viem";
-import { ADDRESS_ZERO, MAX_UINT256 } from "../helpers";
+import { ADDRESS_ZERO, MAX_UINT256 } from "../helpers.js";
 
 const VAULT_CONTROLLER = {
   "1": "0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb",

@@ -1,4 +1,4 @@
-import { curveApiCallToBytes } from "@/lib/external/curve/router/call";
+import { curveApiCallToBytes } from "@/lib/external/curve/router/call.js";
 
 export async function curveCompounder({ chainId, rpcUrl, address, params }: { chainId: number, rpcUrl: string, address: string, params: any[] }): Promise<string> {
   const data = await curveApiCallToBytes({

@@ -1,6 +1,5 @@
-import { ADDRESS_ZERO } from "@/lib/helpers";
+import { ADDRESS_ZERO, networkMap } from "@/lib/helpers.js";
 import { createPublicClient, http } from "viem";
-import { networkMap } from "@/lib/helpers";
 
 const VELODROME_LENSE_ADDRESS = "0x8B70C5E53235AbBd1415957f7110FBFe5d0529d4";
 

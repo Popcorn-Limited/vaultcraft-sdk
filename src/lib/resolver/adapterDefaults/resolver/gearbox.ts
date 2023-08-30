@@ -1,6 +1,5 @@
-import { ADDRESS_ZERO } from "@/lib/helpers";
+import { ADDRESS_ZERO, networkMap } from "@/lib/helpers.js";
 import { createPublicClient, http } from "viem";
-import { networkMap } from "@/lib/helpers";
 
 const REGISTER_ADDRESS = "0xA50d4E7D8946a7c90652339CDBd262c375d54D99";
 

@@ -3,7 +3,7 @@ import {
   curveStargateCompounder,
   curveCompounder,
   balancerLpCompounder
-} from "./resolver";
+} from "./resolver/index.js";
 
 export type StrategyDefaultResolver = (
   chainId: number,

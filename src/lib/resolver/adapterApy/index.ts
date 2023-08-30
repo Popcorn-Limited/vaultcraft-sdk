@@ -1,5 +1,5 @@
 
-import { Yield } from "src/yieldOptions/types";
+import type { Yield } from "src/yieldOptions/types.js";
 import {
   aaveV2,
   aaveV3,
@@ -16,8 +16,8 @@ import {
   origin,
   stargate,
   yearn
-} from "./resolver";
-import { ADDRESS_ZERO } from "@/lib/helpers";
+} from "./resolver/index.js";
+import { ADDRESS_ZERO } from "@/lib/helpers.js";
 
 export const EMPTY_YIELD_RESPONSE = {
   total: 0,

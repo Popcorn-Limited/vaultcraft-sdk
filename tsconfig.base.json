@@ -13,8 +13,9 @@
         "noImplicitReturns": true, // Not enabled by default in `strict` mode.
         "useUnknownInCatchVariables": true, // TODO: This would normally be enabled in `strict` mode but would require some adjustments to the codebase.
         "noImplicitOverride": true, // Not enabled by default in `strict` mode.
-        "noUnusedLocals": true, // Not enabled by default in `strict` mode.
-        "noUnusedParameters": true, // Not enabled by default in `strict` mode.
+        // TODO: should be enabled in the future
+        "noUnusedLocals": false, // Not enabled by default in `strict` mode.
+        "noUnusedParameters": false, // Not enabled by default in `strict` mode.
         // TODO: The following options are also not enabled by default in `strict` mode and would be nice to have but would require some adjustments to the codebase.
         // "exactOptionalPropertyTypes": true,
         // "noUncheckedIndexedAccess": true,
@@ -35,7 +36,14 @@
             "ES2022", // By using ES2022 we get access to the `.cause` property on `Error` instances.
             "DOM" // We are adding `DOM` here to get the `fetch`, etc. types. This should be removed once these types are available via DefinitelyTyped.
         ],
+        "baseUrl": ".",
+        "paths": {
+            "@/lib/*": [
+                "./lib/*"
+            ],
+        },
         // Skip type checking for node modules
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
     }
 }

@@ -1,2 +1,2 @@
-export * from "./IpfsClient";
-export * from "./ipfsHashManipulation";
+export * from "./IpfsClient.js";
+export * from "./ipfsHashManipulation.js";

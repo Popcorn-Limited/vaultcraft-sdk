@@ -1,4 +1,5 @@
 import { atom } from "jotai";
-import { Chain, mainnet } from "wagmi";
+import { mainnet } from "wagmi";
+import type { Chain } from "wagmi";
 
 export const networkAtom = atom<Chain>(mainnet);

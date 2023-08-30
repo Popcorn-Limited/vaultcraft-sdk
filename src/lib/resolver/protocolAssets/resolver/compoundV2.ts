@@ -1,5 +1,5 @@
 import { createPublicClient, http } from "viem";
-import { networkMap } from "@/lib/helpers";
+import { networkMap } from "@/lib/helpers.js";
 
 const COMPOUND_PROXY_CONTRACT = "0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B";
 

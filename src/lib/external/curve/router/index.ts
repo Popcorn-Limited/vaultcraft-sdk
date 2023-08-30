@@ -1,4 +1,4 @@
-import { curveApiCallToBytes } from "./call";
+import { curveApiCallToBytes } from "./call.js";
 
 export {
   curveApiCallToBytes

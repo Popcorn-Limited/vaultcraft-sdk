@@ -1,6 +1,7 @@
-import { curveApiCallToBytes } from "@/lib/external/curve/router/call";
-import { networkMap } from "@/lib/helpers";
-import { Address, createPublicClient, encodeAbiParameters, http, parseAbiParameters } from "viem";
+import { curveApiCallToBytes } from "@/lib/external/curve/router/call.js";
+import { networkMap } from "@/lib/helpers.js";
+import { createPublicClient, encodeAbiParameters, http, parseAbiParameters } from "viem";
+import type { Address } from "viem";
 
 export async function curveStargateCompounder({ chainId, rpcUrl, address, params }: { chainId: number, rpcUrl: string, address: string, params: any[] }): Promise<string> {
   const client = createPublicClient({
