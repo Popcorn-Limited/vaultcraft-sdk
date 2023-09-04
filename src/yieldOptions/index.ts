@@ -6,7 +6,11 @@ import { resolveAdapterApy } from "@/lib/resolver/adapterApy/adapterApy.js";
 
 async function fetchAssetsByAdapter({ chainId, rpcUrl, adapter }: { chainId: number, rpcUrl: string, adapter: Adapter }):
   Promise<{ assetAddresses: string[], assets: Asset[] }> {
+
+  // Get all assets supported by this protocol
   const assetAddresses = (await resolveProtocolAssets({ chainId, rpcUrl, resolver: adapter.resolver })).flat().map(address => address.toLowerCase());
+
+  // Add yield data to each asset
   const assets = await Promise.all(assetAddresses.map(async address => {
     return {
       address: address,
@@ -16,7 +20,7 @@ async function fetchAssetsByAdapter({ chainId, rpcUrl, adapter }: { chainId: num
   return { assetAddresses, assets };
 }
 
-// TODO how to differentiate between adapter and protocol?
+// TODO how to differentiate between adapter and protocol? --> make it all strategies (Vaults V2 design)
 // TODO deal with multichain
 
 export class YieldOptions {
@@ -33,22 +37,44 @@ export class YieldOptions {
   async setupNetwork(chainId: number): Promise<boolean> {
     if (!this.chainIds.includes(chainId)) throw new Error("Network not supported")
 
+    // setup empty objects for later key access
     this.yieldData[chainId] = {} as Chain;
+    this.yieldData[chainId].assetsByProtocol = {}
+    this.yieldData[chainId].protocolsByAsset = {}
 
-    const adaptersByChain = (adapters as Adapter[]).filter(adapter => adapter.chains.includes(chainId));
-    console.log({adaptersByChain})
+    let adaptersByChain = (adapters as Adapter[]).filter(adapter => adapter.chains.includes(chainId));
+
+    let protocols: string[] = adaptersByChain.map(adapter => adapter.protocol)
     // Filter unique protocols
-    const protocols: string[] = adaptersByChain.map(adapter => adapter.protocol).filter((protocol, i) => protocols.indexOf(protocol) === i)
-    console.log({protocols})
+    protocols.filter((protocol, i) => protocols.indexOf(protocol) === i)
 
+    // Save all protocol keys
     this.yieldData[chainId].protocols = protocols;
 
     // Resolve assets for each adapter
     const res = await Promise.all(adaptersByChain.map(adapter => fetchAssetsByAdapter({ chainId: chainId, rpcUrl: this.rpcUrls[chainId], adapter: adapter })))
+
+    // Add all supported asset addresses
     this.yieldData[chainId].assetAddresses = res.map(p => p.assetAddresses).flat()
-    res.forEach((p, i) => this.yieldData[chainId].assetsByProtocol[adaptersByChain[i].protocol].push(...p.assets))
-    res.forEach((p, i) => p.assetAddresses.forEach(a => this.yieldData[chainId].protocolsByAsset[a].push(adaptersByChain[i].protocol)))
-    
+
+    // Add all supported assets per protocol
+    res.forEach((p, i) => {
+      const key = adaptersByChain[i].protocol
+      if (this.yieldData[chainId].assetsByProtocol[key] === undefined) {
+        this.yieldData[chainId].assetsByProtocol[key] = []
+      }
+      this.yieldData[chainId].assetsByProtocol[key].push(...p.assets)
+    })
+
+    // Loop over each asset and append protocols keys for each protocol that supports the asset
+    res.forEach((p, i) =>
+      p.assetAddresses.forEach(a => {
+        if (this.yieldData[chainId].protocolsByAsset[a] === undefined) {
+          this.yieldData[chainId].protocolsByAsset[a] = []
+        }
+        this.yieldData[chainId].protocolsByAsset[a].push(adaptersByChain[i].protocol)
+      }))
+
     return true;
   }
 

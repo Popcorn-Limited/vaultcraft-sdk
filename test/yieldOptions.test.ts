@@ -7,10 +7,16 @@ import { YieldOptions } from "../src/yieldOptions";
 import { IVaultABI } from "../src/abi/IVaultABI";
 import { assert } from "console";
 
-let yieldOptions = new YieldOptions([`https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`]);
+let yieldOptions = new YieldOptions({ 1: `https://eth-mainnet.alchemyapi.io/v2/KsuP431uPWKR3KFb-K_0MT1jcwpUnjAg` });
+describe.concurrent("read-only", () => {
 
-test("setup network", async () => {
-    const success = await yieldOptions.setupNetwork(1)
-    expect(success).toBe(true);
-});
+    // beforeAll(async () => {
+    //     yieldOptions
+    // });
 
+    test("setup network", async () => {
+        const success = await yieldOptions.setupNetwork(1)
+        expect(success).toBe(true);
+    },60_000);
+
+})

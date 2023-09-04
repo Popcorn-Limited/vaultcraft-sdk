@@ -10,12 +10,15 @@ export async function compoundV2({ chainId, rpcUrl, address, }: { chainId: numbe
         transport: http(rpcUrl)
     })
 
-    const cTokens = await client.readContract({
+    let cTokens = await client.readContract({
         address: COMPTROLLER_ADDRESS,
         abi: abiComptroller,
         functionName: "getAllMarkets",
         args: []
     }) as `0x${string}`[];
+
+    // Filter out cETH since it doesnt have underlying
+    cTokens = cTokens.filter(item => item !== "0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5")
 
     let underlying = await Promise.all(cTokens.map(item =>
         client.readContract({
