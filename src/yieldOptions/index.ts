@@ -36,9 +36,10 @@ export class YieldOptions {
     this.yieldData[chainId] = {} as Chain;
 
     const adaptersByChain = (adapters as Adapter[]).filter(adapter => adapter.chains.includes(chainId));
-
+    console.log({adaptersByChain})
     // Filter unique protocols
     const protocols: string[] = adaptersByChain.map(adapter => adapter.protocol).filter((protocol, i) => protocols.indexOf(protocol) === i)
+    console.log({protocols})
 
     this.yieldData[chainId].protocols = protocols;
 
