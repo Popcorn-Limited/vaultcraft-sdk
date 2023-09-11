@@ -1,10 +1,10 @@
 import { describe, test, expect, beforeAll, beforeEach } from "vitest";
 import { zeroAddress, decodeFunctionData } from "viem";
 
-import { publicClient, walletClient } from "./setup";
-import { ERC20ABI } from "./abis/erc20ABI";
-import { Vault } from "../src/vault";
-import { IVaultABI } from "../src/abi/IVaultABI";
+import { publicClient, walletClient } from "../setup";
+import { ERC20ABI } from "../abis/erc20ABI";
+import { Vault } from "../../src/vault";
+import { IVaultABI } from "../../src/abi/IVaultABI";
 
 let vault = new Vault("0x5d344226578DC100b2001DA251A4b154df58194f", publicClient, walletClient);
 const FORK_BLOCK_NUMBER = BigInt(17883751);

@@ -1,12 +1,12 @@
 import { describe, test, expect, beforeEach } from "vitest";
 import { decodeFunctionData } from "viem";
 
-import { publicClient, walletClient } from "./setup";
-import { increaseTime } from "./utils";
+import { publicClient, walletClient } from "../setup.js";
+import { increaseTime } from "../utils.js";
 
-import { VaultControllerABI } from "../src/abi/VaultControllerABI";
-import { VaultController } from "../src/vaultController";
-import { VaultFees } from "../src/types";
+import { VaultControllerABI } from "../../src/abi/VaultControllerABI.js";
+import { VaultController } from "../../src/vaultController.js";
+import { VaultFees } from "../../src/types.js";
 
 
 let controller = new VaultController("0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb", publicClient, walletClient);

@@ -1,7 +1,7 @@
 import { describe, test, beforeAll, expect } from "vitest";
-import { Yearn } from "../../src/lib/resolver/protocol/yearn.js";
-import { Clients } from "../../src/lib/resolver/protocol/index.js";
-import { publicClient } from "../setup.js";
+import { Yearn } from "../../../src/lib/resolver/protocol/yearn.js";
+import { Clients } from "../../../src/lib/resolver/protocol/index.js";
+import { publicClient } from "../../setup.js";
 
 const clients: Clients = {
     1: publicClient,
@@ -24,6 +24,8 @@ describe.concurrent("read-only", () => {
 
     test("getApy() should return the APY for a given asset", async () => {
         const result = await yearn.getApy(1, "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48");
-        expect(result.total).toBe(3.6890136422520703);
+        // we can't set a static value here because we make a live API call. The value will change
+        // continiously
+        expect(result.total).toBeGreaterThan(0);
     });
 });
