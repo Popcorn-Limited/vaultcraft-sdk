@@ -21,7 +21,6 @@ export async function compoundV2Apy({ chainId, rpcUrl, address, resolver }: { ch
       abi: C_TOKEN_ABI,
       functionName: 'supplyRatePerBlock'
     }) as BigInt
-    console.log(address, supplyRate)
     const apy = (((Math.pow((Number(supplyRate) / 1e18 * 7200) + 1, 365))) - 1) * 100
 
     result = {

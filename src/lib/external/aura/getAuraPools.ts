@@ -1,4 +1,6 @@
-interface AuraPool {
+import axios from 'axios';
+
+export interface AuraPool {
   id: string;
   isShutdown: boolean;
   aprs: {
@@ -20,40 +22,37 @@ interface AuraPool {
 }
 
 export default async function getAuraPools(chainId: number): Promise<AuraPool[]> {
-  const res = await (await fetch('https://data.aura.finance/graphql', {
-    method: 'POST',
+  const res = await axios.post('https://data.aura.finance/graphql', {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      query: `
-        query Pools($chainId: Int = 1) {
-          pools(chainId: $chainId){
-            id
-            lpToken
-            {
-              address
-            }
-            aprs {
-              total
-              breakdown {
-                id
-                token{
-                  symbol
-                  name
-                  address
-                }
-              name
-              value
+    query: `
+      query Pools($chainId: Int = 1) {
+        pools(chainId: $chainId){
+          id
+          lpToken
+          {
+            address
+          }
+          aprs {
+            total
+            breakdown {
+              id
+              token{
+                symbol
+                name
+                address
               }
+            name
+            value
             }
           }
         }
-      `,
-      variables: {
-        chainId: chainId,
-      },
-    }),
-  })).json()
-  return res.data.pools
+      }
+    `,
+    variables: {
+      chainId: chainId,
+    },
+  });
+  return res.data.data.pools;
 }

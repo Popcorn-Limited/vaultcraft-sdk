@@ -2,20 +2,41 @@ import { Yield } from "src/yieldOptions/types.js";
 import { Clients, EMPTY_YIELD_RESPONSE, IProtocol } from "./index.js";
 import { Address } from "viem";
 import { ChainId } from "@/lib/helpers.js";
+import NodeCache from "node-cache";
+import axios from "axios";
 
 const VAULT_REGISTRY_ADDRESS = { 1: "0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804", 42161: "0x3199437193625DCcD6F9C9e98BDf93582200Eb1f" };
 const VAULT_FACTORY_ADDRESS = "0x21b1FC8A52f179757bf555346130bF27c0C2A17A";
 
+type Vault = {
+    token: {
+        address: Address;
+    },
+    apy: {
+        net_apy: number;
+    };
+}
+
 export class Yearn implements IProtocol {
+    private cache: NodeCache;
     private clients: Clients;
-    constructor(clients: Clients) {
+    constructor(clients: Clients, ttl: number) {
         this.clients = clients;
+        this.cache = new NodeCache({ stdTTL: ttl });
     }
 
     async getApy(chainId: number, asset: Address): Promise<Yield> {
-        try {
-            const res = await (await fetch(`https://api.yearn.fi/v1/chains/${chainId}/vaults/all`)).json();
-            const vault = res.find((vault: any) => vault.token.address.toLowerCase() === asset.toLowerCase());
+        let vaults = this.cache.get("vaults") as Vault[];
+        if (!vaults) {
+            try {
+                vaults = (await axios.get(`https://api.yearn.fi/v1/chains/${chainId}/vaults/all`)).data;
+                this.cache.set("vaults", vaults);
+            } catch (e) {
+                console.error(e);
+                return EMPTY_YIELD_RESPONSE;
+            }
+        }
+        const vault = vaults.find((vault: any) => vault.token.address.toLowerCase() === asset.toLowerCase());
 
             return vault === undefined ?
                 EMPTY_YIELD_RESPONSE :
@@ -26,16 +47,16 @@ export class Yearn implements IProtocol {
                         apy: vault.apy.net_apy * 100
                     }]
                 };
-        } catch (e) {
-            console.error(e);
-            return EMPTY_YIELD_RESPONSE;
-        }
     }
 
     async getAssets(chainId: number): Promise<Address[]> {
+        const client = this.clients[chainId];
+        if (!client) throw new Error(`missing public client for chain ID: ${chainId}`);
+        let assets = this.cache.get("assets") as Address[];
+        if (assets) {
+            return assets;
+        }
         try {
-            const client = this.clients[chainId];
-            if (!client) throw new Error(`missing public client for chain ID: ${chainId}`);
 
             const numTokens = await client.readContract({
                 // @ts-ignore
@@ -70,8 +91,9 @@ export class Yearn implements IProtocol {
                     })
                 ));
             }
-
-            return [...registryTokens, ...factoryTokens].filter((item, idx, arr) => arr.indexOf(item) === idx);
+            assets = [...registryTokens, ...factoryTokens].filter((item, idx, arr) => arr.indexOf(item) === idx);
+            this.cache.set("assets", assets);
+            return assets;
         } catch (e) {
             console.error(e);
             return [];
