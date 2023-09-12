@@ -6,7 +6,7 @@ import { publicClient } from "../../setup.js";
 const clients: Clients = {
     1: publicClient,
 };
-const yearn = new Yearn(clients);
+const yearn = new Yearn(clients, 360_000);
 
 const FORK_BLOCK_NUMBER = BigInt(18071114);
 describe.concurrent("read-only", () => {
