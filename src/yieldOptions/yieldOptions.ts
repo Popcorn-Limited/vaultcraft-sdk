@@ -74,12 +74,7 @@ export class YieldOptions {
         const cacheKey = `${chainId}_${protocol}_assets`;
         let result = this.cache.get(cacheKey) as YieldOption[];
         if (!result) {
-            let assetList: Address[];
-            if (chainId === 1) {
-                assetList = assets[1][protocol] as Address[];
-            } else {
-                assetList = await this.provider.getAssets(chainId, protocol);
-            }
+            const assetList = await this.provider.getAssets(chainId, protocol);
             result = await Promise.all(assetList.map(async (asset) => {
                 return {
                     address: asset,
