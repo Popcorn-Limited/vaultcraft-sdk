@@ -66,7 +66,7 @@ export class Curve implements IProtocol {
                 poolData = pools.map((pool) => pool.data.poolData).flat();
                 this.cache.set(`poolData_${network}`, poolData);
             } catch (e) {
-                console.log(e);
+                console.error(e);
             }
         }
         return poolData;

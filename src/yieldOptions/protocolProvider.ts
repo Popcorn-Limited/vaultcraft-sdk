@@ -1,6 +1,6 @@
 import { AaveV2, AaveV3, Aura, Beefy, Clients, CompoundV2, Curve, IProtocol, Idle, Origin, Yearn } from "@/lib/resolver/protocol/index.js";
 import { Address } from "viem";
-import assets from "./assets.json" assert { type: "json" };
+import assets from "./assets.json";
 import { ProtocolName, Yield } from "./types.js";
 
 export class ProtocolProvider implements IProtocolProvider {

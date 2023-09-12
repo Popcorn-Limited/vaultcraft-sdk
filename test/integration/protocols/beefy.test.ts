@@ -16,7 +16,7 @@ describe.concurrent("read-only", () => {
         // we can't set a static value here because we make a live API call. The value will change
         // continiously
         expect(result.total).toBeGreaterThan(0);
-    }, 10000);
+    }, 20000);
 
     test("getApy() should return a valid value for every asset", async () => {
         const assets = await beefy.getAssets(1);

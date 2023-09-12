@@ -1,8 +1,6 @@
-import { AaveV2, AaveV3, Aura, Beefy, Clients, CompoundV2, Curve, IProtocol, Idle, Origin, Yearn } from "@/lib/resolver/protocol/index.js";
-import { writeFileSync } from "fs";
 import NodeCache from "node-cache";
 import { Address } from "viem";
-import assets from "./assets.json" assert { type: "json" };
+import assets from "./assets.json";
 import { IProtocolProvider } from "./protocolProvider.js";
 import type { ProtocolName, Yield, YieldOption } from "./types.js";
 

@@ -10,22 +10,6 @@ const clients: Clients = {
     1: publicClient,
 };
 
-
-    // beforeAll(async () => {
-    //     await publicClient.reset({
-    //         blockNumber: FORK_BLOCK_NUMBER,
-    //     });
-    // });
-
-    // test("setup network", async () => {
-    //     const success = await yieldOptions.setupNetwork(1);
-    //     expect(success).toBe(true);
-    // }, 100_000);
-
-    // test("test", async () => {
-    //     await yieldOptions.setupCache(1);
-    // }, 100_000);
-
 test("getProtocols() should return a list of protocols for the given chain ID", () => {
     const ttl = 360_000;
     const yieldOptions = new YieldOptions(new ProtocolProvider(clients, ttl), ttl);

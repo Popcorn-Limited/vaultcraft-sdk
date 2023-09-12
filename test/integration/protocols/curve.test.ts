@@ -6,15 +6,6 @@ const hour = 3600000;
 const curve = new Curve(hour);
 
 describe.concurrent("read-only", () => {
-    test.only("getAssets() should return all the available assets", async () => {
-        const result = await curve.getAssets(1);
-
-        expect(result.length).toBeGreaterThan(0);
-        const assets = JSON.stringify(result);
-        writeFileSync("./curve_assets.json", assets, "utf8");
-        console.log(result);
-    });
-
     test("getApy() should return the APY for a given asset", async () => {
         const result = await curve.getApy(1, "0xc4ad29ba4b3c580e6d59105fff484999997675ff");
         expect(result.total).toBeGreaterThan(0);
