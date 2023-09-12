@@ -86,7 +86,7 @@ export class YieldOptions {
         return result;
     }
 
-    private async getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield> {
+    async getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield> {
         const cacheKey = `${chainId}_${protocol}_${asset}`;
         let apy = this.cache.get(cacheKey) as Yield;
         if (!apy) {
