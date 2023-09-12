@@ -1,8 +1,8 @@
-import { Yield } from "src/yieldOptions/types.js";
-import getAuraPools, { AuraPool } from "@/lib/external/aura/getAuraPools.js";
-import { EMPTY_YIELD_RESPONSE, IProtocol } from "./index.js";
-import { Address } from "viem";
+import axios from "axios";
 import NodeCache from "node-cache";
+import { Yield } from "src/yieldOptions/types.js";
+import { Address } from "viem";
+import { EMPTY_YIELD_RESPONSE, IProtocol } from "./index.js";
 
 
 export class Aura implements IProtocol {
@@ -50,4 +50,61 @@ export class Aura implements IProtocol {
         }
         return pools;
     }
+}
+
+interface AuraPool {
+    id: string;
+    isShutdown: boolean;
+    aprs: {
+        total: number;
+        breakdown: {
+            id: string;
+            token: {
+                symbol: string;
+                name: string;
+                address: string;
+            };
+            name: string;
+            value: number;
+        }[];
+    };
+    lpToken: {
+        address: string;
+    };
+}
+
+async function getAuraPools(chainId: number): Promise<AuraPool[]> {
+    const res = await axios.post('https://data.aura.finance/graphql', {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        query: `
+        query Pools($chainId: Int = 1) {
+          pools(chainId: $chainId){
+            id
+            lpToken
+            {
+              address
+            }
+            aprs {
+              total
+              breakdown {
+                id
+                token{
+                  symbol
+                  name
+                  address
+                }
+              name
+              value
+              }
+            }
+          }
+        }
+      `,
+        variables: {
+            chainId: chainId,
+        },
+    });
+    return res.data.data.pools;
 }
