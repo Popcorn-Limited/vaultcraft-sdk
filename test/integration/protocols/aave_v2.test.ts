@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeAll } from "vitest";
 
-import { AaveV2 } from "../../../src/lib/resolver/protocol/aavev2.js";
-import { Clients } from "../../../src/lib/resolver/protocol/index.js";
+import { AaveV2 } from "../../../src/yieldOptions/providers/protocols/aavev2.js";
+import { Clients } from "../../../src/yieldOptions/providers/protocols/index.js";
 import { publicClient } from "../../setup.js";
 
 const clients: Clients = {

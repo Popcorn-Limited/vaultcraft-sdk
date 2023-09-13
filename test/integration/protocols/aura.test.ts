@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { Aura } from "../../../src/lib/resolver/protocol/aura.js";
+import { Aura } from "../../../src/yieldOptions/providers/protocols/aura.js";
 
 const aura = new Aura();
 

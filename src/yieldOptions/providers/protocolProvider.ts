@@ -1,7 +1,7 @@
-import { AaveV2, AaveV3, Aura, Beefy, Clients, CompoundV2, Curve, IProtocol, Idle, Origin, Yearn } from "@/lib/resolver/protocol/index.js";
+import { AaveV2, AaveV3, Aura, Beefy, Clients, CompoundV2, Curve, IProtocol, Idle, Origin, Yearn } from "./protocols/index.js";
 import { Address } from "viem";
 import assets from "./assets.json";
-import { ProtocolName, Yield } from "./types.js";
+import { ProtocolName, Yield } from "../types.js";
 
 export class ProtocolProvider implements IProtocolProvider {
     private protocols: {
@@ -21,7 +21,8 @@ export class ProtocolProvider implements IProtocolProvider {
         };
     }
 
-    getProtocols(): ProtocolName[] {
+    getProtocols(chainId: number): ProtocolName[] {
+        // TODO: differentiate by chain
         return Object.keys(this.protocols) as ProtocolName[];
     }
 
@@ -44,7 +45,7 @@ export class ProtocolProvider implements IProtocolProvider {
 }
 
 export interface IProtocolProvider {
-    getProtocols(): ProtocolName[];
+    getProtocols(chainId: number): ProtocolName[];
     getAssets(chainId: number, protocol: ProtocolName): Promise<Address[]>;
     getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield>;
 }

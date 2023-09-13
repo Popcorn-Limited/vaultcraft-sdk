@@ -1,7 +1,7 @@
 import NodeCache from "node-cache";
 import { Address } from "viem";
-import assets from "./assets.json";
-import { IProtocolProvider } from "./protocolProvider.js";
+import assets from "./providers/assets.json";
+import { IProtocolProvider } from "./providers/protocolProvider.js";
 import type { ProtocolName, Yield, YieldOption } from "./types.js";
 
 
@@ -38,16 +38,15 @@ export class YieldOptions {
     //     writeFileSync("./assets.json", JSON.stringify(obj), "utf8");
     // }
 
-    // TODO: this has to differentiate between different chains
-    getProtocols(): ProtocolName[] {
-        return this.provider.getProtocols();
+    getProtocols(chainId: number): ProtocolName[] {
+        return this.provider.getProtocols(chainId);
     }
 
     async getAssets(chainId: number): Promise<Address[]> {
         const cacheKey = `${chainId}_assets`;
         let allAssets = this.cache.get(cacheKey) as Address[];
         if (!allAssets) {
-            allAssets = (await Promise.all(this.getProtocols().map(async (protocol) => await this.provider.getAssets(chainId, protocol)))).flat();
+            allAssets = (await Promise.all(this.getProtocols(chainId).map(async (protocol) => await this.provider.getAssets(chainId, protocol)))).flat();
             allAssets = allAssets.filter((asset, i, arr) => arr.indexOf(asset) === i);
             this.cache.set(cacheKey, allAssets);
         }

@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { Beefy } from "../../../src/lib/resolver/protocol/beefy.js";
+import { Beefy } from "../../../src/yieldOptions/providers/protocols/beefy.js";
 
 
 const beefy = new Beefy(360000);

@@ -1,10 +1,10 @@
-import { describe, test, expect, beforeAll } from "vitest";
+import { describe, test, expect } from "vitest";
 
 import { publicClient } from "../setup.js";
 import { YieldOptions } from "../../src/yieldOptions/index.js";
-import { Clients } from "../../src/lib/resolver/protocol/index.js";
+import { Clients } from "../../src/yieldOptions/providers/protocols/index.js";
 import { MockProtocolProvider } from "../mocks/mockProtocolProvider.js";
-import { ProtocolProvider } from "../../src/yieldOptions/protocolProvider.js";
+import { ProtocolProvider } from "../../src/yieldOptions/providers/protocolProvider.js";
 
 const clients: Clients = {
     1: publicClient,
@@ -13,7 +13,7 @@ const clients: Clients = {
 test("getProtocols() should return a list of protocols for the given chain ID", () => {
     const ttl = 360_000;
     const yieldOptions = new YieldOptions(new ProtocolProvider(clients, ttl), ttl);
-    const result = yieldOptions.getProtocols();
+    const result = yieldOptions.getProtocols(1);
     const want = [
         'aaveV2',
         'aaveV3',
