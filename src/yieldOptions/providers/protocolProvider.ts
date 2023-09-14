@@ -1,6 +1,5 @@
 import { AaveV2, AaveV3, Aura, Beefy, Clients, CompoundV2, Curve, IProtocol, Idle, Origin, Yearn } from "./protocols/index.js";
 import { Address } from "viem";
-import assets from "./assets.json";
 import { ProtocolName, Yield } from "../types.js";
 
 export class ProtocolProvider implements IProtocolProvider {
@@ -26,16 +25,9 @@ export class ProtocolProvider implements IProtocolProvider {
         return Object.keys(this.protocols) as ProtocolName[];
     }
 
-    async getAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
-        let allAssets: Address[];
-        if (chainId === 1) {
-            allAssets = assets[1][protocol] as Address[];
-        } else {
-            allAssets = await this.protocols[protocol].getAssets(chainId);
-        }
-
-        return allAssets;
-
+    getAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
+        if (!this.protocols[protocol]) throw new Error(`${protocol} not supported`);
+        return this.protocols[protocol].getAssets(chainId);
     }
 
     getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield> {

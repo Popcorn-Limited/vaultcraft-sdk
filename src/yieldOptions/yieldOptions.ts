@@ -1,6 +1,5 @@
 import NodeCache from "node-cache";
 import { Address } from "viem";
-import assets from "./providers/assets.json";
 import { IProtocolProvider } from "./providers/protocolProvider.js";
 import type { ProtocolName, Yield, YieldOption } from "./types.js";
 
@@ -18,26 +17,6 @@ export class YieldOptions {
     }
 
 
-    // TODO: this needs to be moved to a script so that is run by a Github Action
-    // It should produce a PR so we can see the new or removed assets for every protocol
-    // and merge accordingly
-    // async setupCache(chainId: number): Promise<void> {
-    //     this.getProtocols(chainId);
-
-    //     const obj: {
-    //         [chainId: number]: {
-    //             [protocol: string]: string[];
-    //         };
-    //     } = {
-    //         [chainId]: {},
-    //     };
-    //     for (const protocol of Object.keys(this.protocols)) {
-    //         const assets = await this.protocols[protocol].getAssets(chainId);
-    //         obj[chainId][protocol] = assets;
-    //     }
-    //     writeFileSync("./assets.json", JSON.stringify(obj), "utf8");
-    // }
-
     getProtocols(chainId: number): ProtocolName[] {
         return this.provider.getProtocols(chainId);
     }
@@ -54,18 +33,18 @@ export class YieldOptions {
         return allAssets;
     }
 
-    getProtocolsByAsset(chainId: number, asset: Address): ProtocolName[] {
-        if (chainId !== 1) {
-            throw new Error("only supported on mainnet");
-        }
-        // protocol[0] == protocol name, e.g. "aaveV2"
-        // protocol[1] == list of asset addresses
-        // we filter out all the ones that don't contain the asset we're looking for and
-        // create a new array containing the protocol names of the ones that have the asset.
-        return Object.entries(assets[1])
-            .filter((protocol) => protocol[1].indexOf(asset) !== -1)
-            .map((protocol) => protocol[0]) as ProtocolName[];
-    }
+    // getProtocolsByAsset(chainId: number, asset: Address): ProtocolName[] {
+    //     if (chainId !== 1) {
+    //         throw new Error("only supported on mainnet");
+    //     }
+    //     // protocol[0] == protocol name, e.g. "aaveV2"
+    //     // protocol[1] == list of asset addresses
+    //     // we filter out all the ones that don't contain the asset we're looking for and
+    //     // create a new array containing the protocol names of the ones that have the asset.
+    //     return Object.entries(assets[1])
+    //         .filter((protocol) => protocol[1].indexOf(asset) !== -1)
+    //         .map((protocol) => protocol[0]) as ProtocolName[];
+    // }
 
     async getYieldOptionsByProtocol(chainId: number, protocol: ProtocolName): Promise<YieldOption[]> {
         const cacheKey = `${chainId}_${protocol}_assets`;
