@@ -15,29 +15,24 @@ export class AaveV3 implements IProtocol {
         const client = this.clients[chainId];
         if (!client) throw new Error(`missing public client for chain ID: ${chainId}`);
 
-        try {
-            const reserveData = await client.readContract({
-                // @ts-ignore
-                address: LENDING_POOL[chainId],
-                abi: LENDING_POOL_ABI,
-                functionName: 'getReserveData',
-                args: [asset]
-            });
+        const reserveData = await client.readContract({
+            // @ts-ignore
+            address: LENDING_POOL[chainId],
+            abi: LENDING_POOL_ABI,
+            functionName: 'getReserveData',
+            args: [asset]
+        });
 
-            // divided by 1e27 * 100 for percent
-            const apy = Number(reserveData[2]) / 1e25;
+        // divided by 1e27 * 100 for percent
+        const apy = Number(reserveData[2]) / 1e25;
 
-            return {
-                total: apy,
-                apy: [{
-                    rewardToken: asset,
-                    apy: apy
-                }]
-            };
-        } catch (e) {
-            console.error(e);
-            return EMPTY_YIELD_RESPONSE;
-        }
+        return {
+            total: apy,
+            apy: [{
+                rewardToken: asset,
+                apy: apy
+            }]
+        };
     }
 
     async getAssets(chainId: number): Promise<Address[]> {

@@ -28,13 +28,8 @@ export class Yearn implements IProtocol {
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         let vaults = this.cache.get("vaults") as Vault[];
         if (!vaults) {
-            try {
-                vaults = (await axios.get(`https://api.yearn.fi/v1/chains/${chainId}/vaults/all`)).data;
-                this.cache.set("vaults", vaults);
-            } catch (e) {
-                console.error(e);
-                return EMPTY_YIELD_RESPONSE;
-            }
+            vaults = (await axios.get(`https://api.yearn.fi/v1/chains/${chainId}/vaults/all`)).data;
+            this.cache.set("vaults", vaults);
         }
         const vault = vaults.find((vault: any) => vault.token.address.toLowerCase() === asset.toLowerCase());
 
@@ -56,48 +51,42 @@ export class Yearn implements IProtocol {
         if (assets) {
             return assets;
         }
-        try {
+        const numTokens = await client.readContract({
+            // @ts-ignore
+            address: VAULT_REGISTRY_ADDRESS[chainId],
+            abi: abiRegistry,
+            functionName: "numTokens",
+        }) as BigInt;
 
-            const numTokens = await client.readContract({
+        const registryTokens = await Promise.all(Array(Number(numTokens)).fill(undefined).map((_, i) =>
+            client.readContract({
                 // @ts-ignore
                 address: VAULT_REGISTRY_ADDRESS[chainId],
                 abi: abiRegistry,
-                functionName: "numTokens",
-            }) as BigInt;
+                functionName: "tokens",
+                args: [BigInt(i)]
+            })
+        ));
 
-            const registryTokens = await Promise.all(Array(Number(numTokens)).fill(undefined).map((_, i) =>
+        let factoryTokens: Address[] = [];
+        if (chainId === ChainId.Ethereum) {
+            const allDeployedVaults = await client.readContract({
+                address: VAULT_FACTORY_ADDRESS,
+                abi: abiFactory,
+                functionName: "allDeployedVaults",
+            });
+
+            factoryTokens = await Promise.all(allDeployedVaults.map(item =>
                 client.readContract({
-                    // @ts-ignore
-                    address: VAULT_REGISTRY_ADDRESS[chainId],
-                    abi: abiRegistry,
-                    functionName: "tokens",
-                    args: [BigInt(i)]
+                    address: item,
+                    abi: abiVault,
+                    functionName: "token",
                 })
             ));
-
-            let factoryTokens: Address[] = [];
-            if (chainId === ChainId.Ethereum) {
-                const allDeployedVaults = await client.readContract({
-                    address: VAULT_FACTORY_ADDRESS,
-                    abi: abiFactory,
-                    functionName: "allDeployedVaults",
-                });
-
-                factoryTokens = await Promise.all(allDeployedVaults.map(item =>
-                    client.readContract({
-                        address: item,
-                        abi: abiVault,
-                        functionName: "token",
-                    })
-                ));
-            }
-            assets = [...registryTokens, ...factoryTokens].filter((item, idx, arr) => arr.indexOf(item) === idx);
-            this.cache.set("assets", assets);
-            return assets;
-        } catch (e) {
-            console.error(e);
-            return [];
         }
+        assets = [...registryTokens, ...factoryTokens].filter((item, idx, arr) => arr.indexOf(item) === idx);
+        this.cache.set("assets", assets);
+        return assets;
     }
 }
 

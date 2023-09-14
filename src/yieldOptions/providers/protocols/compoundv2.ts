@@ -50,30 +50,25 @@ export class CompoundV2 implements IProtocol {
         const client = this.clients[chainId];
         if (!client) throw new Error(`missing public client for chain ID: ${chainId}`);
 
-        try {
+        // @ts-ignore
+        const cToken = assetToCToken[asset];
+
+        const supplyRate = await client.readContract({
             // @ts-ignore
-            const cToken = assetToCToken[asset];
+            address: cToken,
+            abi: CTOKEN_ABI,
+            functionName: 'supplyRatePerBlock'
+        });
 
-            const supplyRate = await client.readContract({
-                // @ts-ignore
-                address: cToken,
-                abi: CTOKEN_ABI,
-                functionName: 'supplyRatePerBlock'
-            });
+        const apy = (((Math.pow((Number(supplyRate) / 1e18 * 7200) + 1, 365))) - 1) * 100;
 
-            const apy = (((Math.pow((Number(supplyRate) / 1e18 * 7200) + 1, 365))) - 1) * 100;
-
-            return {
-                total: apy,
-                apy: [{
-                    rewardToken: asset,
-                    apy: apy
-                }]
-            };
-        } catch (e) {
-            console.error(e);
-            return EMPTY_YIELD_RESPONSE;
-        }
+        return {
+            total: apy,
+            apy: [{
+                rewardToken: asset,
+                apy: apy
+            }]
+        };
     }
 
     getAssets(chainId: number): Promise<Address[]> {

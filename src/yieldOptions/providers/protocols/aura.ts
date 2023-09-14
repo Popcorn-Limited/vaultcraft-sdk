@@ -41,12 +41,8 @@ export class Aura implements IProtocol {
     private async getPools(chainId: number): Promise<AuraPool[] | undefined> {
         let pools = this.cache.get("pools") as AuraPool[];
         if (!pools) {
-            try {
-                pools = await getAuraPools(chainId);
-                this.cache.set("pools", pools);
-            } catch (e) {
-                console.error(e);
-            }
+            pools = await getAuraPools(chainId);
+            this.cache.set("pools", pools);
         }
         return pools;
     }

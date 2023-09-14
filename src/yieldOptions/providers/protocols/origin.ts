@@ -20,22 +20,17 @@ export class Origin implements IProtocol {
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         if (chainId !== 1) throw new Error("Origin is only supported on Ethereum mainnet");
 
-        try {
-            const res = (await axios.get(
-                // @ts-ignore
-                `https://analytics.ousd.com/api/v2/${ADDRESS_TO_SYMBOL[asset.toLowerCase()]}/apr/trailing/30`
-            )).data;
-            return {
-                total: Number(res.apy),
-                apy: [{
-                    rewardToken: asset,
-                    apy: Number(res.apy),
-                }],
-            };
-        } catch (e) {
-            console.error(e);
-            return EMPTY_YIELD_RESPONSE;
-        }
+        const res = (await axios.get(
+            // @ts-ignore
+            `https://analytics.ousd.com/api/v2/${ADDRESS_TO_SYMBOL[asset.toLowerCase()]}/apr/trailing/30`
+        )).data;
+        return {
+            total: Number(res.apy),
+            apy: [{
+                rewardToken: asset,
+                apy: Number(res.apy),
+            }],
+        };
     }
 
     async getAssets(chainId: number): Promise<Address[]> {

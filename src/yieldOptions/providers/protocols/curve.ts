@@ -53,7 +53,7 @@ export class Curve implements IProtocol {
         return poolData.filter(pool => pool.gaugeAddress).map(pool => pool.lpTokenAddress);
     };
 
-    private async getPoolData(chainId: number): Promise<PoolData[] | undefined> {
+    private async getPoolData(chainId: number): Promise<PoolData[]> {
         // @ts-ignore
         const network = NETWORK_NAMES[chainId];
         if (!network) throw new Error(`chain %{chainId} not supported`);
@@ -61,21 +61,17 @@ export class Curve implements IProtocol {
         // if one hour has passed since we last called the Curve API, we'll refresh the cache data.
         let poolData = this.cache.get(`poolData_${network}`) as PoolData[];
         if (!poolData) {
-            try {
-                const main = axios.get(`https://api.curve.fi/api/getPools/${network}/main`);
-                const crypto = axios.get(`https://api.curve.fi/api/getPools/${network}/crypto`);
-                const factory = axios.get(`https://api.curve.fi/api/getPools/${network}/factory`);
-                const factoryCrypto = axios.get(`https://api.curve.fi/api/getPools/${network}/factory-crypto`);
-                const factoryCrvusd = axios.get(`https://api.curve.fi/api/getPools/${network}/factory-crvusd`);
-                const factoryTtricrypto = axios.get(`https://api.curve.fi/api/getPools/${network}/factory-tricrypto`);
+            const main = axios.get(`https://api.curve.fi/api/getPools/${network}/main`);
+            const crypto = axios.get(`https://api.curve.fi/api/getPools/${network}/crypto`);
+            const factory = axios.get(`https://api.curve.fi/api/getPools/${network}/factory`);
+            const factoryCrypto = axios.get(`https://api.curve.fi/api/getPools/${network}/factory-crypto`);
+            const factoryCrvusd = axios.get(`https://api.curve.fi/api/getPools/${network}/factory-crvusd`);
+            const factoryTtricrypto = axios.get(`https://api.curve.fi/api/getPools/${network}/factory-tricrypto`);
 
-                const responses = await Promise.all([main, crypto, factory, factoryCrypto, factoryCrvusd, factoryTtricrypto]);
-                const pools = responses.map((resp) => resp.data);
-                poolData = pools.map((pool) => pool.data.poolData).flat();
-                this.cache.set(`poolData_${network}`, poolData);
-            } catch (e) {
-                console.error(e);
-            }
+            const responses = await Promise.all([main, crypto, factory, factoryCrypto, factoryCrvusd, factoryTtricrypto]);
+            const pools = responses.map((resp) => resp.data);
+            poolData = pools.map((pool) => pool.data.poolData).flat();
+            this.cache.set(`poolData_${network}`, poolData);
         }
         return poolData;
     }

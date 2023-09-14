@@ -31,31 +31,26 @@ export class Idle implements IProtocol {
         const client = this.clients[chainId];
         if (!client) throw new Error(`missing public client for chain ID: ${chainId}`);
 
-        try {
-            // @ts-ignore
-            const idleAddresses = tranches[asset.toLowerCase()];
-            if (!idleAddresses) return EMPTY_YIELD_RESPONSE;
+        // @ts-ignore
+        const idleAddresses = tranches[asset.toLowerCase()];
+        if (!idleAddresses) return EMPTY_YIELD_RESPONSE;
 
-            const apr = await client.readContract({
-                address: idleAddresses.cdo,
-                abi: IDLE_CDO_ABI,
-                functionName: 'getApr',
-                args: [asset]
-            });
+        const apr = await client.readContract({
+            address: idleAddresses.cdo,
+            abi: IDLE_CDO_ABI,
+            functionName: 'getApr',
+            args: [asset]
+        });
 
-            const apy = apr2apy(apr) * 100;
+        const apy = apr2apy(apr) * 100;
 
-            return {
-                total: apy,
-                apy: [{
-                    rewardToken: asset,
-                    apy: apy
-                }]
-            };
-        } catch (e) {
-            console.error(e);
-            return EMPTY_YIELD_RESPONSE;
-        }
+        return {
+            total: apy,
+            apy: [{
+                rewardToken: asset,
+                apy: apy
+            }]
+        };
     }
 
     async getAssets(chainId: number): Promise<Address[]> {

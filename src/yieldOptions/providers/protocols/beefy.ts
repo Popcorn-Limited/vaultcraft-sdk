@@ -60,14 +60,9 @@ export class Beefy implements IProtocol {
     private async getActiveVaults(): Promise<BeefyVault[]> {
         let vaults = this.cache.get("vaults") as BeefyVault[];
         if (!vaults) {
-            try {
-                vaults = (await axios.get("https://api.beefy.finance/vaults")).data;
-                vaults = vaults.filter((vault) => vault.status === "active");
-                this.cache.set("vaults", vaults);
-            } catch (e) {
-                console.error(e);
-                vaults = [];
-            }
+            vaults = (await axios.get("https://api.beefy.finance/vaults")).data;
+            vaults = vaults.filter((vault) => vault.status === "active");
+            this.cache.set("vaults", vaults);
         }
         return vaults;
     }
@@ -75,12 +70,8 @@ export class Beefy implements IProtocol {
     private async getApys(): Promise<ApyBreakdown | undefined> {
         let apy = this.cache.get("apy") as ApyBreakdown;
         if (!apy) {
-            try {
-                apy = (await axios("https://api.beefy.finance/apy/breakdown")).data;
-                this.cache.set("apy", apy);
-            } catch (e) {
-                console.error(e);
-            }
+            apy = (await axios("https://api.beefy.finance/apy/breakdown")).data;
+            this.cache.set("apy", apy);
         }
         return apy;
     }
