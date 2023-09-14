@@ -1,6 +1,9 @@
 name: APY
 run-name: Pull APY data
-on: pull_request
+on:
+    schedule:
+        # * is a special character in YAML so you have to quote this string
+        - cron:  '0 * * * *'
 
 jobs:
   full:
