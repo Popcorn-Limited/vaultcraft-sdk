@@ -1,6 +1,6 @@
 import { Address } from "viem";
 import { Yield } from "src/yieldOptions/types.js";
-import { Clients, IProtocol, EMPTY_YIELD_RESPONSE } from "./index.js";
+import { Clients, IProtocol } from "./index.js";
 import { LENDING_POOL_ABI } from "./abi/aave_v2_lending_pool.js";
 
 const LENDING_POOL = { 1: "0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9" };

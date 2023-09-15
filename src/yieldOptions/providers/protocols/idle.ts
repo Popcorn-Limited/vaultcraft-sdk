@@ -1,5 +1,5 @@
 import type { Yield } from "src/yieldOptions/types.js";
-import { Clients, EMPTY_YIELD_RESPONSE, IProtocol } from "./index.js";
+import { Clients, IProtocol, getEmptyYield } from "./index.js";
 import { Address } from "viem";
 import { IDLE_CDO_ABI } from "./abi/idle_cdo.js";
 
@@ -33,7 +33,7 @@ export class Idle implements IProtocol {
 
         // @ts-ignore
         const idleAddresses = tranches[asset.toLowerCase()];
-        if (!idleAddresses) return EMPTY_YIELD_RESPONSE;
+        if (!idleAddresses) return getEmptyYield(asset);
 
         const apr = await client.readContract({
             address: idleAddresses.cdo,

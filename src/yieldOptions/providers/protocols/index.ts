@@ -10,13 +10,15 @@ export type Clients = {
     [chainId: number]: PublicClient;
 };
 
-export const EMPTY_YIELD_RESPONSE = {
-    total: 0,
-    apy: [{
-        rewardToken: zeroAddress,
-        apy: 0
-    }]
-};
+export function getEmptyYield(asset: Address): Yield {
+    return {
+        total: 0,
+        apy: [{
+            rewardToken: asset,
+            apy: 0,
+        }]
+    };
+}
 
 export { AaveV2 } from "./aavev2.js";
 export { AaveV3 } from "./aavev3.js";

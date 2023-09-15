@@ -1,6 +1,6 @@
 import { Address } from "viem";
 import { Yield } from "src/yieldOptions/types.js";
-import { Clients, IProtocol, EMPTY_YIELD_RESPONSE } from "./index.js";
+import { Clients, IProtocol } from "./index.js";
 import { CTOKEN_ABI } from "./abi/compound_v2_ctoken.js";
 
 // Compound V2 is mainnet only. Thus we can simplify a lot of stuff

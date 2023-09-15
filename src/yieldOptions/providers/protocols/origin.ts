@@ -1,6 +1,6 @@
 import { Address } from "viem";
 import { Yield } from "src/yieldOptions/types.js";
-import { IProtocol, EMPTY_YIELD_RESPONSE } from "./index.js";
+import { IProtocol } from "./index.js";
 import axios from "axios";
 
 const ADDRESS_TO_SYMBOL = {

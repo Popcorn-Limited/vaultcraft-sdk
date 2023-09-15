@@ -1,5 +1,5 @@
 import { Yield } from "src/yieldOptions/types.js";
-import { EMPTY_YIELD_RESPONSE, IProtocol } from "./index.js";
+import { getEmptyYield, IProtocol } from "./index.js";
 import { Address } from "viem";
 import { networkNames } from "@/lib/helpers.js";
 import NodeCache from "node-cache";
@@ -30,7 +30,6 @@ export class Beefy implements IProtocol {
         let vaults = await this.getActiveVaults();
 
         const apy = await this.getApys();
-        if (!apy) return EMPTY_YIELD_RESPONSE;
 
         vaults = vaults.filter((vault) =>
             // @ts-ignore
@@ -38,7 +37,7 @@ export class Beefy implements IProtocol {
         );
         const beefyVaultObj = vaults.find(vault => vault.tokenAddress.toLowerCase() === asset.toLowerCase());
 
-        return !beefyVaultObj ? EMPTY_YIELD_RESPONSE : {
+        return !beefyVaultObj ? getEmptyYield(asset) : {
             total: apy[beefyVaultObj.id].totalApy * 100,
             apy: [{
                 rewardToken: asset.toLowerCase(),
@@ -67,7 +66,7 @@ export class Beefy implements IProtocol {
         return vaults;
     }
 
-    private async getApys(): Promise<ApyBreakdown | undefined> {
+    private async getApys(): Promise<ApyBreakdown> {
         let apy = this.cache.get("apy") as ApyBreakdown;
         if (!apy) {
             apy = (await axios("https://api.beefy.finance/apy/breakdown")).data;

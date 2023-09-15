@@ -2,7 +2,7 @@ import axios from "axios";
 import NodeCache from "node-cache";
 import { Address } from "viem";
 import { Yield } from "src/yieldOptions/types.js";
-import { IProtocol, EMPTY_YIELD_RESPONSE } from "./index.js";
+import { IProtocol, getEmptyYield } from "./index.js";
 
 const NETWORK_NAMES = { 1: "ethereum", 1337: "ethereum", 10: "optimism", 137: "polygon", 250: "fantom", 42161: "arbitrum" };
 
@@ -29,10 +29,9 @@ export class Curve implements IProtocol {
 
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         const poolData = await this.getPoolData(chainId);
-        if (!poolData) return EMPTY_YIELD_RESPONSE;
 
         const pool = poolData.find(pool => pool.lpTokenAddress?.toLowerCase() === asset.toLowerCase());
-        if (!pool) return EMPTY_YIELD_RESPONSE;
+        if (!pool) return getEmptyYield(asset);
         // TODO: there are quite a number of pools that have `null` or no gauge reward data at all.
         // This covers all such cases. It sets the apy to 0 for all of them. Ideally we'd filter those out
         const apy = pool.gaugeCrvApy?.length > 0 ? pool.gaugeCrvApy[0] || 0 : 0;

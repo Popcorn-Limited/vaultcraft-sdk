@@ -1,5 +1,5 @@
 import { Yield } from "src/yieldOptions/types.js";
-import { Clients, EMPTY_YIELD_RESPONSE, IProtocol } from "./index.js";
+import { Clients, IProtocol, getEmptyYield } from "./index.js";
 import { Address } from "viem";
 import { ChainId } from "@/lib/helpers.js";
 import NodeCache from "node-cache";
@@ -33,15 +33,15 @@ export class Yearn implements IProtocol {
         }
         const vault = vaults.find((vault: any) => vault.token.address.toLowerCase() === asset.toLowerCase());
 
-            return vault === undefined ?
-                EMPTY_YIELD_RESPONSE :
-                {
-                    total: vault.apy.net_apy * 100,
-                    apy: [{
-                        rewardToken: asset.toLowerCase(),
-                        apy: vault.apy.net_apy * 100
-                    }]
-                };
+        return !vault ?
+            getEmptyYield(asset) :
+            {
+                total: vault.apy.net_apy * 100,
+                apy: [{
+                    rewardToken: asset.toLowerCase(),
+                    apy: vault.apy.net_apy * 100
+                }]
+            };
     }
 
     async getAssets(chainId: number): Promise<Address[]> {

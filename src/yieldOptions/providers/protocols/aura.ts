@@ -2,7 +2,7 @@ import axios from "axios";
 import NodeCache from "node-cache";
 import { Yield } from "src/yieldOptions/types.js";
 import { Address } from "viem";
-import { EMPTY_YIELD_RESPONSE, IProtocol } from "./index.js";
+import { getEmptyYield, IProtocol } from "./index.js";
 
 
 export class Aura implements IProtocol {
@@ -13,12 +13,11 @@ export class Aura implements IProtocol {
     }
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         const pools = await this.getPools(chainId);
-        if (!pools) return EMPTY_YIELD_RESPONSE;
 
         const pool = pools.find(pool => pool.lpToken.address.toLowerCase() === asset.toLowerCase());
 
         return pool === undefined ?
-            EMPTY_YIELD_RESPONSE :
+            getEmptyYield(asset) :
             {
                 total: pool.aprs.total,
                 apy: pool.aprs.breakdown.map(b => {
@@ -38,7 +37,7 @@ export class Aura implements IProtocol {
         return pools.filter(pool => !pool.isShutdown).map(pool => pool.lpToken.address) as Address[];
     }
 
-    private async getPools(chainId: number): Promise<AuraPool[] | undefined> {
+    private async getPools(chainId: number): Promise<AuraPool[]> {
         let pools = this.cache.get("pools") as AuraPool[];
         if (!pools) {
             pools = await getAuraPools(chainId);
