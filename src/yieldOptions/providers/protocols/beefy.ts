@@ -48,7 +48,7 @@ export class Beefy implements IProtocol {
 
     async getAssets(chainId: number): Promise<Address[]> {
         let vaults = await this.getActiveVaults();
-        vaults.filter((vault) =>
+        vaults = vaults.filter((vault) =>
             // @ts-ignore
             vault.network === networkNames[chainId].toLowerCase()
         );
