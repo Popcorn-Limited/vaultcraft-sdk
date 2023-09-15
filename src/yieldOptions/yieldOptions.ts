@@ -33,18 +33,17 @@ export class YieldOptions {
         return allAssets;
     }
 
-    // getProtocolsByAsset(chainId: number, asset: Address): ProtocolName[] {
-    //     if (chainId !== 1) {
-    //         throw new Error("only supported on mainnet");
-    //     }
-    //     // protocol[0] == protocol name, e.g. "aaveV2"
-    //     // protocol[1] == list of asset addresses
-    //     // we filter out all the ones that don't contain the asset we're looking for and
-    //     // create a new array containing the protocol names of the ones that have the asset.
-    //     return Object.entries(assets[1])
-    //         .filter((protocol) => protocol[1].indexOf(asset) !== -1)
-    //         .map((protocol) => protocol[0]) as ProtocolName[];
-    // }
+    async getProtocolsByAsset(chainId: number, asset: Address): Promise<ProtocolName[]> {
+        const protocols = this.getProtocols(chainId);
+        const result: ProtocolName[] = [];
+        for (let protocol in protocols) {
+            const assets = await this.provider.getAssets(1, protocol as ProtocolName);
+            if (assets.indexOf(asset) !== -1) {
+                result.push(protocol as ProtocolName);
+            }
+        }
+        return result;
+    }
 
     async getYieldOptionsByProtocol(chainId: number, protocol: ProtocolName): Promise<YieldOption[]> {
         const cacheKey = `${chainId}_${protocol}_assets`;
