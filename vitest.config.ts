@@ -1,4 +1,5 @@
 import { defineConfig } from "vitest/config";
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 // https://vitest.dev/config/
 export default defineConfig({
@@ -6,4 +7,5 @@ export default defineConfig({
     globalSetup: ["./test/globalSetup.ts"],
     setupFiles: ["./test/setup.ts"],
   },
+  plugins: [tsconfigPaths()],
 });

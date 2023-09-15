@@ -8,7 +8,7 @@ export interface YieldData {
 
 export interface Chain {
   assetsByProtocol: {
-    [protocol: string]: Asset[];
+    [protocol: string]: YieldOption[];
   };
   protocolsByAsset: {
     [asset: string]: string[];
@@ -17,7 +17,7 @@ export interface Chain {
   protocols: string[];
 }
 
-export interface Asset {
+export interface YieldOption {
   address: string;
   yield: Yield;
 }
@@ -54,3 +54,5 @@ export enum InitParamRequirement {
   "NotAddressZero",
   "NotZero",
 }
+
+export type ProtocolName = 'aaveV2' | 'aaveV3' | 'aura' | 'beefy' | 'compoundV2' | 'curve' | 'idle' | 'origin' | 'yearn';

@@ -12,7 +12,9 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "yarn run clean && tsc && babel ./src --out-dir ./dist --extensions \".ts,.js\" --copy-files",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:unit": "vitest run unit",
+    "test:integration": "vitest run integration"
   },
   "dependencies": {
     "@babel/plugin-syntax-import-attributes": "^7.22.5",
@@ -24,6 +26,7 @@
     "find-config": "^1.0.0",
     "jotai": "^2.0.1",
     "next": "^13.3.4",
+    "node-cache": "^5.1.2",
     "rc-tooltip": "^5.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -46,6 +49,7 @@
     "eslint-config-next": "^13.3.4",
     "prettier": "^2.8.8",
     "rimraf": "^5.0.1",
+    "vite-tsconfig-paths": "^4.2.0",
     "vitest": "^0.34.1"
   }
 }
