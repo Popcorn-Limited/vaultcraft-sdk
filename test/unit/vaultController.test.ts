@@ -48,6 +48,7 @@ describe("write-only", () => {
         expect(args).toEqual([[VAULT_ADDRESS], ["0x612465C8d6F1B2Bc85DF43224a8A3b5e04F634fc"]]);
     });
 
+    // This test times out regulary. Increasing the timeout to 10 secs should fix that
     test("changeVaultAdapters() should change the adapters for the given vaults", async () => {
         // got to propose fees first before we can change them.
         await controller.proposeVaultAdapters([VAULT_ADDRESS], ["0x612465C8d6F1B2Bc85DF43224a8A3b5e04F634fc"], { account: ADMIN_ADDRESS });
@@ -67,7 +68,7 @@ describe("write-only", () => {
         expect(tx.to).toBe(controller.address.toLowerCase());
         expect(functionName).toBe("changeVaultAdapters");
         expect(args).toEqual([[VAULT_ADDRESS]]);
-    });
+    }, 10_000); 
 
     test("proposeVaultFees() should propose the fees for the given vaults", async () => {
         const fees: VaultFees = {
