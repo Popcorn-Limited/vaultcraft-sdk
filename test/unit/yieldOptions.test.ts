@@ -23,7 +23,8 @@ test("getProtocols() should return a list of protocols for the given chain ID", 
         'curve',
         'idle',
         'origin',
-        'yearn'
+        'yearn',
+        'balancer',
     ];
     expect(result).toEqual(want);
 });
