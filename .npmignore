@@ -1,0 +1,12 @@
+.github/
+src/
+test/
+.babelrc
+.env
+.env.example
+.eslintrc.json
+.prettierignore
+prettier.config.js
+tsconfig.json
+vitest.config.ts
+yarn.lock
