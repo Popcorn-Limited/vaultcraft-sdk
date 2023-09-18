@@ -1,6 +1,7 @@
 import { AaveV2, AaveV3, Aura, Beefy, Clients, CompoundV2, Curve, IProtocol, Idle, Origin, Yearn } from "./protocols/index.js";
 import { Address } from "viem";
 import { ProtocolName, Yield } from "../types.js";
+import { Balancer } from "./protocols/balancer.js";
 
 export class ProtocolProvider implements IProtocolProvider {
     private protocols: {
@@ -17,6 +18,7 @@ export class ProtocolProvider implements IProtocolProvider {
             "idle": new Idle(clients),
             "origin": new Origin(),
             "yearn": new Yearn(clients, ttl),
+            "balancer": new Balancer(ttl),
         };
     }
 
