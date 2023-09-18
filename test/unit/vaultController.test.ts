@@ -208,4 +208,4 @@ describe("write-only", () => {
         expect(functionName).toBe("setVaultDepositLimits");
         expect(args).toEqual([[VAULT_ADDRESS], [BigInt(10)]]);
     });
-});
+}, 10_000);

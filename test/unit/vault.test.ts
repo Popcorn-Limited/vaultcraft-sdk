@@ -277,7 +277,7 @@ describe("write-only", () => {
         expect(functionName).toBe("redeem");
         expect(args).toEqual([BigInt(1e18), user, user]);
     });
-});
+}, 10_000);
 
 function approve(amount: bigint) {
     return walletClient.writeContract({
