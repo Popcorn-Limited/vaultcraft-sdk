@@ -1,10 +1,6 @@
-import { AaveV2, AaveV3, Aura, Beefy, Clients, CompoundV2, Curve, IProtocol, Idle, Origin, Yearn } from "./protocols/index.js";
+import { AaveV2, AaveV3, Aura, Beefy, Clients, CompoundV2, Curve, IProtocol, Idle, Origin, Yearn, Balancer, CompoundV3, Flux, Convex } from "./protocols/index.js";
 import { Address } from "viem";
 import { ProtocolName, Yield } from "../types.js";
-import { Balancer } from "./protocols/balancer.js";
-import { CompoundV3 } from "./protocols/compoundv3.js";
-import { Flux } from "./protocols/flux.js";
-import { Convex } from "./protocols/convex.js";
 
 export class ProtocolProvider implements IProtocolProvider {
     private protocols: {
