@@ -3,6 +3,7 @@ import { Address } from "viem";
 import { ProtocolName, Yield } from "../types.js";
 import { Balancer } from "./protocols/balancer.js";
 import { CompoundV3 } from "./protocols/compoundv3.js";
+import { Flux } from "./protocols/flux.js";
 
 export class ProtocolProvider implements IProtocolProvider {
     private protocols: {
@@ -21,6 +22,7 @@ export class ProtocolProvider implements IProtocolProvider {
             "origin": new Origin(),
             "yearn": new Yearn(clients, ttl),
             "balancer": new Balancer(ttl),
+            "flux": new Flux(clients[1]),
         };
     }
 
