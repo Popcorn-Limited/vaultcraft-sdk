@@ -5,16 +5,16 @@ import axios from "axios";
 
 // @dev Make sure the keys here are correct checksum addresses
 const ADDRESS_TO_SYMBOL = {
-    "0xc8c88fdf2802733f8c4cd7c0be0557fdc5d2471c": "ousd", // pop-OUSD
-    "0x95ca391fb08f612dc6b0cbddcb6708c21d5a8295": "oeth", // pop-OETH
-    "0x2a8e1e676ec238d8a992307b495b45b3feaa5e86": "ousd", // OUSD
-    "0x856c4efb76c1d1ae02e20ceb03a2a6a08b0b8dc3": "oeth", // OETH
-    "0xd2af830e8cbdfed6cc11bab697bb25496ed6fa62": "ousd", // wOUSD
-    "0xdcee70654261af21c44c093c300ed3bb97b78192": "oeth", // wOETH
+    "0xc8C88fdF2802733f8c4cd7c0bE0557fdC5d2471c": "ousd", // pop-OUSD
+    "0x95Ca391fB08F612Dc6b0CbDdcb6708C21d5A8295": "oeth", // pop-OETH
+    "0x2A8e1E676Ec238d8A992307B495b45B3fEAa5e86": "ousd", // OUSD
+    "0x856c4Efb76C1D1AE02e20CEB03A2A6a08b0b8dC3": "oeth", // OETH
+    "0xD2af830E8CBdFed6CC11Bab697bB25496ed6FA62": "ousd", // wOUSD
+    "0xDcEe70654261AF21C44c093C300eD3Bb97b78192": "oeth", // wOETH
 };
 
 // @dev Make sure the keys here are correct checksum addresses
-const ORIGIN_TOKENS: Address[] = ["0x856c4efb76c1d1ae02e20ceb03a2a6a08b0b8dc3", "0x2a8e1e676ec238d8a992307b495b45b3feaa5e86"]; // oETH, oUSD
+const ORIGIN_TOKENS: Address[] = ["0x856c4Efb76C1D1AE02e20CEB03A2A6a08b0b8dC3", "0x2A8e1E676Ec238d8A992307B495b45B3fEAa5e86"]; // oETH, oUSD
 
 
 export class Origin implements IProtocol {
