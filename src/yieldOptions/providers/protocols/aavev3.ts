@@ -1,4 +1,4 @@
-import { Address } from "viem";
+import { Address, getAddress } from "viem";
 import { Yield } from "src/yieldOptions/types.js";
 import { Clients, IProtocol } from "./index.js";
 import { LENDING_POOL_ABI } from "./abi/aave_v3_lending_pool.js";
@@ -29,7 +29,7 @@ export class AaveV3 implements IProtocol {
         return {
             total: apy,
             apy: [{
-                rewardToken: asset,
+                rewardToken: getAddress(asset),
                 apy: apy
             }]
         };
@@ -39,13 +39,14 @@ export class AaveV3 implements IProtocol {
         const client = this.clients[chainId];
         if (!client) throw new Error(`missing public client for chain ID: ${chainId}`);
         try {
-            return await client.readContract({
+            const assets = await client.readContract({
                 // TODO: find a cleaner way to pass an arbitrary chainID here
                 // @ts-ignore
                 address: LENDING_POOL[chainId],
                 abi: LENDING_POOL_ABI,
                 functionName: "getReservesList",
             }) as Address[]; // viem returns `readonly` type which we don't want
+            return assets.map(asset => getAddress(asset));
         } catch (e) {
             console.error(e);
             return [];

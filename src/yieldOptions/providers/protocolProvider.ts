@@ -1,5 +1,5 @@
 import { AaveV2, AaveV3, Aura, Beefy, Clients, CompoundV2, Curve, IProtocol, Idle, Origin, Yearn } from "./protocols/index.js";
-import { Address } from "viem";
+import { Address, getAddress } from "viem";
 import { ProtocolName, Yield } from "../types.js";
 import { Balancer } from "./protocols/balancer.js";
 import { CompoundV3 } from "./protocols/compoundv3.js";
@@ -38,7 +38,7 @@ export class ProtocolProvider implements IProtocolProvider {
 
     getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield> {
         if (!this.protocols[protocol]) throw new Error(`${protocol} not supported`);
-        return this.protocols[protocol].getApy(chainId, asset);
+        return this.protocols[protocol].getApy(chainId, getAddress(asset));
     }
 }
 

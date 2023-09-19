@@ -1,4 +1,4 @@
-import { Address, PublicClient, zeroAddress } from "viem";
+import { Address, PublicClient, getAddress, zeroAddress } from "viem";
 import { Yield } from "src/yieldOptions/index.js";
 
 export interface IProtocol {
@@ -14,7 +14,7 @@ export function getEmptyYield(asset: Address): Yield {
     return {
         total: 0,
         apy: [{
-            rewardToken: asset,
+            rewardToken: getAddress(asset),
             apy: 0,
         }]
     };

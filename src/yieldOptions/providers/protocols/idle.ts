@@ -1,20 +1,23 @@
 import type { Yield } from "src/yieldOptions/types.js";
 import { Clients, IProtocol, getEmptyYield } from "./index.js";
-import { Address } from "viem";
+import { Address, getAddress } from "viem";
 import { IDLE_CDO_ABI } from "./abi/idle_cdo.js";
 
+// TODO -- Split idle into two protocols. Idle Junior and Idle Senior
+// @dev Make sure the keys here are correct checksum addresses
 const tranches = {
-    "0x6b175474e89094c44da98b954eedeac495271d0f": { cdo: "0x5dca0b3ed7594a6613c1a2acd367d56e1f74f92d", tranch: "0x38d36353d07cfb92650822d9c31fb4ada1c73d6e" }, // dai junior
-    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": { cdo: "0x1329E8DB9Ed7a44726572D44729427F132Fa290D", tranch: "0xf85Fd280B301c0A6232d515001dA8B6c8503D714" }, // usdc junior
-    "0xdac17f958d2ee523a2206206994597c13d831ec7": { cdo: "0xc4574C60a455655864aB80fa7638561A756C5E61", tranch: "0x3Eb6318b8D9f362a0e1D99F6032eDB1C4c602500" }, // usdt junior
+    "0x6B175474E89094C44Da98b954EedeAC495271d0F": { cdo: "0x5dca0b3ed7594a6613c1a2acd367d56e1f74f92d", tranch: "0x38d36353d07cfb92650822d9c31fb4ada1c73d6e" }, // dai junior
+    "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": { cdo: "0x1329E8DB9Ed7a44726572D44729427F132Fa290D", tranch: "0xf85Fd280B301c0A6232d515001dA8B6c8503D714" }, // usdc junior
+    "0xdAC17F958D2ee523a2206206994597C13D831ec7": { cdo: "0xc4574C60a455655864aB80fa7638561A756C5E61", tranch: "0x3Eb6318b8D9f362a0e1D99F6032eDB1C4c602500" }, // usdt junior
 };
 
+// @dev Make sure the keys here are correct checksum addresses
 const assets: Address[] = [
-    "0x6b175474e89094c44da98b954eedeac495271d0f", // DAI
-    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", // USDC
-    "0xdac17f958d2ee523a2206206994597c13d831ec7", // USDT
-    "0xae7ab96520de3a18e5e111b5eaab095312d7fe84", // stETH
-    "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0"  // Matic
+    "0x6B175474E89094C44Da98b954EedeAC495271d0F", // DAI
+    "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", // USDC
+    "0xdAC17F958D2ee523a2206206994597C13D831ec7", // USDT
+    "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84", // stETH
+    "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0"  // Matic
 ];
 
 const apr2apy = (apr: BigInt) => {
@@ -47,7 +50,7 @@ export class Idle implements IProtocol {
         return {
             total: apy,
             apy: [{
-                rewardToken: asset,
+                rewardToken: getAddress(asset),
                 apy: apy
             }]
         };
@@ -55,6 +58,6 @@ export class Idle implements IProtocol {
 
     async getAssets(chainId: number): Promise<Address[]> {
         if (chainId !== 1) throw new Error("Idle vaults are only available on Ethereum mainnet");
-        return assets;
+        return assets.map(asset => getAddress(asset));
     };
 }

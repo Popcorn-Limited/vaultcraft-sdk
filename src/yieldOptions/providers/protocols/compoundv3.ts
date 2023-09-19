@@ -1,7 +1,8 @@
-import { Address, parseAbi, PublicClient } from "viem";
+import { Address, getAddress, parseAbi, PublicClient } from "viem";
 import { Clients, IProtocol } from "./index.js";
 import { Yield } from "src/yieldOptions/types.js";
 
+// @dev Make sure the keys here are correct checksum addresses
 const assetToCToken = {
     1: {
         // USDC
@@ -27,6 +28,7 @@ const assetToCToken = {
     },
 };
 
+// @dev Make sure the keys here are correct checksum addresses
 const CompAddress = {
     1: "0xc00e94Cb662C3520282E6f5717214004A7f26888",
     42161: "0x354A6dA3fcde098F8389cad84b0182725c6C91dE",
@@ -78,12 +80,12 @@ export class CompoundV3 implements IProtocol {
             total: Number(supplyApr + supplyCompRewardApr),
             apy: [
                 {
-                    rewardToken: asset,
+                    rewardToken: getAddress(asset),
                     apy: Number(supplyApr),
                 },
                 {
                     // @ts-ignore
-                    rewardToken: CompAddress[chainId],
+                    rewardToken: getAddress(CompAddress[chainId]),
                     apy: Number(supplyCompRewardApr),
                 }
             ]
@@ -94,7 +96,7 @@ export class CompoundV3 implements IProtocol {
 
     getAssets(chainId: number): Promise<Address[]> {
         // @ts-ignore
-        return Promise.resolve(Object.keys(assetToCToken[chainId]).map((key) => key as Address));
+        return Promise.resolve(Object.keys(assetToCToken[chainId]).map((key) => getAddress(key)));
     }
 
 

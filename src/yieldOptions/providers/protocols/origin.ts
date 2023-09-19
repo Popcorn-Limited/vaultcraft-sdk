@@ -1,8 +1,9 @@
-import { Address } from "viem";
+import { Address, getAddress } from "viem";
 import { Yield } from "src/yieldOptions/types.js";
 import { IProtocol } from "./index.js";
 import axios from "axios";
 
+// @dev Make sure the keys here are correct checksum addresses
 const ADDRESS_TO_SYMBOL = {
     "0xc8c88fdf2802733f8c4cd7c0be0557fdc5d2471c": "ousd", // pop-OUSD
     "0x95ca391fb08f612dc6b0cbddcb6708c21d5a8295": "oeth", // pop-OETH
@@ -12,7 +13,7 @@ const ADDRESS_TO_SYMBOL = {
     "0xdcee70654261af21c44c093c300ed3bb97b78192": "oeth", // wOETH
 };
 
-// @dev dont forget to lowercase the keys when you add a new one
+// @dev Make sure the keys here are correct checksum addresses
 const ORIGIN_TOKENS: Address[] = ["0x856c4efb76c1d1ae02e20ceb03a2a6a08b0b8dc3", "0x2a8e1e676ec238d8a992307b495b45b3feaa5e86"]; // oETH, oUSD
 
 
@@ -27,7 +28,7 @@ export class Origin implements IProtocol {
         return {
             total: Number(res.apy),
             apy: [{
-                rewardToken: asset,
+                rewardToken: getAddress(asset),
                 apy: Number(res.apy),
             }],
         };
@@ -36,6 +37,6 @@ export class Origin implements IProtocol {
     async getAssets(chainId: number): Promise<Address[]> {
         if (chainId !== 1) throw new Error("Origin is only supported on Ethereum mainnet");
 
-        return ORIGIN_TOKENS;
+        return ORIGIN_TOKENS.map(asset => getAddress(asset));
     }
 }
