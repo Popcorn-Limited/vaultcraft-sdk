@@ -26,6 +26,7 @@ test("getProtocols() should return a list of protocols for the given chain ID", 
         'origin',
         'yearn',
         'balancer',
+        'flux',
     ];
     expect(result).toEqual(want);
 });
