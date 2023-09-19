@@ -1,7 +1,7 @@
 import axios from "axios";
 import { IProtocolProvider } from "./protocolProvider.js";
 import { ProtocolName, Yield } from "../types.js";
-import { Address } from "viem";
+import { Address, getAddress } from "viem";
 
 type Data = {
     [chainId: number]: {
@@ -24,7 +24,7 @@ export class CachedProvider implements IProtocolProvider {
     }
 
     getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield> {
-        return Promise.resolve(this.data[chainId][protocol][asset]);
+        return Promise.resolve(this.data[chainId][protocol][getAddress(asset)]);
     }
 
     getProtocols(chainId: number): ProtocolName[] {

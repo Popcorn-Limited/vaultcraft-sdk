@@ -1,6 +1,6 @@
 import { Yield } from "src/yieldOptions/types.js";
 import { IProtocol, getEmptyYield } from "./index.js";
-import { Address } from "viem";
+import { Address, getAddress } from "viem";
 import { AuraPool, getAuraPools } from "./aura.js";
 import axios from "axios";
 import NodeCache from "node-cache";
@@ -37,7 +37,7 @@ export class Balancer implements IProtocol {
 
             result.total += apr.value;
             result.apy!.push({
-                rewardToken: apr.token?.address || asset,
+                rewardToken: getAddress(apr.token?.address || asset),
                 apy: apr.value,
             });
         });
@@ -46,7 +46,7 @@ export class Balancer implements IProtocol {
 
     async getAssets(chainId: number): Promise<Address[]> {
         const gauges = await this.getBalancerGauges(chainId);
-        return gauges.map((gauge) => gauge.lpToken);
+        return gauges.map((gauge) => getAddress(gauge.lpToken));
     }
 
     private async getBalancerGauges(chainId: number): Promise<Gauge[]> {
@@ -72,8 +72,8 @@ export class Balancer implements IProtocol {
 
         return res.data.data.liquidityGauges.map((gauge: { id: Address; poolAddress: Address; }) => {
             return {
-                address: gauge.id,
-                lpToken: gauge.poolAddress,
+                address: getAddress(gauge.id),
+                lpToken: getAddress(gauge.poolAddress),
             } as Gauge;
         });
     }

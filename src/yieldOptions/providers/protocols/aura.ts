@@ -1,7 +1,7 @@
 import axios from "axios";
 import NodeCache from "node-cache";
 import { Yield } from "src/yieldOptions/types.js";
-import { Address } from "viem";
+import { Address, getAddress } from "viem";
 import { getEmptyYield, IProtocol } from "./index.js";
 
 
@@ -31,7 +31,7 @@ export class Aura implements IProtocol {
 
             result.total += apr.value;
             result.apy!.push({
-                rewardToken: apr.token?.address || asset,
+                rewardToken: getAddress(apr.token?.address || asset),
                 apy: apr.value,
             });
         });
@@ -42,7 +42,7 @@ export class Aura implements IProtocol {
         const pools = await this.getPools(chainId);
         if (!pools) return [];
 
-        return pools.filter(pool => !pool.isShutdown).map(pool => pool.lpToken.address) as Address[];
+        return pools.filter(pool => !pool.isShutdown).map(pool => getAddress(pool.lpToken.address)) as Address[];
     }
 
     private async getPools(chainId: number): Promise<AuraPool[]> {

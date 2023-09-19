@@ -1,6 +1,6 @@
 import { Yield } from "src/yieldOptions/types.js";
 import { Clients, IProtocol, getEmptyYield } from "./index.js";
-import { Address } from "viem";
+import { Address, getAddress } from "viem";
 import { ChainId } from "@/lib/helpers.js";
 import NodeCache from "node-cache";
 import axios from "axios";
@@ -38,7 +38,7 @@ export class Yearn implements IProtocol {
             {
                 total: vault.apy.net_apy * 100,
                 apy: [{
-                    rewardToken: asset.toLowerCase(),
+                    rewardToken: getAddress(asset),
                     apy: vault.apy.net_apy * 100
                 }]
             };
@@ -84,7 +84,7 @@ export class Yearn implements IProtocol {
                 })
             ));
         }
-        assets = [...registryTokens, ...factoryTokens].filter((item, idx, arr) => arr.indexOf(item) === idx);
+        assets = [...registryTokens, ...factoryTokens].filter((item, idx, arr) => arr.indexOf(item) === idx).map(asset => getAddress(asset));
         this.cache.set("assets", assets);
         return assets;
     }

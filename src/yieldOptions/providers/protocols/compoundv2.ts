@@ -1,9 +1,10 @@
-import { Address } from "viem";
+import { Address, getAddress } from "viem";
 import { Yield } from "src/yieldOptions/types.js";
 import { Clients, IProtocol } from "./index.js";
 import { CTOKEN_ABI } from "./abi/compound_v2_ctoken.js";
 
 // Compound V2 is mainnet only. Thus we can simplify a lot of stuff
+// @dev Make sure the keys here are correct checksum addresses
 const assetToCToken = {
     // TODO: add ETH
     // AAVE
@@ -65,7 +66,7 @@ export class CompoundV2 implements IProtocol {
         return {
             total: apy,
             apy: [{
-                rewardToken: asset,
+                rewardToken: getAddress(asset),
                 apy: apy
             }]
         };
@@ -74,6 +75,6 @@ export class CompoundV2 implements IProtocol {
     getAssets(chainId: number): Promise<Address[]> {
         if (chainId !== 1) throw new Error("Compound V2 is only available on Ethereum mainnet");
 
-        return Promise.resolve(Object.keys(assetToCToken).map((key) => key as Address));
+        return Promise.resolve(Object.keys(assetToCToken).map((key) => getAddress(key)));
     }
 }

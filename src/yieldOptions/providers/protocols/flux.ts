@@ -1,9 +1,11 @@
 import type { Yield } from "src/yieldOptions/types.js";
-import { Address, PublicClient } from "viem";
+import { Address, PublicClient, getAddress } from "viem";
 import { CTOKEN_ABI } from "./abi/compound_v2_ctoken.js";
 import { IProtocol } from "./index.js";
 
+
 // Flux is mainnet only.
+// @dev Make sure the keys here are correct checksum addresses
 const assetToCToken = {
     // DAI
     "0x6B175474E89094C44Da98b954EedeAC495271d0F": "0xe2bA8693cE7474900A045757fe0efCa900F6530b",
@@ -41,7 +43,7 @@ export class Flux implements IProtocol {
         return {
             total: apy,
             apy: [{
-                rewardToken: asset,
+                rewardToken: getAddress(asset),
                 apy: apy
             }]
         };
@@ -50,6 +52,6 @@ export class Flux implements IProtocol {
     getAssets(chainId: number): Promise<Address[]> {
         if (chainId !== 1) throw new Error("Flux is only available on Ethereum mainnet");
 
-        return Promise.resolve(Object.keys(assetToCToken).map((key) => key as Address));
+        return Promise.resolve(Object.keys(assetToCToken).map((key) => getAddress(key)));
     }
 }
