@@ -23,7 +23,7 @@ export class Origin implements IProtocol {
 
         const res = (await axios.get(
             // @ts-ignore
-            `https://analytics.ousd.com/api/v2/${ADDRESS_TO_SYMBOL[asset.toLowerCase()]}/apr/trailing/30`
+            `https://analytics.ousd.com/api/v2/${ADDRESS_TO_SYMBOL[asset]}/apr/trailing/30`
         )).data;
         return {
             total: Number(res.apy),
