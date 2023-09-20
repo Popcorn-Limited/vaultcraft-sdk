@@ -52,7 +52,7 @@ export class YieldOptions {
             const assetList = await this.provider.getAssets(chainId, protocol);
             result = await Promise.all(assetList.map(async (asset) => {
                 return {
-                    address: asset,
+                    asset: asset,
                     yield: await this.getApy(chainId, protocol, asset),
                 };
             }));

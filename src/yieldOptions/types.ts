@@ -18,7 +18,7 @@ export interface Chain {
 }
 
 export interface YieldOption {
-  address: string;
+  asset: string;
   yield: Yield;
 }
 

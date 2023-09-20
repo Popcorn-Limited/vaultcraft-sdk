@@ -1,73 +1,18 @@
-## Introducing VaultCraft
+# Introducing VaultCraft
+VaultCraft is your on-stop shop to find and access yield across all of DeFi.
+Find the best opportunities for your assets, select a strategy and create your automated asset strategy (vault) within minutes. 
 
-### YieldOptions
-The YieldOptions class provides data about yield options across all supported chains.
-In order to fetch data one must first call `setupNetwork(chainId)` so the sdk can fetch and store all data for that particular network. This will take a moment but all other calls afterwards will simply read from memory.
-Adresses are dealt with in lowercase.
+## Products of Vaultcraft
+**Protocol:**  VaultCraft provides an open infrastructure on-chain to create and manage Vaults. Our modular approach allows users to mix and match protocols with verified strategies to create their own unique ERC-4626 compliant vaults. All our contracts are open source and audited multiple times. Find them [here](https://github.com/Popcorn-Limited/contracts).<br/>
 
+**VCI:** With our [app](https://vaultcraft.io/) anyone can access the protocol via an easy to use frontend. <br/>
 
-For the future: 
-The object can be populated all at once or step by step.
-Each "get"-call checks if the requested data exists already within the main object. If so it simply returns data from it. Otherwise it fetches the data and adds it to the main object. (Should increase loading speed)
+**SDK:** If you prefer to integrate infrastructure in your own app we have this SDK for you. The SDK provides everything you need to analyze yield opportunities or to create and access your vaults. Read more about the SDK in our [docs](https://github.com/Popcorn-Limited/vaultcraft-sdk/tree/main/docs/overview.md).
 
-```
-MainObject {
-  [chain:number]: Chain
-}
+## VaultCrafts Smart Contracts
+Each asset strategy contains two types of contracts: <br/>
+**Vault:** A simple ERC-4626 implementation which allows the creator to add various types of fees and interact with other protocols via any ERC-4626 compliant Adapter. Fees and Adapter can be changed by the creator after a ragequit period.<br/>
+**Strategy:** An immutable contract that wraps existing yield opportunities and can be enhanced with arbitrary modules to perform various tasks from compounding, leverage or simply forwarding rewards.
 
-Chain {
-  protocols: string[];
-  assetAddresses: string[];
-  assetsByProtocol: {
-    [protocol:string]: Asset[]
-  };
-  protocolsByAsset: {
-    [asset:string]: string[]
-  };
-}
-
-Asset {
-  address: string;
-  yield: Yield[];
-}
-
-Yield {
-  total:number;
-  apys: APY[]
-}
-
-APY {
-  rewardToken:string; 
-  apy:number;
-}
-```
-
-#### SetupNetwork(chainId:number)
-Fetches and stores all data for the specified network.
-
-#### GetProtocols(chainId:number)
-Returns Chain.protocols
-#### GetAssetAddresses(chainId:number)
-Returns Chain.assetAddresses
-
-#### GetAssetsByProtocol(chainId:number, protocol?:string)
-Returns Chain.assetsByProtocol or Chain.assetsByProtocol[protocol] if protocol is specified.
-
-#### GetProtocolsByAsset(chainId:number, asset?:string)
-Returns Chain.protocolsByAsset or Chain.protocolsByAsset[asset] if asset is specified
-
-#### GetApy(chainId:number, protocol:string, asset:string)
-Returns Asset.Yield from the specified protocol and asset.
-
-### Factory
-The Factory Class allows to create new Vaults and provides default configuration data to aid this process.
-
-### VaultManagement
-The VaultManagement Class provides data of a creators vaults and allows management of those vaults.
-
-### Vault
-The Vault Class provides data to display a vault and offers functionality to deposit and withdraw from a vault.
-
-## Dev Environment
-
-To run the tests you need to have Anvil installed. See https://book.getfoundry.sh/getting-started/installation for details.
+## Security
+Vaultcraft was audited by Code4rena, BlockSec, and 0xRuhum with active bounties on Immunefi.
