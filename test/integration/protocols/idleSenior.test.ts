@@ -1,12 +1,12 @@
 import { describe, test, beforeAll, expect } from "vitest";
-import { Idle } from "../../../src/yieldOptions/providers/protocols/idle.js";
+import { IdleSenior } from "../../../src/yieldOptions/providers/protocols/idle.js";
 import { Clients } from "../../../src/yieldOptions/providers/protocols/index.js";
 import { publicClient } from "../../setup.js";
 
 const clients: Clients = {
     1: publicClient,
 };
-const idle = new Idle(clients);
+const idle = new IdleSenior(clients);
 
 const FORK_BLOCK_NUMBER = BigInt(18071114);
 describe.concurrent("read-only", () => {
