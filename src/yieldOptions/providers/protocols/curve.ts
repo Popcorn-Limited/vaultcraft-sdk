@@ -1,6 +1,6 @@
 import axios from "axios";
 import NodeCache from "node-cache";
-import { Address } from "viem";
+import { Address, getAddress } from "viem";
 import { Yield } from "src/yieldOptions/types.js";
 import { IProtocol, getEmptyYield } from "./index.js";
 
@@ -38,7 +38,7 @@ export class Curve implements IProtocol {
         return {
             total: apy,
             apy: [{
-                rewardToken: CURVE_ADDRESS[chainId],
+                rewardToken: getAddress(CURVE_ADDRESS[chainId]),
                 apy: apy,
             }]
         };
@@ -49,7 +49,7 @@ export class Curve implements IProtocol {
         const poolData = await this.getPoolData(chainId);
         if (!poolData) return [];
 
-        return poolData.filter(pool => pool.gaugeAddress).map(pool => pool.lpTokenAddress);
+        return poolData.filter(pool => pool.gaugeAddress).map(pool => getAddress(pool.lpTokenAddress));
     };
 
     private async getPoolData(chainId: number): Promise<PoolData[]> {

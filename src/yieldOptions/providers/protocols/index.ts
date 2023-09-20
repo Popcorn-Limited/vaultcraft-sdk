@@ -1,4 +1,4 @@
-import { Address, PublicClient, zeroAddress } from "viem";
+import { Address, PublicClient, getAddress } from "viem";
 import { Yield } from "src/yieldOptions/index.js";
 
 export interface IProtocol {
@@ -14,7 +14,7 @@ export function getEmptyYield(asset: Address): Yield {
     return {
         total: 0,
         apy: [{
-            rewardToken: asset,
+            rewardToken: getAddress(asset),
             apy: 0,
         }]
     };
@@ -25,7 +25,11 @@ export { AaveV3 } from "./aavev3.js";
 export { Aura } from "./aura.js";
 export { Beefy } from "./beefy.js";
 export { CompoundV2 } from "./compoundv2.js";
+export { CompoundV3 } from "./compoundv3.js";
 export { Curve } from "./curve.js";
-export { Idle } from "./idle.js";
+export { IdleJunior, IdleSenior } from "./idle.js";
 export { Origin } from "./origin.js";
 export { Yearn } from "./yearn.js";
+export { Convex } from "./convex.js";
+export { Balancer } from "./balancer.js";
+export { Flux } from "./flux.js";

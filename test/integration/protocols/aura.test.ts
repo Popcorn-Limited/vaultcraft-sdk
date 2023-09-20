@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
 import { Aura } from "../../../src/yieldOptions/providers/protocols/aura.js";
 
-const aura = new Aura();
+const aura = new Aura(1000);
 
 describe.concurrent("read-only", () => {
     test("getAssets() should return all the available assets", async () => {

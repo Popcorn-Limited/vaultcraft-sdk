@@ -1,6 +1,6 @@
 import { Yield } from "src/yieldOptions/types.js";
 import { getEmptyYield, IProtocol } from "./index.js";
-import { Address } from "viem";
+import { Address, getAddress } from "viem";
 import { networkNames } from "@/lib/helpers.js";
 import NodeCache from "node-cache";
 import axios from "axios";
@@ -40,7 +40,7 @@ export class Beefy implements IProtocol {
         return !beefyVaultObj ? getEmptyYield(asset) : {
             total: apy[beefyVaultObj.id].totalApy * 100,
             apy: [{
-                rewardToken: asset.toLowerCase(),
+                rewardToken: getAddress(asset),
                 apy: apy[beefyVaultObj.id].totalApy * 100
             }]
         };
@@ -53,7 +53,7 @@ export class Beefy implements IProtocol {
             vault.network === networkNames[chainId].toLowerCase()
         );
         // there are cases where tokenAddress is undefined. We have to filter those out
-        return vaults.filter((vault) => vault.tokenAddress).map((vault) => vault.tokenAddress);
+        return vaults.filter((vault) => vault.tokenAddress).map((vault) => getAddress(vault.tokenAddress));
     };
 
     private async getActiveVaults(): Promise<BeefyVault[]> {

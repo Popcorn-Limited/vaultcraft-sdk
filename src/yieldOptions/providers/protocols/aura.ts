@@ -1,7 +1,7 @@
 import axios from "axios";
 import NodeCache from "node-cache";
 import { Yield } from "src/yieldOptions/types.js";
-import { Address } from "viem";
+import { Address, getAddress } from "viem";
 import { getEmptyYield, IProtocol } from "./index.js";
 
 
@@ -15,26 +15,34 @@ export class Aura implements IProtocol {
         const pools = await this.getPools(chainId);
 
         const pool = pools.find(pool => pool.lpToken.address.toLowerCase() === asset.toLowerCase());
+        if (!pool) {
+            return getEmptyYield(asset);
+        }
+        const result: Yield = {
+            total: 0,
+            apy: [],
+        };
 
-        return pool === undefined ?
-            getEmptyYield(asset) :
-            {
-                total: pool.aprs.total,
-                apy: pool.aprs.breakdown.map(b => {
-                    return {
-                        // If there is no token its fees in the lpToken
-                        rewardToken: b.token ? b.token.address.toLowerCase() : asset.toLowerCase(),
-                        apy: b.value
-                    };
-                })
-            };
+        pool.aprs.breakdown.forEach((apr) => {
+            if (!apr.value || apr.value <= 0) {
+                // we don't care about rewards with 0 yield
+                return;
+            }
+
+            result.total += apr.value;
+            result.apy!.push({
+                rewardToken: getAddress(apr.token?.address || asset),
+                apy: apr.value,
+            });
+        });
+        return result;
     }
 
     async getAssets(chainId: number): Promise<Address[]> {
         const pools = await this.getPools(chainId);
         if (!pools) return [];
 
-        return pools.filter(pool => !pool.isShutdown).map(pool => pool.lpToken.address) as Address[];
+        return pools.filter(pool => !pool.isShutdown).map(pool => getAddress(pool.lpToken.address)) as Address[];
     }
 
     private async getPools(chainId: number): Promise<AuraPool[]> {
@@ -47,20 +55,21 @@ export class Aura implements IProtocol {
     }
 }
 
-interface AuraPool {
+export interface AuraPool {
     id: string;
     isShutdown: boolean;
     aprs: {
         total: number;
         breakdown: {
+            // there are cases where only `id` is defined.
             id: string;
-            token: {
+            token?: {
                 symbol: string;
                 name: string;
                 address: string;
             };
-            name: string;
-            value: number;
+            name?: string;
+            value?: number;
         }[];
     };
     lpToken: {
@@ -68,7 +77,7 @@ interface AuraPool {
     };
 }
 
-async function getAuraPools(chainId: number): Promise<AuraPool[]> {
+export async function getAuraPools(chainId: number): Promise<AuraPool[]> {
     const res = await axios.post('https://data.aura.finance/graphql', {
         headers: {
             'Content-Type': 'application/json',

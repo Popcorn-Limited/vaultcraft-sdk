@@ -1,4 +1,4 @@
-import { mainnet, arbitrum, bsc, goerli, localhost, optimism, polygon } from "wagmi/chains";
+import { mainnet, arbitrum, bsc, goerli, localhost, optimism, polygon } from "viem/chains";
 
 export function noOp() { }
 

@@ -20,10 +20,15 @@ test("getProtocols() should return a list of protocols for the given chain ID", 
         'aura',
         'beefy',
         'compoundV2',
+        'compoundV3',
         'curve',
-        'idle',
+        'idleJunior',
+        'idleSenior',
         'origin',
-        'yearn'
+        'yearn',
+        'balancer',
+        'flux',
+        'convex',
     ];
     expect(result).toEqual(want);
 });
@@ -36,7 +41,7 @@ describe.concurrent("getAssets()", () => {
                     "0xc4ad29ba4b3c580e6d59105fff484999997675ff": 12,
                     "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
                 },
-                "idle": {
+                "idleJunior": {
                     "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": 11,
                     "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
                 },
@@ -58,7 +63,7 @@ describe.concurrent("getAssets()", () => {
                     "0xc4ad29ba4b3c580e6d59105fff484999997675ff": 12,
                     "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
                 },
-                "idle": {
+                "idleJunior": {
                     "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": 11,
                     "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
                 },
@@ -95,7 +100,7 @@ describe.concurrent("getYieldOptionsByProtocol", () => {
                     "0xc4ad29ba4b3c580e6d59105fff484999997675ff": 12,
                     "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
                 },
-                "idle": {
+                "idleJunior": {
                     "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": 11,
                     "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
                 },
@@ -122,7 +127,7 @@ describe.concurrent("getYieldOptionsByProtocol", () => {
                     "0xc4ad29ba4b3c580e6d59105fff484999997675ff": 12,
                     "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
                 },
-                "idle": {
+                "idleJunior": {
                     "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": 11,
                     "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
                 },
@@ -162,7 +167,7 @@ describe.concurrent("getYieldOptionsByProtocol", () => {
                     "0xc4ad29ba4b3c580e6d59105fff484999997675ff": 12,
                     "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
                 },
-                "idle": {
+                "idleJunior": {
                     "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": 11,
                     "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
                 },
