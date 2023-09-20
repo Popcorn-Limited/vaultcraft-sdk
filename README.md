@@ -7,7 +7,7 @@ Find the best opportunities for your assets, select a strategy and create your a
 
 **VCI:** With our [app](https://vaultcraft.io/) anyone can access the protocol via an easy to use frontend. <br/>
 
-**SDK:** If you prefer to integrate infrastructure in your own app we have this SDK for you. The SDK provides everything you need to analyze yield opportunities or to create and access your vaults. Read more about the SDK in our [docs](https://github.com/Popcorn-Limited/vaultcraft-sdk/tree/main/docs/overview.md).
+**SDK:** If you prefer to integrate infrastructure in your own app we have this SDK for you. The SDK provides everything you need to analyze yield opportunities or to create and access your vaults. Read more about the SDK in our [docs](https://github.com/Popcorn-Limited/vaultcraft-sdk/blob/docs/docs/overview.md).
 
 ## VaultCrafts Smart Contracts
 Each asset strategy contains two types of contracts: <br/>
