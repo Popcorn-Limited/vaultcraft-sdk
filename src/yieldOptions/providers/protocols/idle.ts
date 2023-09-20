@@ -56,14 +56,14 @@ class IdleAbstract implements IProtocol {
         if (!client) throw new Error(`missing public client for chain ID: ${chainId}`);
 
         // @ts-ignore
-        const idleAddresses = tranches[asset.toLowerCase()][tranche];
+        const idleAddresses = tranches[asset];
         if (!idleAddresses) return getEmptyYield(asset);
 
         const apr = await client.readContract({
             address: idleAddresses.cdo,
             abi: IDLE_CDO_ABI,
             functionName: 'getApr',
-            args: [asset]
+            args: [idleAddresses[tranche]]
         });
 
         const apy = apr2apy(apr) * 100;
