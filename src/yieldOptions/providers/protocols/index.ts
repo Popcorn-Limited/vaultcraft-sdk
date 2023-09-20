@@ -1,4 +1,4 @@
-import { Address, PublicClient, getAddress, zeroAddress } from "viem";
+import { Address, PublicClient, getAddress } from "viem";
 import { Yield } from "src/yieldOptions/index.js";
 
 export interface IProtocol {
@@ -27,7 +27,7 @@ export { Beefy } from "./beefy.js";
 export { CompoundV2 } from "./compoundv2.js";
 export { CompoundV3 } from "./compoundv3.js";
 export { Curve } from "./curve.js";
-export { Idle } from "./idle.js";
+export { IdleJunior, IdleSenior } from "./idle.js";
 export { Origin } from "./origin.js";
 export { Yearn } from "./yearn.js";
 export { Convex } from "./convex.js";
