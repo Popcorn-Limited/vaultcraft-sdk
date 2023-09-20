@@ -13,7 +13,7 @@ export class AaveV2 implements IProtocol {
 
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         const client = this.clients[chainId];
-        if (!client) throw new Error(`missing public client for chain ID: ${chainId}`);
+        if (!client) throw new Error(`Missing public client for chain ID: ${chainId}`);
 
         const reserveData = await client.readContract({
             // @ts-ignore
@@ -37,7 +37,7 @@ export class AaveV2 implements IProtocol {
 
     async getAssets(chainId: number): Promise<Address[]> {
         const client = this.clients[chainId];
-        if (!client) throw new Error(`missing public client for chain ID: ${chainId}`);
+        if (!client) throw new Error(`Missing public client for chain ID: ${chainId}`);
         try {
             const assets = await client.readContract({
                 // TODO: find a cleaner way to pass an arbitrary chainID here

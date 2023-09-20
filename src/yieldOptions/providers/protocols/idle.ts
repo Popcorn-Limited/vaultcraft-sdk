@@ -53,7 +53,7 @@ class IdleAbstract implements IProtocol {
 
     async _getApy(chainId: number, asset: Address, tranche: "junior" | "senior"): Promise<Yield> {
         const client = this.clients[chainId];
-        if (!client) throw new Error(`missing public client for chain ID: ${chainId}`);
+        if (!client) throw new Error(`Missing public client for chain ID: ${chainId}`);
 
         // @ts-ignore
         const idleAddresses = tranches[asset];

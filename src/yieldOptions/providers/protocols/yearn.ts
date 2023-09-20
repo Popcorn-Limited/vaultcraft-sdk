@@ -46,7 +46,7 @@ export class Yearn implements IProtocol {
 
     async getAssets(chainId: number): Promise<Address[]> {
         const client = this.clients[chainId];
-        if (!client) throw new Error(`missing public client for chain ID: ${chainId}`);
+        if (!client) throw new Error(`Missing public client for chain ID: ${chainId}`);
         let assets = this.cache.get("assets") as Address[];
         if (assets) {
             return assets;
