@@ -28,7 +28,7 @@ export class Yearn implements IProtocol {
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         let vaults = this.cache.get("vaults") as Vault[];
         if (!vaults) {
-            vaults = (await axios.get(`https://api.yearn.fi/v1/chains/${chainId}/vaults/all`)).data;
+            vaults = (await axios.get(`https://api.yexporter.io/v1/chains/${chainId}/vaults/all`)).data;
             this.cache.set("vaults", vaults);
         }
         const vault = vaults.find((vault: any) => vault.token.address.toLowerCase() === asset.toLowerCase());
