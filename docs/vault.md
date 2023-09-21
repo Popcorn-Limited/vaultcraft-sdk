@@ -1,6 +1,9 @@
 # Vault
 The Vault class wraps a given vault contract and provides all necessary view and write functions to interact with any given vault.
 
+> [!NOTE]  
+> Currently we are using the word `Adapter` and `Strategy` interchangeably. In V2 we will simplify this wording to name every yield-earning contract a `Strategy`. 
+
 
 ## Initialization
 
@@ -245,7 +248,7 @@ __________
 
 ### `adapter(): Promise<Address>`
 
-Returns the address of the strategy used for the Vault for accounting, depositing, and withdrawing.
+Returns the address of the adapter used for the Vault for accounting, depositing, and withdrawing.
 
 ```ts
 const adapter = vault.adapter();
@@ -255,7 +258,7 @@ const adapter = vault.adapter();
 
 ### `proposedAdapter(): Promise<Address>`
 
-Returns the address of the new proposed strategy.
+Returns the address of the new proposed adapter.
 
 ```ts
 const proposedAdapter = vault.proposedAdapter();
@@ -265,7 +268,7 @@ const proposedAdapter = vault.proposedAdapter();
 
 ### `proposedAdapterTime(): Promise<bigint>`
 
-Returns the on-chain timestamp when the new strategy was proposed.
+Returns the on-chain timestamp when the new adapter was proposed.
 (Timestamps are stored in seconds. Multiply this timestamp by 1000 to use it in most DateTime implementations).
 
 ```ts
