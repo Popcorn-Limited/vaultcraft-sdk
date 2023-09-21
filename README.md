@@ -7,7 +7,7 @@ VaultCraft is your one-stop shop for building, deploying, and monetizing automat
 
 **VCI:** With our [app](https://vaultcraft.io/), anyone can access the protocol via an easy-to-use frontend.<br/>
 
-**SDK:** If you prefer to integrate VaultCraft into your app you can easily do so with the SDK. The VaultCraft SDK provides everything you need, from analyzing yield opportunities to creating, deploying, and accessing vaults. Read more about the SDK in our [docs](https://github.com/Popcorn-Limited/vaultcraft-sdk/blob/docs/docs/overview.md).
+**SDK:** If you prefer to integrate VaultCraft into your app you can easily do so with the SDK. The VaultCraft SDK provides everything you need, from analyzing yield opportunities to creating, deploying, and accessing vaults. Read more about the SDK in our [docs](https://github.com/Popcorn-Limited/vaultcraft-sdk/blob/main/docs/overview.md).
 
 
 ## VaultCrafts Smart Contracts
