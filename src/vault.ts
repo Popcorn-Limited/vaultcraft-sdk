@@ -139,7 +139,7 @@ export class Vault extends Base {
         return this.walletClient.writeContract(request);
     };
 
-    async mint(amount: bigint, receiver: Address, options: WriteOptions) {
+    async mint(amount: bigint, receiver: Address, options: WriteOptions): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,
@@ -149,7 +149,7 @@ export class Vault extends Base {
         return this.walletClient.writeContract(request);
     }
 
-    async withdraw(amount: bigint, receiver: Address, owner: Address, options: WriteOptions) {
+    async withdraw(amount: bigint, receiver: Address, owner: Address, options: WriteOptions): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,
@@ -159,7 +159,7 @@ export class Vault extends Base {
         return this.walletClient.writeContract(request);
     }
 
-    async redeem(amount: bigint, receiver: Address, owner: Address, options: WriteOptions) {
+    async redeem(amount: bigint, receiver: Address, owner: Address, options: WriteOptions): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,
@@ -248,7 +248,7 @@ export class Vault extends Base {
         });
     }
 
-    feeUpdatedAt(): Promise<bigint> {
+    feesUpdatedAt(): Promise<bigint> {
         return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "feesUpdatedAt"

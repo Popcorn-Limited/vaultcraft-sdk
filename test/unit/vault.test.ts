@@ -161,7 +161,7 @@ describe.concurrent("read-only", () => {
     });
 
     test("feesUpdatedAt() should return correct value", async () => {
-        const time = await vault.feeUpdatedAt();
+        const time = await vault.feesUpdatedAt();
         expect(time).toBe(BigInt("1687792391"));
     });
 
