@@ -3,6 +3,8 @@
 
 ## Initialization
 
+vault = "0x5d344226578DC100b2001DA251A4b154df58194f"
+
 ## Methods
 
 ### `totalSupply(): Promise<bigint>`
@@ -11,7 +13,7 @@ Returns the amount of tokens in existence. Note that the supply will be atleast 
 
 ```ts
 const totalSupply = vault.totalSupply();
-// totalSupply = ....
+// totalSupply = 1000000000000000000n
 ```
 
 ### `totalAssets(): Promise<bigint>`
@@ -19,8 +21,8 @@ const totalSupply = vault.totalSupply();
 Returns the total amount of the underlying asset that is “managed” by Vault.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const totalAssets = vault.totalAssets();
+// totalAssets = 1000000000000000000n
 ```
 
 ### `balanceOf(who: Address): Promise<bigint>`
@@ -28,8 +30,8 @@ const totalSupply = vault.totalSupply();
 Returns the amount of tokens owned by the given address.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const balance = vault.balanceOf("0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
+// balance = 1000000000000000000n
 ```
 
 ### `asset(): Promise<Address>`
@@ -37,8 +39,8 @@ const totalSupply = vault.totalSupply();
 Returns the address of the underlying token used for the Vault for accounting, depositing, and withdrawing.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const asset = vault.asset();
+// asset = "0x6B175474E89094C44Da98b954EedeAC495271d0F"
 ```
 
 ### `convertToShares(amount: bigint): Promise<bigint>`
@@ -47,8 +49,8 @@ Returns the amount of shares that the Vault would exchange for the amount of ass
 This function takes slippage and fees into account.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const sharesPerAsset = vault.convertToShares(1e18);
+// sharesPerAsset = 1000000000000000000n
 ```
 
 ### `convertToAssets(amount: bigint): Promise<bigint>`
@@ -57,8 +59,8 @@ Returns the amount of assets that the Vault would exchange for the amount of sha
 This function takes slippage and fees into account.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const assetsPerShare = vault.convertToAssets(1e18);
+// assetsPerShare = 1000000000000000000n
 ```
 
 ### `maxDeposit(receiver: Address): Promise<bigint>`
@@ -66,8 +68,8 @@ const totalSupply = vault.totalSupply();
 Returns the maximum amount of the underlying asset that can be deposited into the Vault for the receiver, through a deposit call.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const maxDeposit = vault.maxDeposit("0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
+// maxDeposit = 1000000000000000000n
 ```
 
 ### `maxMint(receiver: Address): Promise<bigint>`
@@ -75,8 +77,8 @@ const totalSupply = vault.totalSupply();
 Returns the maximum amount of the Vault shares that can be minted for the receiver, through a mint call.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const maxMint = vault.maxMint("0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
+// maxMint = 1000000000000000000n
 ```
 
 ### `maxWithdraw(owner: Address): Promise<bigint>`
@@ -84,8 +86,8 @@ const totalSupply = vault.totalSupply();
 Returns the maximum amount of the underlying asset that can be withdrawn from the owner balance in the Vault, through a withdraw call.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const maxWithdraw = vault.maxWithdraw("0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
+// maxWithdraw = 1000000000000000000n
 ```
 
 ### `maxRedeem(owner: Address): Promise<bigint>`
@@ -93,8 +95,8 @@ const totalSupply = vault.totalSupply();
 Returns the maximum amount of Vault shares that can be redeemed from the owner balance in the Vault, through a redeem call.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const maxRedeem = vault.maxRedeem("0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
+// maxRedeem = 1000000000000000000n
 ```
 
 ### `previewDeposit(amount: bigint): Promise<bigint>`
@@ -105,8 +107,8 @@ The actual deposit call should return equal or more shares than this preview fun
 This function takes slippage and fees into account.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const expectedShares = vault.previewDeposit(1e18);
+// expectedShares = 1000000000000000000n
 ```
 
 ### `previewMint(amount: bigint): Promise<bigint>`
@@ -117,8 +119,8 @@ The actual mint call should use equal or less assets than this preview function.
 This function takes slippage and fees into account.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const expectedAssets = vault.previewMint();
+// expectedAssets = 1000000000000000000n
 ```
 
 ### `previewWithdraw(amount: bigint): Promise<bigint>`
@@ -129,8 +131,8 @@ The actual withdraw call should use equal or less shares than this preview funct
 This function takes slippage and fees into account.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const expectedShares = vault.previewWithdraw();
+// expectedShares = 1000000000000000000n
 ```
 
 ### `previewRedeem(amount: bigint): Promise<bigint>`
@@ -141,8 +143,8 @@ The actual redeem call should return equal or more assets than this preview func
 This function takes slippage and fees into account.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const expectedAssets = vault.previewRedeem();
+// expectedAssets = 1000000000000000000n
 ```
 
 
@@ -151,8 +153,8 @@ const totalSupply = vault.totalSupply();
 Returns the address of the strategy used for the Vault for accounting, depositing, and withdrawing.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const adapter = vault.adapter();
+// adapter = "0x612465C8d6F1B2Bc85DF43224a8A3b5e04F634fc"
 ```
 
 ### `proposedAdapter(): Promise<Address>`
@@ -160,8 +162,8 @@ const totalSupply = vault.totalSupply();
 Returns the address of the new proposed strategy.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const proposedAdapter = vault.proposedAdapter();
+// proposedAdapter = "0xE48d33e869f874D6BEe3701beF22ae72c60A3b3c"
 ```
 
 
@@ -171,8 +173,8 @@ Returns the on-chain timestamp when the new strategy was proposed.
 (Timestamps are stored in seconds. Multiply this timestamp by 1000 to use it in most DateTime implementations).
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const proposedAdapterTime = vault.proposedAdapterTime();
+// proposedAdapterTime = 17883751
 ```
 
 ### `fees(): Promise<VaultFees>`
@@ -180,8 +182,8 @@ const totalSupply = vault.totalSupply();
 Returns an object containing all fees of the Vault. Fees are set in 1e18 (1e18 = 100%, 1e14 = 1 BPS). Fees can be 0 but never 1e18.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const fees = vault.fees();
+// fees = { deposit: 0, withdrawal: 0, management: 10000000000000000n, performance: 100000000000000000n }
 ```
 
 VaultFees are defined as:
@@ -201,8 +203,8 @@ type VaultFees = {
 Returns an object containing new proposed fees for the Vault. 
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const proposedFees = vault.proposedFees();
+// proposedFees = { deposit: 0, withdrawal: 0, management: 0, performance: 200000000000000000n }
 ```
 
 See more information about the VaultFees type above in 'fees'.
@@ -213,8 +215,8 @@ Returns the on-chain timestamp when new fees were proposed.
 (Timestamps are stored in seconds. Multiply this timestamp by 1000 to use it in most DateTime implementations).
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const proposedFeeTime = vault.proposedFeeTime();
+// proposedFeeTime = 17883751
 ```
 
 
@@ -223,8 +225,8 @@ const totalSupply = vault.totalSupply();
 Returns the rage quit period in seconds. The quit period is set per default to 3 days and can be between 1 and 7 days. This time needs to pass between proposing an adapter or fees and changing the actual values. This allows depositors to withdraw from the vault if they dont agree with the proposed changes.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const quitPeriod = vault.quitPeriod();
+// quitPeriod = 86400n
 ```
 
 
@@ -233,27 +235,27 @@ const totalSupply = vault.totalSupply();
 Returns the maximum amount of assets that can be deposited.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const depositLimit = vault.depositLimit();
+// depositLimit = 1000000000000000000n
 ```
 
 
 ### `accruedManagementFee(): Promise<bigint>`
 
-Returns the accrued but non-realized management fee of this vault.
+Returns the accrued but non-realized management fee of this vault in assets.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const accruedManagementFee = vault.accruedManagementFee();
+// accruedManagementFee = 1000000000000000000n
 ```
 
 ### `accruedPerformanceFee(): Promise<bigint>`
 
-Returns the accrued but non-realized performance fee of this vault.
+Returns the accrued but non-realized performance fee of this vault in assets.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const accruedPerformanceFee = vault.accruedPerformanceFee();
+// accruedPerformanceFee = 1000000000000000000n
 ```
 
 
@@ -262,8 +264,8 @@ const totalSupply = vault.totalSupply();
 Returns the latest HighWaterMark in assets per share. New performance fees can only be taken if the assets per share are higher than the last HighWaterMark.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const highWaterMark = vault.highWaterMark();
+// highWaterMark = 1000000000000000000n
 ```
 
 
@@ -273,8 +275,8 @@ Returns the on-chain timestamp of the last time fees were taken.
 (Timestamps are stored in seconds. Multiply this timestamp by 1000 to use it in most DateTime implementations).
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const feesUpdatedAt = vault.feesUpdatedAt();
+// feesUpdatedAt = 17883751
 ```
 
 
@@ -283,8 +285,8 @@ const totalSupply = vault.totalSupply();
 Returns the address of the fee recipient. This address earns all vault shares minted by taking fees.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const feeRecipient = vault.feeRecipient();
+// feeRecipient = "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
 ```
 
 ### `deposit(amount: bigint, receiver: Address, options: WriteOptions): Promise<Hash>`
@@ -292,8 +294,8 @@ const totalSupply = vault.totalSupply();
 Mints shares Vault shares to receiver by depositing exactly amount of underlying tokens.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const txHash = vault.deposit(BigInt("1e18"), "0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
+// txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
 ```
 
 ### `mint(amount: bigint, receiver: Address, options: WriteOptions): Promise<Hash>`
@@ -301,8 +303,8 @@ const totalSupply = vault.totalSupply();
 Mints exactly shares Vault shares to receiver by depositing amount of underlying tokens.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const txHash = vault.mint(BigInt("1e18"), "0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
+// txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
 ```
 
 ### `withdraw(amount: bigint, receiver: Address, owner: Address, options: WriteOptions): Promise<Hash>`
@@ -310,8 +312,8 @@ const totalSupply = vault.totalSupply();
 Burns shares from owner and sends exactly assets of underlying tokens to receiver.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const txHash = vault.withdraw(BigInt("1e18"), "0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
+// txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
 ```
 
 ### `redeem(amount: bigint, receiver: Address, owner: Address, options: WriteOptions): Promise<Hash>`
@@ -319,6 +321,6 @@ const totalSupply = vault.totalSupply();
 Burns exactly shares from owner and sends assets of underlying tokens to receiver.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = ....
+const txHash = vault.redeem(BigInt("1e18"), "0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
+// txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
 ```
