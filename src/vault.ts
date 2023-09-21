@@ -17,19 +17,34 @@ export class Vault extends Base {
         };
     }
 
-    // ERC4626
+    // ERC20 VIEWS
 
-    totalSupply(): Promise<bigint> {
+    name(): Promise<string> {
         return this.publicClient.readContract({
             ...this.baseObj,
-            functionName: "totalSupply",
+            functionName: "name",
         });
     }
 
-    totalAssets(): Promise<bigint> {
+    symbol(): Promise<string> {
         return this.publicClient.readContract({
             ...this.baseObj,
-            functionName: "totalAssets",
+            functionName: "symbol",
+        });
+    }
+
+    decimals(): Promise<number> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "decimals",
+        });
+    }
+
+    allowance(owner: Address, spender: Address): Promise<bigint> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "allowance",
+            args: [owner, spender]
         });
     }
 
@@ -41,12 +56,30 @@ export class Vault extends Base {
         });
     }
 
+    // ERC4626 GENERAL VIEWS
+
+    totalAssets(): Promise<bigint> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "totalAssets",
+        });
+    }
+
+    totalSupply(): Promise<bigint> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "totalSupply",
+        });
+    }
+
     asset(): Promise<Address> {
         return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "asset",
         });
     }
+
+    // ERC4626 CONVERSION VIEWS
 
     convertToShares(amount: bigint): Promise<bigint> {
         return this.publicClient.readContract({
@@ -63,6 +96,8 @@ export class Vault extends Base {
             args: [amount],
         });
     }
+
+    // ERC4626 MAX VIEWS
 
     maxDeposit(receiver: Address): Promise<bigint> {
         return this.publicClient.readContract({
@@ -96,6 +131,8 @@ export class Vault extends Base {
         });
     }
 
+    // ERC4626 PREVIEW VIEWS
+
     previewDeposit(amount: bigint): Promise<bigint> {
         return this.publicClient.readContract({
             ...this.baseObj,
@@ -127,6 +164,127 @@ export class Vault extends Base {
             args: [amount],
         });
     }
+
+    // VAULT ADAPTER VIEWS
+
+    adapter(): Promise<Address> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "adapter",
+        });
+    }
+
+    proposedAdapter(): Promise<Address> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "proposedAdapter",
+        });
+    }
+
+    proposedAdapterTime(): Promise<bigint> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "proposedAdapterTime",
+        });
+    }
+
+    // VAULT FEE VIEWS
+
+    fees(): Promise<VaultFees> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "fees",
+        });
+    }
+
+    proposedFees(): Promise<VaultFees> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "proposedFees",
+        });
+    }
+
+    proposedFeeTime(): Promise<bigint> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "proposedFeeTime",
+        });
+    }
+
+    accruedManagementFee(): Promise<bigint> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "accruedManagementFee",
+        });
+    }
+
+    accruedPerformanceFee(): Promise<bigint> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "accruedPerformanceFee",
+        });
+    }
+
+    highWaterMark(): Promise<bigint> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "highWaterMark",
+        });
+    }
+
+    feesUpdatedAt(): Promise<bigint> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "feesUpdatedAt"
+        });
+    }
+
+    feeRecipient(): Promise<Address> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "feeRecipient",
+        });
+    }
+
+    // VAULT OTHER VIEWS
+
+    quitPeriod(): Promise<bigint> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "quitPeriod",
+        });
+    }
+
+    depositLimit(): Promise<bigint> {
+        return this.publicClient.readContract({
+            ...this.baseObj,
+            functionName: "depositLimit",
+        });
+    }
+ 
+    // ERC20 WRITES
+
+    async approve(spender: Address, amount: bigint, options: WriteOptions): Promise<Hash> {
+        const { request } = await this.publicClient.simulateContract({
+            ...options,
+            ...this.baseObj,
+            functionName: "approve",
+            args: [spender, amount],
+        });
+        return this.walletClient.writeContract(request);
+    }
+
+    async transfer(receiver: Address, amount: bigint, options: WriteOptions): Promise<Hash> {
+        const { request } = await this.publicClient.simulateContract({
+            ...options,
+            ...this.baseObj,
+            functionName: "transfer",
+            args: [receiver, amount],
+        });
+        return this.walletClient.writeContract(request);
+    }
+
+    // ERC4626 WRITES
 
     async deposit(amount: bigint, receiver: Address, options: WriteOptions): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
@@ -167,98 +325,5 @@ export class Vault extends Base {
             args: [amount, receiver, owner],
         });
         return this.walletClient.writeContract(request);
-    }
-
-    // Vault
-
-    adapter(): Promise<Address> {
-        return this.publicClient.readContract({
-            ...this.baseObj,
-            functionName: "adapter",
-        });
-    }
-
-    proposedAdapter(): Promise<Address> {
-        return this.publicClient.readContract({
-            ...this.baseObj,
-            functionName: "proposedAdapter",
-        });
-    }
-
-    proposedAdapterTime(): Promise<bigint> {
-        return this.publicClient.readContract({
-            ...this.baseObj,
-            functionName: "proposedAdapterTime",
-        });
-    }
-
-    fees(): Promise<VaultFees> {
-        return this.publicClient.readContract({
-            ...this.baseObj,
-            functionName: "fees",
-        });
-    }
-
-    proposedFees(): Promise<VaultFees> {
-        return this.publicClient.readContract({
-            ...this.baseObj,
-            functionName: "proposedFees",
-        });
-    }
-
-    proposedFeeTime(): Promise<bigint> {
-        return this.publicClient.readContract({
-            ...this.baseObj,
-            functionName: "proposedFeeTime",
-        });
-    }
-
-    quitPeriod(): Promise<bigint> {
-        return this.publicClient.readContract({
-            ...this.baseObj,
-            functionName: "quitPeriod",
-        });
-    }
-
-    depositLimit(): Promise<bigint> {
-        return this.publicClient.readContract({
-            ...this.baseObj,
-            functionName: "depositLimit",
-        });
-    }
-
-    accruedManagementFee(): Promise<bigint> {
-        return this.publicClient.readContract({
-            ...this.baseObj,
-            functionName: "accruedManagementFee",
-        });
-    }
-
-    accruedPerformanceFee(): Promise<bigint> {
-        return this.publicClient.readContract({
-            ...this.baseObj,
-            functionName: "accruedPerformanceFee",
-        });
-    }
-
-    highWaterMark(): Promise<bigint> {
-        return this.publicClient.readContract({
-            ...this.baseObj,
-            functionName: "highWaterMark",
-        });
-    }
-
-    feesUpdatedAt(): Promise<bigint> {
-        return this.publicClient.readContract({
-            ...this.baseObj,
-            functionName: "feesUpdatedAt"
-        });
-    }
-
-    feeRecipient(): Promise<Address> {
-        return this.publicClient.readContract({
-            ...this.baseObj,
-            functionName: "feeRecipient",
-        });
     }
 }

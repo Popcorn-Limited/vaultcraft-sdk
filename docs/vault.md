@@ -1,4 +1,5 @@
 # Vault
+The Vault class wraps a given vault contract and provides all necessary view and write functions to interact with any given vault.
 
 
 ## Initialization
@@ -34,24 +35,44 @@ const walletClient = createWalletClient({
 const vault = new Vault(vaultAddress, publicClient, walletClient);
 ```
 
+
 ## Methods
+### ERC-20 General Views
 
-### `totalSupply(): Promise<bigint>`
+### `name(): Promise<string>`
 
-Returns the amount of tokens in existence. Note that the supply will be atleast 1e9 higher than the amount of assets since the vault has always 9 decimals more than the asset to prevent the [inflation attack](https://docs.openzeppelin.com/contracts/4.x/erc4626).
+Returns the name of the token.
 
 ```ts
-const totalSupply = vault.totalSupply();
-// totalSupply = 1000000000000000000n
+const name = vault.name();
+// name = "DAI Vault"
 ```
 
-### `totalAssets(): Promise<bigint>`
+### `symbol(): Promise<string>`
 
-Returns the total amount of the underlying asset that is “managed” by Vault.
+Returns the symbol of the token.
 
 ```ts
-const totalAssets = vault.totalAssets();
-// totalAssets = 1000000000000000000n
+const symbol = vault.symbol();
+// symbol = "pop-DAI"
+```
+
+### `decimals(): Promise<number>`
+
+Returns the decimals places of the token.
+
+```ts
+const decimals = vault.decimals();
+// decimals = 27
+```
+
+### `allowance(owner: Address, spender: Address): Promise<bigint>`
+
+Returns the remaining number of tokens that `spender` will be allowed to spend on behalf of `owner` through transferFrom. This is zero by default.
+
+```ts
+const allowance = vault.allowance("0xf97664376416e9379f2354db444bfe3f00b6936b", "0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
+// allowance = 1000000000000000000n
 ```
 
 ### `balanceOf(who: Address): Promise<bigint>`
@@ -63,6 +84,30 @@ const balance = vault.balanceOf("0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
 // balance = 1000000000000000000n
 ```
 
+
+__________
+### ERC-4626 General Views
+
+### `totalAssets(): Promise<bigint>`
+
+Returns the total amount of the underlying asset that is “managed” by Vault.
+
+```ts
+const totalAssets = vault.totalAssets();
+// totalAssets = 1000000000000000000n
+```
+
+
+### `totalSupply(): Promise<bigint>`
+
+Returns the amount of tokens in existence. Note that the supply will be atleast 1e9 higher than the amount of assets since the vault has always 9 decimals more than the asset to prevent the [inflation attack](https://docs.openzeppelin.com/contracts/4.x/erc4626).
+
+```ts
+const totalSupply = vault.totalSupply();
+// totalSupply = 1000000000000000000n
+```
+
+
 ### `asset(): Promise<Address>`
 
 Returns the address of the underlying token used for the Vault for accounting, depositing, and withdrawing.
@@ -71,6 +116,10 @@ Returns the address of the underlying token used for the Vault for accounting, d
 const asset = vault.asset();
 // asset = "0x6B175474E89094C44Da98b954EedeAC495271d0F"
 ```
+
+
+__________
+### ERC-4626 Conversion Views
 
 ### `convertToShares(amount: bigint): Promise<bigint>`
 
@@ -92,6 +141,10 @@ const assetsPerShare = vault.convertToAssets(BigInt("1e18"));
 // assetsPerShare = 1000000000000000000n
 ```
 
+
+__________
+### ERC-4626 Max Views
+
 ### `maxDeposit(receiver: Address): Promise<bigint>`
 
 Returns the maximum amount of the underlying asset that can be deposited into the Vault for the receiver, through a deposit call.
@@ -100,6 +153,7 @@ Returns the maximum amount of the underlying asset that can be deposited into th
 const maxDeposit = vault.maxDeposit("0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
 // maxDeposit = 1000000000000000000n
 ```
+
 
 ### `maxMint(receiver: Address): Promise<bigint>`
 
@@ -110,6 +164,7 @@ const maxMint = vault.maxMint("0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
 // maxMint = 1000000000000000000n
 ```
 
+
 ### `maxWithdraw(owner: Address): Promise<bigint>`
 
 Returns the maximum amount of the underlying asset that can be withdrawn from the owner balance in the Vault, through a withdraw call.
@@ -119,6 +174,7 @@ const maxWithdraw = vault.maxWithdraw("0xd8da6bf26964af9d7eed9e03e53415d37aa9604
 // maxWithdraw = 1000000000000000000n
 ```
 
+
 ### `maxRedeem(owner: Address): Promise<bigint>`
 
 Returns the maximum amount of Vault shares that can be redeemed from the owner balance in the Vault, through a redeem call.
@@ -127,6 +183,10 @@ Returns the maximum amount of Vault shares that can be redeemed from the owner b
 const maxRedeem = vault.maxRedeem("0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
 // maxRedeem = 1000000000000000000n
 ```
+
+
+__________
+### ERC-4626 Preview Views
 
 ### `previewDeposit(amount: bigint): Promise<bigint>`
 
@@ -140,6 +200,7 @@ const expectedShares = vault.previewDeposit(BigInt("1e18"));
 // expectedShares = 1000000000000000000n
 ```
 
+
 ### `previewMint(amount: bigint): Promise<bigint>`
 
 Return as close to and no fewer than the exact amount of assets that would be deposited in a mint call in the same transaction.
@@ -152,6 +213,7 @@ const expectedAssets = vault.previewMint(BigInt("1e18"));
 // expectedAssets = 1000000000000000000n
 ```
 
+
 ### `previewWithdraw(amount: bigint): Promise<bigint>`
 
 Return as close to and no fewer than the exact amount of Vault shares that would be burned in a withdraw call in the same transaction. 
@@ -163,6 +225,7 @@ This function takes slippage and fees into account.
 const expectedShares = vault.previewWithdraw(BigInt("1e18"));
 // expectedShares = 1000000000000000000n
 ```
+
 
 ### `previewRedeem(amount: bigint): Promise<bigint>`
 
@@ -177,6 +240,9 @@ const expectedAssets = vault.previewRedeem(BigInt("1e18"));
 ```
 
 
+__________
+### Vault Adapter Views
+
 ### `adapter(): Promise<Address>`
 
 Returns the address of the strategy used for the Vault for accounting, depositing, and withdrawing.
@@ -185,6 +251,7 @@ Returns the address of the strategy used for the Vault for accounting, depositin
 const adapter = vault.adapter();
 // adapter = "0x612465C8d6F1B2Bc85DF43224a8A3b5e04F634fc"
 ```
+
 
 ### `proposedAdapter(): Promise<Address>`
 
@@ -205,6 +272,10 @@ Returns the on-chain timestamp when the new strategy was proposed.
 const proposedAdapterTime = vault.proposedAdapterTime();
 // proposedAdapterTime = 17883751
 ```
+
+
+__________
+### Vault Fee Views
 
 ### `fees(): Promise<VaultFees>`
 
@@ -235,8 +306,8 @@ Returns an object containing new proposed fees for the Vault.
 const proposedFees = vault.proposedFees();
 // proposedFees = { deposit: 0, withdrawal: 0, management: 0, performance: 200000000000000000n }
 ```
-
 See more information about the VaultFees type above in 'fees'.
+
 
 ### `proposedFeeTime(): Promise<bigint>`
 
@@ -249,26 +320,6 @@ const proposedFeeTime = vault.proposedFeeTime();
 ```
 
 
-### `quitPeriod(): Promise<bigint>`
-
-Returns the rage quit period in seconds. The quit period is set per default to 3 days and can be between 1 and 7 days. This time needs to pass between proposing an adapter or fees and changing the actual values. This allows depositors to withdraw from the vault if they dont agree with the proposed changes.
-
-```ts
-const quitPeriod = vault.quitPeriod();
-// quitPeriod = 86400n
-```
-
-
-### `depositLimit(): Promise<bigint>`
-
-Returns the maximum amount of assets that can be deposited.
-
-```ts
-const depositLimit = vault.depositLimit();
-// depositLimit = 1000000000000000000n
-```
-
-
 ### `accruedManagementFee(): Promise<bigint>`
 
 Returns the accrued but non-realized management fee of this vault in assets.
@@ -277,6 +328,7 @@ Returns the accrued but non-realized management fee of this vault in assets.
 const accruedManagementFee = vault.accruedManagementFee();
 // accruedManagementFee = 1000000000000000000n
 ```
+
 
 ### `accruedPerformanceFee(): Promise<bigint>`
 
@@ -318,6 +370,57 @@ const feeRecipient = vault.feeRecipient();
 // feeRecipient = "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
 ```
 
+
+__________
+### Vault Other Views
+
+### `quitPeriod(): Promise<bigint>`
+
+Returns the rage quit period in seconds. The quit period is set per default to 3 days and can be between 1 and 7 days. This time needs to pass between proposing an adapter or fees and changing the actual values. This allows depositors to withdraw from the vault if they dont agree with the proposed changes.
+
+```ts
+const quitPeriod = vault.quitPeriod();
+// quitPeriod = 86400n
+```
+
+
+### `depositLimit(): Promise<bigint>`
+
+Returns the maximum amount of assets that can be deposited.
+
+```ts
+const depositLimit = vault.depositLimit();
+// depositLimit = 1000000000000000000n
+```
+
+
+__________
+### ERC-20 Writes
+
+### `approve(spender: Address, amount: bigint, options: WriteOptions): Promise<Hash>`
+
+Sets `amount` as the allowance of `spender` over the caller’s tokens.
+
+```ts
+const txHash = vault.approve("0xd8da6bf26964af9d7eed9e03e53415d37aa96045",BigInt("1e18"));
+// txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
+```
+
+
+### `transfer(receiver: Address, amount: bigint, options: WriteOptions): Promise<Hash>`
+
+Moves `amount` tokens from the caller’s account to `receiver`.
+
+```ts
+const txHash = vault.transfer("0xd8da6bf26964af9d7eed9e03e53415d37aa96045", BigInt("1e18"));
+// txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
+```
+
+
+__________
+
+### ERC-4626 Writes
+
 ### `deposit(amount: bigint, receiver: Address, options: WriteOptions): Promise<Hash>`
 
 Mints shares Vault shares to receiver by depositing exactly amount of underlying tokens.
@@ -326,6 +429,7 @@ Mints shares Vault shares to receiver by depositing exactly amount of underlying
 const txHash = vault.deposit(BigInt("1e18"), "0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
 // txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
 ```
+
 
 ### `mint(amount: bigint, receiver: Address, options: WriteOptions): Promise<Hash>`
 
@@ -336,6 +440,7 @@ const txHash = vault.mint(BigInt("1e18"), "0xd8da6bf26964af9d7eed9e03e53415d37aa
 // txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
 ```
 
+
 ### `withdraw(amount: bigint, receiver: Address, owner: Address, options: WriteOptions): Promise<Hash>`
 
 Burns shares from owner and sends exactly assets of underlying tokens to receiver.
@@ -344,6 +449,7 @@ Burns shares from owner and sends exactly assets of underlying tokens to receive
 const txHash = vault.withdraw(BigInt("1e18"), "0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
 // txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
 ```
+
 
 ### `redeem(amount: bigint, receiver: Address, owner: Address, options: WriteOptions): Promise<Hash>`
 
