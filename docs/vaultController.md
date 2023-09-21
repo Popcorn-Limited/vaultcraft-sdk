@@ -17,8 +17,7 @@ bsc: "0x815B4A955169Ba1D66944A4d8F18B69bc9553a62"
 ```
 More chains will follow in the future.<br/>
 
-With your clients configured the initialization is straight forward:
-
+To initalize the VaultController class simply follow this example:
 ```ts
 const vaultControllerAddress = "0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb",
 const publicClient = createPublicClient({ 

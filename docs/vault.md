@@ -3,7 +3,36 @@
 
 ## Initialization
 
-vault = "0x5d344226578DC100b2001DA251A4b154df58194f"
+The Vault class needs to be instantiated once per vault contract that you want to interact with. To initialize a Vault class you need address of your vault, a public client to read view functions and a walletClient to send write calls. We simply use [viems](https://viem.sh/) [public-](https://viem.sh/docs/clients/public.html) and [wallet client](https://viem.sh/docs/clients/wallet.html). 
+
+In short the public client uses some Json-RPC API to fetch data from chain.<br/>
+The wallet client connects with an [EOA](https://ethereum.org/en/glossary/#account) to allow the user to sign and execute transactions.<br/>
+You can find the addresses of all existing vaults by calling `allVaults` on the VaultRegistry contract of that chain. For example through [etherscan]([VaultRegistry](https://etherscan.io/address/0x007318Dc89B314b47609C684260CfbfbcD412864#readContract)).
+
+Find all current VaultRegistry addresses right here:
+```ts
+mainnet: "0x007318Dc89B314b47609C684260CfbfbcD412864"
+optimism: "0xdD0d135b5b52B7EDd90a83d4A4112C55a1A6D23A"
+arbitrum: "0xB205e94D402742B919E851892f7d515592a7A6cC"
+polygon: "0x2246c4c469735bCE95C120939b0C078EC37A08D0"
+bsc: "0x25172C73958064f9ABc757ffc63EB859D7dc2219"
+```
+More chains will follow in the future. Additionally we are working on a VaultRegistry class for this SDK to make this process easier. On top of that our [app](https://vaultcraft.io/) will soon feature a dedicated page to allow you to see and manage all your vaults.
+
+To initalize the Vault class simply follow this example:
+```ts
+const vaultAddress = "0x5d344226578DC100b2001DA251A4b154df58194f",
+const publicClient = createPublicClient({ 
+  chain: mainnet,
+  transport: http()
+})
+const walletClient = createWalletClient({
+  chain: mainnet,
+  transport: custom(window.ethereum)
+})
+
+const vault = new Vault(vaultAddress, publicClient, walletClient);
+```
 
 ## Methods
 
@@ -49,7 +78,7 @@ Returns the amount of shares that the Vault would exchange for the amount of ass
 This function takes slippage and fees into account.
 
 ```ts
-const sharesPerAsset = vault.convertToShares(1e18);
+const sharesPerAsset = vault.convertToShares(BigInt("1e18"));
 // sharesPerAsset = 1000000000000000000n
 ```
 
@@ -59,7 +88,7 @@ Returns the amount of assets that the Vault would exchange for the amount of sha
 This function takes slippage and fees into account.
 
 ```ts
-const assetsPerShare = vault.convertToAssets(1e18);
+const assetsPerShare = vault.convertToAssets(BigInt("1e18"));
 // assetsPerShare = 1000000000000000000n
 ```
 
@@ -107,7 +136,7 @@ The actual deposit call should return equal or more shares than this preview fun
 This function takes slippage and fees into account.
 
 ```ts
-const expectedShares = vault.previewDeposit(1e18);
+const expectedShares = vault.previewDeposit(BigInt("1e18"));
 // expectedShares = 1000000000000000000n
 ```
 
@@ -119,7 +148,7 @@ The actual mint call should use equal or less assets than this preview function.
 This function takes slippage and fees into account.
 
 ```ts
-const expectedAssets = vault.previewMint();
+const expectedAssets = vault.previewMint(BigInt("1e18"));
 // expectedAssets = 1000000000000000000n
 ```
 
@@ -131,7 +160,7 @@ The actual withdraw call should use equal or less shares than this preview funct
 This function takes slippage and fees into account.
 
 ```ts
-const expectedShares = vault.previewWithdraw();
+const expectedShares = vault.previewWithdraw(BigInt("1e18"));
 // expectedShares = 1000000000000000000n
 ```
 
@@ -143,7 +172,7 @@ The actual redeem call should return equal or more assets than this preview func
 This function takes slippage and fees into account.
 
 ```ts
-const expectedAssets = vault.previewRedeem();
+const expectedAssets = vault.previewRedeem(BigInt("1e18"));
 // expectedAssets = 1000000000000000000n
 ```
 
