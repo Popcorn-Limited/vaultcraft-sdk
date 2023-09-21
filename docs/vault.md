@@ -426,7 +426,7 @@ __________
 
 ### `deposit(amount: bigint, receiver: Address, options: WriteOptions): Promise<Hash>`
 
-Mints shares Vault shares to receiver by depositing exactly amount of underlying tokens.
+Mints vault shares to `receiver` by depositing exact `amount` of underlying tokens (assets).
 
 ```ts
 const txHash = vault.deposit(BigInt("1e18"), "0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
@@ -436,7 +436,7 @@ const txHash = vault.deposit(BigInt("1e18"), "0xd8da6bf26964af9d7eed9e03e53415d3
 
 ### `mint(amount: bigint, receiver: Address, options: WriteOptions): Promise<Hash>`
 
-Mints exactly shares Vault shares to receiver by depositing amount of underlying tokens.
+Mints exact `amount` of vault shares to `receiver` by depositing the required amount underlying tokens (assets).
 
 ```ts
 const txHash = vault.mint(BigInt("1e18"), "0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
@@ -446,7 +446,7 @@ const txHash = vault.mint(BigInt("1e18"), "0xd8da6bf26964af9d7eed9e03e53415d37aa
 
 ### `withdraw(amount: bigint, receiver: Address, owner: Address, options: WriteOptions): Promise<Hash>`
 
-Burns shares from owner and sends exactly assets of underlying tokens to receiver.
+Burns required amount of shares from `owner` to send exact `amount` of underlying tokens (assets) to `receiver`.
 
 ```ts
 const txHash = vault.withdraw(BigInt("1e18"), "0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
@@ -456,7 +456,7 @@ const txHash = vault.withdraw(BigInt("1e18"), "0xd8da6bf26964af9d7eed9e03e53415d
 
 ### `redeem(amount: bigint, receiver: Address, owner: Address, options: WriteOptions): Promise<Hash>`
 
-Burns exactly shares from owner and sends assets of underlying tokens to receiver.
+Burns exact `amount` of shares from `owner` and sends underlying tokens (assets) to `receiver`.
 
 ```ts
 const txHash = vault.redeem(BigInt("1e18"), "0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
