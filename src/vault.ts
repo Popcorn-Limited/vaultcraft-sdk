@@ -17,7 +17,7 @@ export class Vault extends Base {
         };
     }
 
-    // ERC20 VIEWS
+    // ERC-20 VIEWS
 
     name(): Promise<string> {
         return this.publicClient.readContract({
@@ -56,7 +56,7 @@ export class Vault extends Base {
         });
     }
 
-    // ERC4626 GENERAL VIEWS
+    // ERC-4626 GENERAL VIEWS
 
     totalAssets(): Promise<bigint> {
         return this.publicClient.readContract({
@@ -79,7 +79,7 @@ export class Vault extends Base {
         });
     }
 
-    // ERC4626 CONVERSION VIEWS
+    // ERC-4626 CONVERSION VIEWS
 
     convertToShares(amount: bigint): Promise<bigint> {
         return this.publicClient.readContract({
@@ -97,7 +97,7 @@ export class Vault extends Base {
         });
     }
 
-    // ERC4626 MAX VIEWS
+    // ERC-4626 MAX VIEWS
 
     maxDeposit(receiver: Address): Promise<bigint> {
         return this.publicClient.readContract({
@@ -131,7 +131,7 @@ export class Vault extends Base {
         });
     }
 
-    // ERC4626 PREVIEW VIEWS
+    // ERC-4626 PREVIEW VIEWS
 
     previewDeposit(amount: bigint): Promise<bigint> {
         return this.publicClient.readContract({
@@ -262,7 +262,7 @@ export class Vault extends Base {
         });
     }
  
-    // ERC20 WRITES
+    // ERC-20 WRITES
 
     async approve(spender: Address, amount: bigint, options: WriteOptions): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
@@ -284,7 +284,7 @@ export class Vault extends Base {
         return this.walletClient.writeContract(request);
     }
 
-    // ERC4626 WRITES
+    // ERC-4626 WRITES
 
     async deposit(amount: bigint, receiver: Address, options: WriteOptions): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({

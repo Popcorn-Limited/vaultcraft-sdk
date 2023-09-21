@@ -110,11 +110,11 @@ describe.concurrent("getYieldOptionsByProtocol", () => {
         const result = await yieldOptions.getYieldOptionsByProtocol(1, "aaveV2");
         expect(result).toEqual([
             {
-                address: '0xc4ad29ba4b3c580e6d59105fff484999997675ff',
+                asset: '0xc4ad29ba4b3c580e6d59105fff484999997675ff',
                 yield: { total: 12, apy: [{ rewardToken: "0xc4ad29ba4b3c580e6d59105fff484999997675ff", apy: 12 }] }
             },
             {
-                address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+                asset: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
                 yield: { total: 10, apy: [{ rewardToken: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", apy: 10 }] }
             }
         ]);
@@ -137,11 +137,11 @@ describe.concurrent("getYieldOptionsByProtocol", () => {
         let result = await yieldOptions.getYieldOptionsByProtocol(1, "aaveV2");
         expect(result).toEqual([
             {
-                address: '0xc4ad29ba4b3c580e6d59105fff484999997675ff',
+                asset: '0xc4ad29ba4b3c580e6d59105fff484999997675ff',
                 yield: { total: 12, apy: [{ rewardToken: "0xc4ad29ba4b3c580e6d59105fff484999997675ff", apy: 12 }] }
             },
             {
-                address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+                asset: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
                 yield: { total: 10, apy: [{ rewardToken: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", apy: 10 }] }
             }
         ]);
@@ -150,11 +150,11 @@ describe.concurrent("getYieldOptionsByProtocol", () => {
         result = await yieldOptions.getYieldOptionsByProtocol(1, "aaveV2");
         expect(result).toEqual([
             {
-                address: '0xc4ad29ba4b3c580e6d59105fff484999997675ff',
+                asset: '0xc4ad29ba4b3c580e6d59105fff484999997675ff',
                 yield: { total: 12, apy: [{ rewardToken: "0xc4ad29ba4b3c580e6d59105fff484999997675ff", apy: 12 }] }
             },
             {
-                address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+                asset: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
                 yield: { total: 10, apy: [{ rewardToken: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", apy: 10 }] }
             }
         ]);
@@ -188,11 +188,11 @@ describe.concurrent("getYieldOptionsByProtocol", () => {
         let result = await yieldOptions.getYieldOptionsByProtocol(1, "aaveV2");
         expect(result).toEqual([
             {
-                address: '0xc4ad29ba4b3c580e6d59105fff484999997675ff',
+                asset: '0xc4ad29ba4b3c580e6d59105fff484999997675ff',
                 yield: { total: 12, apy: [{ rewardToken: "0xc4ad29ba4b3c580e6d59105fff484999997675ff", apy: 12 }] }
             },
             {
-                address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+                asset: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
                 yield: { total: 10, apy: [{ rewardToken: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", apy: 10 }] }
             }
         ]);

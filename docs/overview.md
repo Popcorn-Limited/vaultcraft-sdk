@@ -21,4 +21,7 @@ The SDK is split into multiple classes which can be instantiated individually de
 
 ## Installation
 1. Install the `vaultcraft-sdk` package.
-2. Follow the initializion instructions in the class specific docs.
+2. Follow the initializion instructions in the class specific docs. 
+([YieldOptions](https://github.com/Popcorn-Limited/vaultcraft-sdk/blob/docs/docs/yieldOptions.md), 
+[Vault](https://github.com/Popcorn-Limited/vaultcraft-sdk/blob/docs/docs/vault.md),
+[VaultController](https://github.com/Popcorn-Limited/vaultcraft-sdk/blob/docs/docs/vault.md))

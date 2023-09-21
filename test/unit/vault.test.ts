@@ -20,16 +20,27 @@ describe.concurrent("read-only", () => {
         });
     });
 
-    test("totalSupply() should return correct value", async () => {
-        const supply = await vault.totalSupply();
+    // ERC-20 VIEWS
 
-        expect(supply).toBe(BigInt("611278748027269004853112758860"));
+    test("name() should return correct value", async () => {
+        const name = await vault.name();
+        expect(name).toBe("Popcorn Dai Stablecoin Vault");
     });
 
-    test("totalAssets() should return correct value", async () => {
-        const supply = await vault.totalAssets();
+    test("symbol() should return correct value", async () => {
+        const name = await vault.symbol();
+        expect(name).toBe("pop-DAI");
+    });
 
-        expect(supply).toBe(BigInt("618196403043386757328"));
+    test("decimals() should return correct value", async () => {
+        const name = await vault.decimals();
+        expect(name).toBe(27);
+    });
+
+    test("allowance() should return correct value", async () => {
+        const allowance = await vault.allowance("0x22f5413C075Ccd56D575A54763831C4c27A37Bdb", "0xF2F02200aEd0028fbB9F183420D3fE6dFd2d3EcD");
+
+        expect(allowance).toBe(BigInt("115792089237316195423570985008687907853269984665640564039457584007913129639935"));
     });
 
     test("balanceOf() should return correct value", async () => {
@@ -38,15 +49,26 @@ describe.concurrent("read-only", () => {
         expect(balance).toBe(BigInt("503522135781959529191541975218"));
     });
 
-    test("adapter() should return correct value", async () => {
-        const adapter = await vault.adapter();
-        expect(adapter).toBe("0x612465C8d6F1B2Bc85DF43224a8A3b5e04F634fc");
+    // ERC-4626 GENERAL VIEWS
+
+    test("totalAssets() should return correct value", async () => {
+        const supply = await vault.totalAssets();
+
+        expect(supply).toBe(BigInt("618196403043386757328"));
+    });
+
+    test("totalSupply() should return correct value", async () => {
+        const supply = await vault.totalSupply();
+
+        expect(supply).toBe(BigInt("611278748027269004853112758860"));
     });
 
     test("asset() should return correct value", async () => {
         const asset = await vault.asset();
         expect(asset).toBe("0x6B175474E89094C44Da98b954EedeAC495271d0F");
     });
+
+    // ERC-4626 CONVERSION VIEWS
 
     test("convertToShares() should return correct value", async () => {
         const shares = await vault.convertToShares(BigInt(1e18));
@@ -57,6 +79,8 @@ describe.concurrent("read-only", () => {
         const amount = await vault.convertToAssets(BigInt(1e18));
         expect(amount).toBe(BigInt("1011316694"));
     });
+
+    // ERC-4626 MAX VIEWS
 
     test("maxDeposit() should return correct value", async () => {
         const max = await vault.maxDeposit("0xE92cbe5be7631557bF990d7Ff38277047561191f");
@@ -78,6 +102,8 @@ describe.concurrent("read-only", () => {
         expect(max).toBe(BigInt("611886095865436391103142342086"));
     });
 
+    // ERC-4626 PREVIEW VIEWS
+
     test("previewDeposit() should return correct value", async () => {
         const shares = await vault.previewDeposit(BigInt(1e18));
         expect(shares).toBe(BigInt("989792390983052207810209752"));
@@ -98,6 +124,13 @@ describe.concurrent("read-only", () => {
         expect(amount).toBe(BigInt("1010312879"));
     });
 
+    // VAULT ADAPTER VIEWS
+
+    test("adapter() should return correct value", async () => {
+        const adapter = await vault.adapter();
+        expect(adapter).toBe("0x612465C8d6F1B2Bc85DF43224a8A3b5e04F634fc");
+    });
+
     test("proposedAdapter() should return correct value", async () => {
         const address = await vault.proposedAdapter();
         expect(address).toBe(zeroAddress);
@@ -107,6 +140,8 @@ describe.concurrent("read-only", () => {
         const time = await vault.proposedAdapterTime();
         expect(time).toBe(BigInt(0));
     });
+
+    // VAULT FEE VIEWS
 
     test("fees() should return correct value", async () => {
         const expected = {
@@ -135,16 +170,6 @@ describe.concurrent("read-only", () => {
         expect(time).toBe(BigInt(0));
     });
 
-    test("quitPeriod() should return correct value", async () => {
-        const time = await vault.quitPeriod();
-        expect(time).toBe(BigInt(86400));
-    });
-
-    test("depositLimit() should return correct value", async () => {
-        const amount = await vault.depositLimit();
-        expect(amount).toBe(BigInt("115792089237316195423570985008687907853269984665640564039457584007913129639935"));
-    });
-
     test("accruedManagementFee() should return correct value", async () => {
         const amount = await vault.accruedManagementFee();
         expect(amount).toBe(BigInt(0));
@@ -170,6 +195,17 @@ describe.concurrent("read-only", () => {
         expect(recipient).toBe("0x74bb390786072ea1329f270CA6C0058b2D1Afe3f");
     });
 
+    // VAULT OTHER VIEWS
+
+    test("quitPeriod() should return correct value", async () => {
+        const time = await vault.quitPeriod();
+        expect(time).toBe(BigInt(86400));
+    });
+
+    test("depositLimit() should return correct value", async () => {
+        const amount = await vault.depositLimit();
+        expect(amount).toBe(BigInt("115792089237316195423570985008687907853269984665640564039457584007913129639935"));
+    });
 });
 
 describe("write-only", () => {
@@ -191,6 +227,56 @@ describe("write-only", () => {
             address: USER_ADDRESS,
         });
     });
+
+    // ERC-20 WRITES
+
+    test("approve() should approve vault shares for another spender", async () => {
+        // Get Vault Shares
+        await approve(BigInt(1e18));
+        await vault.mint(BigInt(1e18), USER_ADDRESS, { account: USER_ADDRESS });
+        const spender = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+
+        // Actual Test
+
+        const hash = await vault.approve(spender, BigInt(1e18), { account: USER_ADDRESS });
+        const tx = await publicClient.getTransaction({
+            hash,
+        });
+
+        const { functionName, args } = decodeFunctionData({
+            abi: IVaultABI,
+            data: tx.input,
+        });
+
+        expect(tx.from).toBe(USER_ADDRESS.toLowerCase());
+        expect(tx.to).toBe(vault.address.toLowerCase());
+        expect(functionName).toBe("approve");
+        expect(args).toEqual([spender, BigInt(1e18)]);
+    });
+
+    test("transfer() should transfer vault shares to another address", async () => {
+        // Get Vault Shares
+        await approve(BigInt(1e18));
+        await vault.mint(BigInt(1e18), USER_ADDRESS, { account: USER_ADDRESS });
+        const recipient = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+
+        const hash = await vault.transfer(recipient, BigInt(1e18), { account: USER_ADDRESS });
+        const tx = await publicClient.getTransaction({
+            hash,
+        });
+
+        const { functionName, args } = decodeFunctionData({
+            abi: IVaultABI,
+            data: tx.input,
+        });
+
+        expect(tx.from).toBe(USER_ADDRESS.toLowerCase());
+        expect(tx.to).toBe(vault.address.toLowerCase());
+        expect(functionName).toBe("transfer");
+        expect(args).toEqual([recipient, BigInt(1e18)]);
+    });
+
+    // ERC-4626 WRITES
 
     test("deposit() should deposit funds into the vault", async () => {
         await approve(BigInt(1e18));
