@@ -6,6 +6,8 @@ export class ProtocolProvider implements IProtocolProvider {
     private protocols: {
         [name: string]: IProtocol;
     };
+
+    // @dev Dont forget to add the protocolName in ./types.ts after adding a new protocol
     constructor(clients: Clients, ttl: number) {
         this.protocols = {
             "aaveV2": new AaveV2(clients),
