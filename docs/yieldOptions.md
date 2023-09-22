@@ -59,7 +59,7 @@ You can find the file [here](https://github.com/Popcorn-Limited/apy-data/blob/ma
 
 ## Protocol Provider
 
-The ProtocolProvider uses live yield data that it gets from on-chain contracts or the protocol's API.
+The LiveProvider uses live yield data that it gets from on-chain contracts or the protocol's API.
 To access on-chain data it needs access to a viem public client.
 
 ```ts
@@ -70,7 +70,7 @@ const clients = {
         transport: http()
     }),
 };
-const provider = new ProtocolProvider(clients, ttl);
+const provider = new LiveProvider(clients, ttl);
 const yieldOptions = new YieldOptions(provider, ttl);
 ```
 

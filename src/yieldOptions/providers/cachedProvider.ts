@@ -1,6 +1,5 @@
 import axios from "axios";
-import { IProtocolProvider } from "./protocolProvider.js";
-import { ProtocolName, Yield } from "../types.js";
+import { IProtocolProvider, ProtocolName, Yield } from "../types.js";
 import { Address, getAddress } from "viem";
 
 type Data = {
@@ -19,7 +18,7 @@ export class CachedProvider implements IProtocolProvider {
         this.data = data;
     }
 
-    getAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
+    getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
         return Promise.resolve(Object.keys(this.data[chainId][protocol]) as Address[]);
     }
 

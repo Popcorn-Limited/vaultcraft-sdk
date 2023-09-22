@@ -1,3 +1,5 @@
+import { Address } from "viem";
+
 export interface RpcUrls {
   [chain: number]: string;
 }
@@ -58,3 +60,10 @@ export enum InitParamRequirement {
 // @dev Dont forget to add the protocol name in here after adding a new one
 export type ProtocolName = 'aaveV2' | 'aaveV3' | 'aura' | 'balancer' | 'beefy' | 'compoundV2' | 'compoundV3' 
 | 'convex' | 'curve' | 'flux' | 'idleJunior' | 'idleSenior' |'origin' | 'yearn';
+
+
+export interface IProtocolProvider {
+  getProtocols(chainId: number): ProtocolName[];
+  getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]>;
+  getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield>;
+}
