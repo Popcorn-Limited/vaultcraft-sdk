@@ -17,17 +17,18 @@ test("getProtocols() should return a list of protocols for the given chain ID", 
         'aaveV2',
         'aaveV3',
         'aura',
+        'balancer',
         'beefy',
         'compoundV2',
         'compoundV3',
+        'convex',
         'curve',
+        'flux',
         'idleJunior',
         'idleSenior',
         'origin',
-        'yearn',
-        'balancer',
-        'flux',
-        'convex',
+        'stargate',
+        'yearn'
     ];
     expect(result).toEqual(want);
 });
