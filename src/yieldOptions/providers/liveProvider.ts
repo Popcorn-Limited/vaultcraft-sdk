@@ -1,11 +1,13 @@
 import { AaveV2, AaveV3, Aura, Beefy, Clients, CompoundV2, Curve, IProtocol, IdleJunior, IdleSenior, Origin, Yearn, Balancer, CompoundV3, Flux, Convex, Stargate } from "./protocols/index.js";
 import { Address, getAddress } from "viem";
-import { ProtocolName, Yield } from "../types.js";
+import { IProtocolProvider, ProtocolName, Yield } from "../types.js";
 
-export class ProtocolProvider implements IProtocolProvider {
+export class LiveProvider implements IProtocolProvider {
     private protocols: {
         [name: string]: IProtocol;
     };
+
+    // @dev Dont forget to add the protocolName in ./types.ts after adding a new protocol
     constructor(clients: Clients, ttl: number) {
         this.protocols = {
             "aaveV2": new AaveV2(clients),
@@ -31,7 +33,7 @@ export class ProtocolProvider implements IProtocolProvider {
         return Object.keys(this.protocols) as ProtocolName[];
     }
 
-    getAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
+    getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
         if (!this.protocols[protocol]) throw new Error(`${protocol} not supported`);
         return this.protocols[protocol].getAssets(chainId);
     }
@@ -40,10 +42,4 @@ export class ProtocolProvider implements IProtocolProvider {
         if (!this.protocols[protocol]) throw new Error(`${protocol} not supported`);
         return this.protocols[protocol].getApy(chainId, getAddress(asset));
     }
-}
-
-export interface IProtocolProvider {
-    getProtocols(chainId: number): ProtocolName[];
-    getAssets(chainId: number, protocol: ProtocolName): Promise<Address[]>;
-    getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield>;
 }

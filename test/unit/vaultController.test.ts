@@ -31,6 +31,9 @@ describe("write-only", () => {
             address: ADMIN_ADDRESS
         });
     });
+
+    // CHANGE ADAPTER
+
     test("proposeVaultAdapters() should propose the given adapters for the given vaults", async () => {
         const hash = await controller.proposeVaultAdapters([VAULT_ADDRESS], ["0x612465C8d6F1B2Bc85DF43224a8A3b5e04F634fc"], { account: ADMIN_ADDRESS });
         const tx = await publicClient.getTransaction({
@@ -68,7 +71,9 @@ describe("write-only", () => {
         expect(tx.to).toBe(controller.address.toLowerCase());
         expect(functionName).toBe("changeVaultAdapters");
         expect(args).toEqual([[VAULT_ADDRESS]]);
-    }, 10_000); 
+    }, 10_000);
+
+    // CHANGE FEES
 
     test("proposeVaultFees() should propose the fees for the given vaults", async () => {
         const fees: VaultFees = {
@@ -120,24 +125,6 @@ describe("write-only", () => {
         expect(args).toEqual([[VAULT_ADDRESS]]);
     });
 
-    test("setVaultQuitPeriods() should return correct object", async () => {
-        const newQuitPeriod = BigInt(86400 * 2);
-        const hash = await controller.setVaultQuitPeriods([VAULT_ADDRESS], [newQuitPeriod], { account: ADMIN_ADDRESS });
-        const tx = await publicClient.getTransaction({
-            hash,
-        });
-
-        const { functionName, args } = decodeFunctionData({
-            abi: VaultControllerABI,
-            data: tx.input,
-        });
-
-        expect(tx.from).toBe(ADMIN_ADDRESS.toLowerCase());
-        expect(tx.to).toBe(controller.address.toLowerCase());
-        expect(functionName).toBe("setVaultQuitPeriods");
-        expect(args).toEqual([[VAULT_ADDRESS], [newQuitPeriod]]);
-    });
-
     test("setVaultFeeRecipients() should return correct object", async () => {
         const hash = await controller.setVaultFeeRecipients([VAULT_ADDRESS], [VAULT_ADDRESS], { account: ADMIN_ADDRESS });
         const tx = await publicClient.getTransaction({
@@ -154,6 +141,8 @@ describe("write-only", () => {
         expect(functionName).toBe("setVaultFeeRecipients");
         expect(args).toEqual([[VAULT_ADDRESS], [VAULT_ADDRESS]]);
     });
+
+    // PAUSING
 
     test("pauseVaults() should return correct object", async () => {
         const hash = await controller.pauseVaults([VAULT_ADDRESS], { account: ADMIN_ADDRESS });
@@ -192,6 +181,8 @@ describe("write-only", () => {
         expect(args).toEqual([[VAULT_ADDRESS]]);
     });
 
+    // OTHER
+
     test("setVaultDepositLimits() should return correct object", async () => {
         const hash = await controller.setVaultDepositLimits([VAULT_ADDRESS], [BigInt(10)], { account: ADMIN_ADDRESS });
         const tx = await publicClient.getTransaction({
@@ -207,5 +198,23 @@ describe("write-only", () => {
         expect(tx.to).toBe(controller.address.toLowerCase());
         expect(functionName).toBe("setVaultDepositLimits");
         expect(args).toEqual([[VAULT_ADDRESS], [BigInt(10)]]);
+    });
+
+    test("setVaultQuitPeriods() should return correct object", async () => {
+        const newQuitPeriod = BigInt(86400 * 2);
+        const hash = await controller.setVaultQuitPeriods([VAULT_ADDRESS], [newQuitPeriod], { account: ADMIN_ADDRESS });
+        const tx = await publicClient.getTransaction({
+            hash,
+        });
+
+        const { functionName, args } = decodeFunctionData({
+            abi: VaultControllerABI,
+            data: tx.input,
+        });
+
+        expect(tx.from).toBe(ADMIN_ADDRESS.toLowerCase());
+        expect(tx.to).toBe(controller.address.toLowerCase());
+        expect(functionName).toBe("setVaultQuitPeriods");
+        expect(args).toEqual([[VAULT_ADDRESS], [newQuitPeriod]]);
     });
 }, 10_000);

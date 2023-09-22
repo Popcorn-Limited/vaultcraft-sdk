@@ -1,6 +1,5 @@
 import { Address } from "viem";
-import { IProtocolProvider } from "../../src/yieldOptions/protocolProvider.js";
-import { ProtocolName, Yield } from "../../src/yieldOptions/types.js";
+import { IProtocolProvider, ProtocolName, Yield } from "../../src/yieldOptions/types.js";
 
 
 type ProtocolYieldData = {
@@ -11,7 +10,7 @@ type ProtocolYieldData = {
     };
 };
 
-export class MockProtocolProvider implements IProtocolProvider {
+export class MockLiveProvider implements IProtocolProvider {
     private data: ProtocolYieldData;
     constructor(data: ProtocolYieldData) {
         this.data = data;
@@ -42,7 +41,7 @@ export class MockProtocolProvider implements IProtocolProvider {
         });
     }
 
-    getAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
+    getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
         return Promise.resolve(Object.keys(this.data[chainId][protocol]) as Address[]);
     }
 
