@@ -32,13 +32,15 @@ export class LiveProvider implements IProtocolProvider {
         return Object.keys(this.protocols) as ProtocolName[];
     }
 
-    getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
+    async getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
         if (!this.protocols[protocol]) throw new Error(`${protocol} not supported`);
-        return this.protocols[protocol].getAssets(chainId);
+        return (await this.protocols[protocol].getAssets(chainId)).map(asset => getAddress(asset));
     }
 
-    getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield> {
+    async getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield> {
         if (!this.protocols[protocol]) throw new Error(`${protocol} not supported`);
-        return this.protocols[protocol].getApy(chainId, getAddress(asset));
+        const result = await this.protocols[protocol].getApy(chainId, getAddress(asset));
+        result.apy = result.apy?.map(e => { return { rewardToken: getAddress(e.rewardToken), apy: e.apy } });
+        return result;
     }
 }

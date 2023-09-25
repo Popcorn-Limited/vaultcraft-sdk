@@ -44,6 +44,7 @@ export type Adapter = {
   initParams?: InitParam[];
   resolver?: string;
 };
+
 export type InitParam = {
   name: string;
   type: string;
@@ -51,6 +52,7 @@ export type InitParam = {
   description?: string;
   multiple?: boolean;
 };
+
 export enum InitParamRequirement {
   "Required",
   "NotAddressZero",
@@ -60,7 +62,6 @@ export enum InitParamRequirement {
 // @dev Dont forget to add the protocol name in here after adding a new one
 export type ProtocolName = 'aaveV2' | 'aaveV3' | 'aura' | 'balancer' | 'beefy' | 'compoundV2' | 'compoundV3' 
 | 'convex' | 'curve' | 'flux' | 'idleJunior' | 'idleSenior' |'origin' | 'yearn';
-
 
 export interface IProtocolProvider {
   getProtocols(chainId: number): ProtocolName[];

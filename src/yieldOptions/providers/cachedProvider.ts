@@ -18,15 +18,19 @@ export class CachedProvider implements IProtocolProvider {
         this.data = data;
     }
 
-    getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
-        return Promise.resolve(Object.keys(this.data[chainId][protocol]) as Address[]);
-    }
-
-    getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield> {
-        return Promise.resolve(this.data[chainId][protocol][getAddress(asset)]);
-    }
 
     getProtocols(chainId: number): ProtocolName[] {
         return Object.keys(this.data[chainId]) as ProtocolName[];
     }
+
+    async getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
+        return Promise.resolve(Object.keys(this.data[chainId][protocol]).map(asset => getAddress(asset)));
+    }
+
+    async getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield> {
+        const result = this.data[chainId][protocol][getAddress(asset)];
+        result.apy = result.apy?.map(e => { return { rewardToken: getAddress(e.rewardToken), apy: e.apy } });
+        return Promise.resolve(result);
+    }
+
 }

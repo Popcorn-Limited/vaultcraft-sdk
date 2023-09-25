@@ -1,5 +1,5 @@
 import NodeCache from "node-cache";
-import { Address } from "viem";
+import { Address, getAddress } from "viem";
 import type { IProtocolProvider, ProtocolName, Yield, YieldOption } from "./types.js";
 
 
@@ -40,7 +40,7 @@ export class YieldOptions {
         const result: ProtocolName[] = [];
         protocols.forEach(async (protocol) => {
             const assets = await this.provider.getProtocolAssets(1, protocol as ProtocolName);
-            if (assets.indexOf(asset) !== -1) {
+            if (assets.indexOf(getAddress(asset)) !== -1) {
                 result.push(protocol as ProtocolName);
             }
         })

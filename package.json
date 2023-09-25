@@ -1,6 +1,6 @@
 {
   "name": "vaultcraft-sdk",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "TypeScript library for VaultCraft",
   "main": "dist/index.js",
   "types": "./dist/index.d.ts",
@@ -14,7 +14,8 @@
     "build": "yarn run clean && tsc && babel ./src --out-dir ./dist --extensions \".ts,.js\" --copy-files",
     "test": "vitest run",
     "test:unit": "vitest run unit",
-    "test:integration": "vitest run integration"
+    "test:integration": "vitest run integration",
+    "test:yieldOptions": "vitest run yieldOptions"
   },
   "dependencies": {
     "axios": "^1.5.0",
