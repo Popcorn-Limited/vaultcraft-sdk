@@ -65,29 +65,17 @@ const txHash = vaultController.changeVaultAdapters(["0x5d344226578DC100b2001DA25
 __________
 ### Change Fees
 
-### `proposeVaultFees(vaults: Address[], fees: VaultFees[], options: WriteOptions): Promise<Hash>`
+There are four fee types:
 
-Proposes a new fee structure for the selected vaults. Fees can range from 0 - 1e18 whereby 1e18 equals 100% (1e12 = 1 Basis Point). Fees are calculated in assets. When taking fees these will be minted as vault shares to the `vault.feeRecipient()` and therefore continue to earn yield.<br/>
-The account calling this function must be the `creator` (owner) of all selected vaults.
-
-The four fee types are:<br/>
 **Deposit Fee:** Deposit fees take a percentage of deposited assets on each `vault.deposit()` or `vault.mint()` call.<br/>
+
 **Withdrawal Fee:** Withdrawal fees take a percentage of withdrawn assets on each `vault.withdraw()` or `vault.redeem()` call.<br/>
+
 **Management Fee:** Management fees are continuously applied on the total value of deposits. A fee of 5% for example should take 5% of `vault.totalAssets()` over the span of a year. Note that the vault doesnt necessarily need to accrue any yield in order for this fee to apply. A user could theoratically therefore end up with less assets than before.<br/>
+
 **Performance Fee:** Charge a fee whenever the share value reaches a new all time high in terms of assets per share. The fee will only be applied to gains realized by the vault, never the principal. Lets assume we have a performance fee of 20% and our vault realizes gains of 10% in assets. Our vault would now take 20% of these 10% or simply 2% of the vault value. If the vault doesnt earn any yield this fee will never be applied.<br/>
 
-
-
-```ts
-const txHash = vaultController.proposeVaultFees(
-  ["0x5d344226578DC100b2001DA251A4b154df58194f", "0x3D04Aade5388962C9A4f83B636a3a8ED63ea5b4D"],
-  [{ deposit: 0, withdrawal: 0, management: BigInt("1e16"), performance: BigInt("1e17") },
-  { deposit: 0, withdrawal: 0, management: 0, performance: BigInt("1e17") }]
-  );
-// txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
-```
-
-VaultFees are defined as:
+The vault fee type is defined as:
 
 ```ts
 type VaultFees = {
@@ -97,9 +85,31 @@ type VaultFees = {
     performance: bigint;
 };
 ```
+The following steps can be taken to change the fees in a vault.
 
+#### Propose Vault Fees
+```
+proposeVaultFees(vaults: Address[], fees: VaultFees[], options: WriteOptions): Promise<Hash>
+```
 
-### `changeVaultFees(vaults: Address[], options: WriteOptions): Promise<Hash>`
+Proposes a new fee structure for the selected vaults. Fees can range from 0 - 1e18 whereby 1e18 equals 100% (1e12 = 1 Basis Point). Fees are calculated in assets. When taking fees these will be minted as vault shares to the `vault.feeRecipient()` and therefore continue to earn yield.<br/>
+The account calling this function must be the `creator` (owner) of all selected vaults.
+
+```ts
+const txHash = vaultController.proposeVaultFees(
+  ["0x5d344226578DC100b2001DA251A4b154df58194f", "0x3D04Aade5388962C9A4f83B636a3a8ED63ea5b4D"],
+  [
+    { deposit: 0, withdrawal: 0, management: BigInt("1e16"), performance: BigInt("1e17") },
+    { deposit: 0, withdrawal: 0, management: 0, performance: BigInt("1e17") }
+  ]
+);
+// txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
+```
+
+#### Change Vault Fees
+```
+changeVaultFees(vaults: Address[], options: WriteOptions): Promise<Hash>
+```
 
 Sets the previously proposed fees as the new active fees for selected vaults. Anyone can call this function once fees were proposed and the `vault.quitPeriod()` has passed (`now() > vault.proposedFeeTime() + vault.quitPeriod()`). This function takes fees before setting the new fee structure. The function will also reset `vault.proposedFees()` and `vault.proposedFeeTime()`.
 
@@ -109,7 +119,10 @@ const txHash = vaultController.changeVaultFees(["0x5d344226578DC100b2001DA251A4b
 ```
 
 
-### `setVaultFeeRecipients(vaults: Address[], recipients: Address[], options: WriteOptions): Promise<Hash>`
+#### Set Vault Fee Recipients
+```
+setVaultFeeRecipients(vaults: Address[], recipients: Address[], options: WriteOptions): Promise<Hash>
+```
 
 Sets new fee recipients for selected vaults. The new fee recipients must be valid addresses and cant be the zero address. Its important to not that already minted fee shares wont be transfered to the new fee recipient.<br/>
 The account calling this function must be the `creator` (owner) of all selected vaults.
