@@ -13,7 +13,8 @@ VaultController needs to be instantiated once per chain. To initialize a VaultCo
 
 In short the public client uses some Json-RPC API to fetch data from chain.<br/>
 The wallet client connects with an [EOA](https://ethereum.org/en/glossary/#account) to allow the user to sign and execute transactions.<br/>
-Find all current VaultController addresses right here:
+
+Find all current VaultController addresses below. More chains will follow in the future.
 ```ts
 mainnet: "0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb"
 optimism: "0x757D953c53aD28748aCf94AD2d59C13955E09c08"
@@ -21,11 +22,10 @@ arbitrum: "0xF40749d72Ab5422CC5d735A373E66d67f7cA9393"
 polygon: "0xCe22Ff6d00c5414E64b9253Dd49a35e0B9Ea8b60"
 bsc: "0x815B4A955169Ba1D66944A4d8F18B69bc9553a62"
 ```
-More chains will follow in the future.<br/>
 
-To initalize the VaultController class simply follow this example:
+To initialize the VaultController class simply follow this example:
 ```ts
-const vaultControllerAddress = "0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb",
+const vaultControllerAddress = "0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb";
 const publicClient = createPublicClient({ 
   chain: mainnet,
   transport: http()
@@ -39,9 +39,14 @@ const vaultController = new VaultController(vaultControllerAddress, publicClient
 ```
 
 ## Methods
-### Change Adapter
 
-### `proposeVaultAdapters(vaults: Address[], adapters: Address[], options: WriteOptions): Promise<Hash>`
+### Change Adapter
+The following steps can be taken to change the adapters in a vault.
+
+#### Propose Vault Adapters
+```
+proposeVaultAdapters(vaults: Address[], adapters: Address[], options: WriteOptions): Promise<Hash>
+```
 
 Proposes a new adapter for the selected vaults. The adapters must have been previuosly deployed through VaultCrafts protocol. ERC-4626 compliant contracts from other protocols can not be used. Adapters can be used for multiple vaults though. <br/>
 The account calling this function must be the `creator` (owner) of all selected vaults.
@@ -51,8 +56,10 @@ const txHash = vaultController.proposeVaultAdapters(["0x5d344226578DC100b2001DA2
 // txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
 ```
 
-
-### `changeVaultAdapters(vaults: Address[], options: WriteOptions): Promise<Hash>`
+#### Change Vault Adapters
+```
+changeVaultAdapters(vaults: Address[], options: WriteOptions): Promise<Hash>
+```
 
 Sets the previously proposed adapters as the new active adapters for selected vaults. This will move all funds from the old adapter into the new one. Anyone can call this function once new adapters were proposed and the `vault.quitPeriod()` has passed (`now() > vault.proposedAdapterTime() + vault.quitPeriod()`). This function takes fees before setting the new fee structure. The function will also reset `vault.proposedAdapter()` and `vault.proposedAdapterTime()`.
 
@@ -61,19 +68,14 @@ const txHash = vaultController.changeVaultAdapters(["0x5d344226578DC100b2001DA25
 // txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
 ```
 
-
 __________
 ### Change Fees
 
 There are four fee types:
-
-**Deposit Fee:** Deposit fees take a percentage of deposited assets on each `vault.deposit()` or `vault.mint()` call.<br/>
-
-**Withdrawal Fee:** Withdrawal fees take a percentage of withdrawn assets on each `vault.withdraw()` or `vault.redeem()` call.<br/>
-
-**Management Fee:** Management fees are continuously applied on the total value of deposits. A fee of 5% for example should take 5% of `vault.totalAssets()` over the span of a year. Note that the vault doesnt necessarily need to accrue any yield in order for this fee to apply. A user could theoratically therefore end up with less assets than before.<br/>
-
-**Performance Fee:** Charge a fee whenever the share value reaches a new all time high in terms of assets per share. The fee will only be applied to gains realized by the vault, never the principal. Lets assume we have a performance fee of 20% and our vault realizes gains of 10% in assets. Our vault would now take 20% of these 10% or simply 2% of the vault value. If the vault doesnt earn any yield this fee will never be applied.<br/>
+1. Deposit Fee: Deposit fees take a percentage of deposited assets on each `vault.deposit()` or `vault.mint()` call.<br/>
+2. Withdrawal Fee: Withdrawal fees take a percentage of withdrawn assets on each `vault.withdraw()` or `vault.redeem()` call.<br/>
+3. Management Fee: Management fees are continuously applied on the total value of deposits. A fee of 5% for example should take 5% of `vault.totalAssets()` over the span of a year. Note that the vault doesnt necessarily need to accrue any yield in order for this fee to apply. A user could theoratically therefore end up with less assets than before.<br/>
+4. Performance Fee: Charge a fee whenever the share value reaches a new all time high in terms of assets per share. The fee will only be applied to gains realized by the vault, never the principal. Lets assume we have a performance fee of 20% and our vault realizes gains of 10% in assets. Our vault would now take 20% of these 10% or simply 2% of the vault value. If the vault doesnt earn any yield this fee will never be applied.<br/>
 
 The vault fee type is defined as:
 
@@ -138,7 +140,10 @@ const txHash = vaultController.setVaultFeeRecipients(
 __________
 ### Pausing
 
-### `pauseVaults(vaults: Address[], options: WriteOptions): Promise<Hash>`
+#### Pause Vault
+```
+pauseVaults(vaults: Address[], options: WriteOptions): Promise<Hash>
+```
 
 Pause the selected vaults to prevent users to deposit. Assets will remain in the strategies of each vault and can still be withdrawn by vault users.<br/>
 The account calling this function must be the `creator` (owner) of all selected vaults.
@@ -148,8 +153,10 @@ const txHash = vaultController.pauseVaults(["0x5d344226578DC100b2001DA251A4b154d
 // txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
 ```
 
-
-### `unpauseVaults(vaults: Address[], options: WriteOptions): Promise<Hash>`
+#### Unpause Vault
+```
+unpauseVaults(vaults: Address[], options: WriteOptions): Promise<Hash>
+```
 
 Unpause the selected vaults to allow users to deposit again.<br/>
 The account calling this function must be the `creator` (owner) of all selected vaults.
@@ -163,7 +170,10 @@ const txHash = vaultController.unpauseVaults(["0x5d344226578DC100b2001DA251A4b15
 __________
 ### Other
 
-### `setVaultDepositLimits(vaults: Address[], limits: bigint[], options: WriteOptions): Promise<Hash>`
+#### Set Vault Deposit Limit
+```
+setVaultDepositLimits(vaults: Address[], limits: bigint[], options: WriteOptions): Promise<Hash>
+```
 
 Sets a new deposit limit in assets for selected vaults. Use this function if you want to slowly scale TVL in your vaults. <br/>
 The account calling this function must be the `creator` (owner) of all selected vaults.
@@ -177,7 +187,10 @@ const txHash = vaultController.setVaultDepositLimits(
 ```
 
 
-### `setVaultQuitPeriods(vaults: Address[], quitPeriods: bigint[], options: WriteOptions): Promise<Hash>`
+#### Set Vault Quit Period
+```
+setVaultQuitPeriods(vaults: Address[], quitPeriods: bigint[], options: WriteOptions): Promise<Hash>
+```
 
 Sets new quit periods in seconds for selected vaults. New quit periods must be within 1 day and 7 days. Cant be called if a new fee or adapter has been recently proposed. (You have to wait atleast after the `proposalTime + quitPeriod` is passed) <br/>
 The account calling this function must be the `creator` (owner) of all selected vaults.
