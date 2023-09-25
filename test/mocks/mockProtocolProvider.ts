@@ -1,6 +1,6 @@
 import { Address, getAddress } from "viem";
-import { IProtocolProvider, ProtocolName, Yield } from "../../src/yieldOptions/types.js";
-
+import { IProtocolProvider, Protocol, ProtocolName, Yield } from "../../src/yieldOptions/types.js";
+import protocols from "../../src/lib/constants/protocols.js";
 
 type ProtocolYieldData = {
     [chainId: number]: {
@@ -18,7 +18,8 @@ export class MockLiveProvider implements IProtocolProvider {
     }
 
     setData(data: ProtocolYieldData) {
-        Object.keys(data).forEach(chainId => {
+        Object.keys(data).forEach(chain => {
+            const chainId = Number(chain);
             this.data[chainId] = {};
             Object.keys(data[chainId]).forEach(protocol => {
                 this.data[chainId][protocol] = {};
@@ -37,9 +38,9 @@ export class MockLiveProvider implements IProtocolProvider {
         Object.keys(data).forEach(key => this.data[chainId][protocol][getAddress(key)] = data[key]);
     }
 
-    getProtocols(chainId: number): ProtocolName[] {
+    getProtocols(chainId: number): Protocol[] {
         // This will fail if other chainIds are used
-        return Object.keys(this.data[chainId]) as ProtocolName[];
+        return Object.keys(this.data[chainId]).map(key => protocols[key]);
     }
 
     getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {

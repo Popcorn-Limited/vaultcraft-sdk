@@ -29,7 +29,7 @@ test("getProtocols() should return a list of protocols for the given chain ID", 
         'flux',
         'convex',
     ];
-    expect(result).toEqual(want);
+    expect(result.map(protocol => protocol.key)).toEqual(want);
 });
 
 describe.concurrent("getAssets()", () => {
@@ -133,7 +133,7 @@ describe.concurrent("getProtocolsByAsset()", () => {
         });
         const yieldOptions = new YieldOptions(mockLiveProvider, 360_000);
         const result = await yieldOptions.getProtocolsByAsset(1, "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff");
-        expect(result).toEqual([
+        expect(result.map(protocol => protocol.key)).toEqual([
             "aaveV2",
             "aaveV3"
         ]);
