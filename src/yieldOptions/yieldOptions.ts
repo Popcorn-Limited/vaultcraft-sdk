@@ -38,12 +38,12 @@ export class YieldOptions {
     async getProtocolsByAsset(chainId: number, asset: Address): Promise<ProtocolName[]> {
         const protocols = this.getProtocols(chainId);
         const result: ProtocolName[] = [];
-        for (let protocol in protocols) {
+        protocols.forEach(async (protocol) => {
             const assets = await this.provider.getProtocolAssets(1, protocol as ProtocolName);
             if (assets.indexOf(asset) !== -1) {
                 result.push(protocol as ProtocolName);
             }
-        }
+        })
         return result;
     }
 

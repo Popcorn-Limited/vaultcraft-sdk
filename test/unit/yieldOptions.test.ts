@@ -114,6 +114,32 @@ describe.concurrent("getProtocolAssets()", () => {
     });
 })
 
+describe.concurrent("getProtocolsByAsset()", () => {
+    test("should return a list of unique protocols", async () => {
+        const mockLiveProvider = new MockLiveProvider({
+            1: {
+                "aaveV2": {
+                    "0xc4ad29ba4b3c580e6d59105fff484999997675ff": 12,
+                    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
+                },
+                "aaveV3": {
+                    "0xc4ad29ba4b3c580e6d59105fff484999997675ff": 2,
+                },
+                "idleJunior": {
+                    "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": 11,
+                    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
+                },
+            },
+        });
+        const yieldOptions = new YieldOptions(mockLiveProvider, 360_000);
+        const result = await yieldOptions.getProtocolsByAsset(1, "0xc4ad29ba4b3c580e6d59105fff484999997675ff");
+        expect(result).toEqual([
+            "aaveV2",
+            "aaveV3"
+        ]);
+    });
+})
+
 describe.concurrent("getYieldOptionsByProtocol", () => {
     test("should return a list of assets and their apys for a given protocol", async () => {
         const mockLiveProvider = new MockLiveProvider({
