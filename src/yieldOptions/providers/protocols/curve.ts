@@ -53,7 +53,7 @@ export class Curve implements IProtocol {
 
     private async getPoolData(chainId: number): Promise<PoolData[]> {
         if (!Object.keys(CRV).includes(String(chainId))) throw new Error(`chain ${chainId} not supported`);
-        const network = networkNames[chainId];
+        const network = networkNames[chainId].toLowerCase();
 
         // if one hour has passed since we last called the Curve API, we'll refresh the cache data.
         let poolData = this.cache.get(`poolData_${network}`) as PoolData[];
