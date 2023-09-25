@@ -32,7 +32,6 @@ export class Beefy implements IProtocol {
         const apy = await this.getApys();
 
         vaults = vaults.filter((vault) =>
-            // @ts-ignore
             vault.network === networkNames[chainId].toLowerCase()
         );
         const beefyVaultObj = vaults.find(vault => vault.tokenAddress.toLowerCase() === asset.toLowerCase());
@@ -49,7 +48,6 @@ export class Beefy implements IProtocol {
     async getAssets(chainId: number): Promise<Address[]> {
         let vaults = await this.getActiveVaults();
         vaults = vaults.filter((vault) =>
-            // @ts-ignore
             vault.network === networkNames[chainId].toLowerCase()
         );
         // there are cases where tokenAddress is undefined. We have to filter those out

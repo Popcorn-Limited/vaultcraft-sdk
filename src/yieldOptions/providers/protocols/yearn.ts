@@ -1,12 +1,12 @@
-import { Yield } from "src/yieldOptions/types.js";
+import { ChainToAddress, Yield } from "src/yieldOptions/types.js";
 import { Clients, IProtocol, getEmptyYield } from "./index.js";
 import { Address, getAddress } from "viem";
 import { ChainId } from "@/lib/helpers.js";
 import NodeCache from "node-cache";
 import axios from "axios";
 
-const VAULT_REGISTRY_ADDRESS = { 1: "0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804", 42161: "0x3199437193625DCcD6F9C9e98BDf93582200Eb1f" };
-const VAULT_FACTORY_ADDRESS = "0x21b1FC8A52f179757bf555346130bF27c0C2A17A";
+const VAULT_REGISTRY_ADDRESS: ChainToAddress = { 1: "0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804", 42161: "0x3199437193625DCcD6F9C9e98BDf93582200Eb1f" };
+const VAULT_FACTORY_ADDRESS: ChainToAddress = { 1: "0x21b1FC8A52f179757bf555346130bF27c0C2A17A" };
 
 type Vault = {
     token: {
@@ -52,7 +52,6 @@ export class Yearn implements IProtocol {
             return assets;
         }
         const numTokens = await client.readContract({
-            // @ts-ignore
             address: VAULT_REGISTRY_ADDRESS[chainId],
             abi: abiRegistry,
             functionName: "numTokens",
@@ -60,7 +59,6 @@ export class Yearn implements IProtocol {
 
         const registryTokens = await Promise.all(Array(Number(numTokens)).fill(undefined).map((_, i) =>
             client.readContract({
-                // @ts-ignore
                 address: VAULT_REGISTRY_ADDRESS[chainId],
                 abi: abiRegistry,
                 functionName: "tokens",
@@ -71,7 +69,7 @@ export class Yearn implements IProtocol {
         let factoryTokens: Address[] = [];
         if (chainId === ChainId.Ethereum) {
             const allDeployedVaults = await client.readContract({
-                address: VAULT_FACTORY_ADDRESS,
+                address: VAULT_FACTORY_ADDRESS[chainId],
                 abi: abiFactory,
                 functionName: "allDeployedVaults",
             });

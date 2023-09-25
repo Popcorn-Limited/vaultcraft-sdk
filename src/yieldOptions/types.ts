@@ -71,6 +71,8 @@ export type Protocol = {
   tags: string[];
 }
 
+export type ChainToAddress = { [key: number]: Address };
+
 export interface IProtocolProvider {
   getProtocols(chainId: number): Protocol[];
   getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]>;

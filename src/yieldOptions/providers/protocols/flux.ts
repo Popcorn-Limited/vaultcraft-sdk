@@ -6,7 +6,7 @@ import { IProtocol } from "./index.js";
 
 // Flux is mainnet only.
 // @dev Make sure the keys here are correct checksum addresses
-const assetToCToken = {
+const assetToCToken: { [key: Address]: Address } = {
     // DAI
     "0x6B175474E89094C44Da98b954EedeAC495271d0F": "0xe2bA8693cE7474900A045757fe0efCa900F6530b",
     // USDC
@@ -17,7 +17,7 @@ const assetToCToken = {
     "0x853d955aCEf822Db058eb8505911ED77F175b99e": "0x1C9A2d6b33B4826757273D47ebEe0e2DddcD978B",
     // OUSDG
     "0x1B19C19393e2d034D8Ff31ff34c81252FcBbee92": "0x1dD7950c266fB1be96180a8FDb0591F70200E018",
-};
+  };
 
 export class Flux implements IProtocol {
     private client: PublicClient;
@@ -28,12 +28,8 @@ export class Flux implements IProtocol {
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         if (chainId !== 1) throw new Error("Flux is only available on Ethereum mainnet");
 
-        // @ts-ignore
-        const cToken = assetToCToken[asset];
-
         const supplyRate = await this.client.readContract({
-            // @ts-ignore
-            address: cToken,
+            address: assetToCToken[asset],
             abi: CTOKEN_ABI,
             functionName: 'supplyRatePerBlock'
         });

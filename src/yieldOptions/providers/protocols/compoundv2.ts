@@ -5,7 +5,7 @@ import { CTOKEN_ABI } from "./abi/compound_v2_ctoken.js";
 
 // Compound V2 is mainnet only. Thus we can simplify a lot of stuff
 // @dev Make sure the keys here are correct checksum addresses
-const assetToCToken = {
+const assetToCToken: { [key: Address]: Address } = {
     // TODO: add ETH
     // AAVE
     "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9": "0xe65cdB6479BaC1e22340E4E755fAE7E509EcD06c",
@@ -51,12 +51,8 @@ export class CompoundV2 implements IProtocol {
         const client = this.clients[chainId];
         if (!client) throw new Error(`missing public client for chain ID: ${chainId}`);
 
-        // @ts-ignore
-        const cToken = assetToCToken[asset];
-
         const supplyRate = await client.readContract({
-            // @ts-ignore
-            address: cToken,
+            address: assetToCToken[asset],
             abi: CTOKEN_ABI,
             functionName: 'supplyRatePerBlock'
         });

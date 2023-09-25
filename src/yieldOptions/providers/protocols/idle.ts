@@ -4,7 +4,13 @@ import { Address, getAddress } from "viem";
 import { IDLE_CDO_ABI } from "./abi/idle_cdo.js";
 
 // @dev Make sure the keys here are correct checksum addresses
-const tranches = {
+const tranches: {
+    [key: Address]: {
+        cdo: Address,
+        junior: Address,
+        senior: Address
+    }
+} = {
     "0x6B175474E89094C44Da98b954EedeAC495271d0F": {
         cdo: "0x5dca0b3ed7594a6613c1a2acd367d56e1f74f92d",
         junior: "0x38d36353d07cfb92650822d9c31fb4ada1c73d6e",
@@ -55,7 +61,6 @@ class IdleAbstract implements IProtocol {
         const client = this.clients[chainId];
         if (!client) throw new Error(`missing public client for chain ID: ${chainId}`);
 
-        // @ts-ignore
         const idleAddresses = tranches[asset];
         if (!idleAddresses) return getEmptyYield(asset);
 
