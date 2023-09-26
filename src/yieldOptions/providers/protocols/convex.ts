@@ -1,11 +1,12 @@
 import axios from "axios";
 import NodeCache from "node-cache";
-import type { Yield } from "src/yieldOptions/types.js";
+import type { ChainToAddress, Yield } from "src/yieldOptions/types.js";
 import { Address, getAddress } from "viem";
 import { IProtocol, getEmptyYield } from "./index.js";
+import { CRV } from "./curve.js";
 
-const CVX_ADDRESS = "0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B";
-const CRV_ADDRESS = "0xD533a949740bb3306d119CC777fa900bA034cd52";
+// @dev Make sure the addresses here are correct checksum addresses
+const CVX: ChainToAddress = { 1: "0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B" }
 
 export interface Pool {
     lpToken: Address;
@@ -32,11 +33,11 @@ export class Convex implements IProtocol {
             total: (Number(pool.crvApr) + Number(pool.cvxApr)) * 100,
             apy: [
                 {
-                    rewardToken: CRV_ADDRESS,
+                    rewardToken: CRV[chainId],
                     apy: Number(pool.crvApr) * 100,
                 },
                 {
-                    rewardToken: CVX_ADDRESS,
+                    rewardToken: CVX[chainId],
                     apy: Number(pool.cvxApr) * 100,
                 },
             ],

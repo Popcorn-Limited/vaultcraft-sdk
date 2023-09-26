@@ -1,9 +1,9 @@
 import { Address, getAddress } from "viem";
-import { Yield } from "src/yieldOptions/types.js";
+import { ChainToAddress, Yield } from "src/yieldOptions/types.js";
 import { Clients, IProtocol } from "./index.js";
 import { LENDING_POOL_ABI } from "./abi/aave_v2_lending_pool.js";
 
-const LENDING_POOL = { 1: "0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9" };
+const LENDING_POOL: ChainToAddress = { 1: "0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9" };
 
 export class AaveV2 implements IProtocol {
     private clients: Clients;
@@ -16,7 +16,6 @@ export class AaveV2 implements IProtocol {
         if (!client) throw new Error(`Missing public client for chain ID: ${chainId}`);
 
         const reserveData = await client.readContract({
-            // @ts-ignore
             address: LENDING_POOL[chainId],
             abi: LENDING_POOL_ABI,
             functionName: 'getReserveData',
@@ -40,8 +39,6 @@ export class AaveV2 implements IProtocol {
         if (!client) throw new Error(`Missing public client for chain ID: ${chainId}`);
         try {
             const assets = await client.readContract({
-                // TODO: find a cleaner way to pass an arbitrary chainID here
-                // @ts-ignore
                 address: LENDING_POOL[chainId],
                 abi: LENDING_POOL_ABI,
                 functionName: "getReservesList",

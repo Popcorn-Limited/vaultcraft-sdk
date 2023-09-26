@@ -1,6 +1,7 @@
 import { AaveV2, AaveV3, Aura, Beefy, Clients, CompoundV2, Curve, IProtocol, IdleJunior, IdleSenior, Origin, Yearn, Balancer, CompoundV3, Flux, Convex, Stargate } from "./protocols/index.js";
 import { Address, getAddress } from "viem";
-import { IProtocolProvider, ProtocolName, Yield } from "../types.js";
+import { IProtocolProvider, Protocol, ProtocolName, Yield } from "../types.js";
+import protocols from "@/lib/constants/protocols.js";
 
 export class LiveProvider implements IProtocolProvider {
     private protocols: {
@@ -28,18 +29,20 @@ export class LiveProvider implements IProtocolProvider {
         };
     }
 
-    getProtocols(chainId: number): ProtocolName[] {
+    getProtocols(chainId: number): Protocol[] {
         // TODO: differentiate by chain
-        return Object.keys(this.protocols) as ProtocolName[];
+        return Object.keys(this.protocols).map(key => protocols[key]);
     }
 
-    getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
+    async getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
         if (!this.protocols[protocol]) throw new Error(`${protocol} not supported`);
-        return this.protocols[protocol].getAssets(chainId);
+        return (await this.protocols[protocol].getAssets(chainId)).map(asset => getAddress(asset));
     }
 
-    getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield> {
+    async getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield> {
         if (!this.protocols[protocol]) throw new Error(`${protocol} not supported`);
-        return this.protocols[protocol].getApy(chainId, getAddress(asset));
+        const result = await this.protocols[protocol].getApy(chainId, getAddress(asset));
+        result.apy = result.apy?.map(e => { return { rewardToken: getAddress(e.rewardToken), apy: e.apy } });
+        return result;
     }
 }

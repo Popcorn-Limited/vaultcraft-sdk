@@ -1,9 +1,9 @@
 import { Address, getAddress, parseAbi, PublicClient } from "viem";
 import { Clients, IProtocol } from "./index.js";
-import { Yield } from "src/yieldOptions/types.js";
+import { ChainToAddress, Yield } from "src/yieldOptions/types.js";
 
 // @dev Make sure the keys here are correct checksum addresses
-const assetToCToken = {
+const assetToCToken: { [key: number]: { [key: Address]: Address } } = {
     1: {
         // USDC
         "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": "0xc3d688B66703497DAA19211EEdff47f25384cdc3",
@@ -29,7 +29,7 @@ const assetToCToken = {
 };
 
 // @dev Make sure the keys here are correct checksum addresses
-const CompAddress = {
+const COMP: ChainToAddress = {
     1: "0xc00e94Cb662C3520282E6f5717214004A7f26888",
     42161: "0x354A6dA3fcde098F8389cad84b0182725c6C91dE",
     137: "0x8505b9d2254A7Ae468c0E9dd10Ccea3A837aef5c",
@@ -49,7 +49,6 @@ export class CompoundV3 implements IProtocol {
         const client = this.clients[chainId];
         if (!client) throw new Error(`Missing public client for chain ID: ${chainId}`);
 
-        // @ts-ignore
         const cToken = assetToCToken[chainId][asset] as Address;
         if (!cToken) throw new Error(`asset is not available on Compound on chain ${chainId}`);
 
@@ -84,8 +83,7 @@ export class CompoundV3 implements IProtocol {
                     apy: Number(supplyApr),
                 },
                 {
-                    // @ts-ignore
-                    rewardToken: getAddress(CompAddress[chainId]),
+                    rewardToken: getAddress(COMP[chainId]),
                     apy: Number(supplyCompRewardApr),
                 }
             ]
@@ -95,7 +93,6 @@ export class CompoundV3 implements IProtocol {
     }
 
     getAssets(chainId: number): Promise<Address[]> {
-        // @ts-ignore
         return Promise.resolve(Object.keys(assetToCToken[chainId]).map((key) => getAddress(key)));
     }
 

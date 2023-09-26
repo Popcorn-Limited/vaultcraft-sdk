@@ -1,5 +1,4 @@
-import { mainnet, arbitrum, bsc, goerli, localhost, optimism, polygon } from "viem/chains";
-import { Chain } from "viem/chains";
+import { mainnet, arbitrum, bsc, goerli, localhost, optimism, polygon, Chain } from "viem/chains";
 
 export function noOp() { }
 

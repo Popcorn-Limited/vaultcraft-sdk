@@ -30,7 +30,7 @@ test("getProtocols() should return a list of protocols for the given chain ID", 
         'stargate',
         'yearn'
     ];
-    expect(result).toEqual(want);
+    expect(result.map(protocol => protocol.key)).toEqual(want);
 });
 
 describe.concurrent("getAssets()", () => {
@@ -38,20 +38,20 @@ describe.concurrent("getAssets()", () => {
         const mockLiveProvider = new MockLiveProvider({
             1: {
                 "aaveV2": {
-                    "0xc4ad29ba4b3c580e6d59105fff484999997675ff": 12,
-                    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
+                    "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff": 12,
+                    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": 10,
                 },
                 "idleJunior": {
                     "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": 11,
-                    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
+                    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": 10,
                 },
             },
         });
         const yieldOptions = new YieldOptions(mockLiveProvider, 360_000);
         const result = await yieldOptions.getAssets(1);
         expect(result).toEqual([
-            "0xc4ad29ba4b3c580e6d59105fff484999997675ff",
-            "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff",
+            "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
             "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
         ]);
     });
@@ -60,12 +60,12 @@ describe.concurrent("getAssets()", () => {
         const protocolData = {
             1: {
                 "aaveV2": {
-                    "0xc4ad29ba4b3c580e6d59105fff484999997675ff": 12,
-                    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
+                    "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff": 12,
+                    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": 10,
                 },
                 "idleJunior": {
                     "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": 11,
-                    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
+                    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": 10,
                 },
             },
 
@@ -74,8 +74,8 @@ describe.concurrent("getAssets()", () => {
         const yieldOptions = new YieldOptions(mockLiveProvider, 360_000);
         let result = await yieldOptions.getAssets(1);
         expect(result).toEqual([
-            "0xc4ad29ba4b3c580e6d59105fff484999997675ff",
-            "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff",
+            "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
             "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
         ]);
 
@@ -85,8 +85,8 @@ describe.concurrent("getAssets()", () => {
 
         result = await yieldOptions.getAssets(1);
         expect(result).toEqual([
-            "0xc4ad29ba4b3c580e6d59105fff484999997675ff",
-            "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff",
+            "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
             "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
         ]);
     });
@@ -97,20 +97,46 @@ describe.concurrent("getProtocolAssets()", () => {
         const mockLiveProvider = new MockLiveProvider({
             1: {
                 "aaveV2": {
-                    "0xc4ad29ba4b3c580e6d59105fff484999997675ff": 12,
-                    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
+                    "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff": 12,
+                    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": 10,
                 },
                 "idleJunior": {
                     "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": 11,
-                    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
+                    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": 10,
                 },
             },
         });
         const yieldOptions = new YieldOptions(mockLiveProvider, 360_000);
         const result = await yieldOptions.getProtocolAssets(1, "aaveV2");
         expect(result).toEqual([
-            "0xc4ad29ba4b3c580e6d59105fff484999997675ff",
-            "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff",
+            "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        ]);
+    });
+})
+
+describe.concurrent("getProtocolsByAsset()", () => {
+    test("should return a list of unique protocols", async () => {
+        const mockLiveProvider = new MockLiveProvider({
+            1: {
+                "aaveV2": {
+                    "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff": 12,
+                    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": 10,
+                },
+                "aaveV3": {
+                    "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff": 2,
+                },
+                "idleJunior": {
+                    "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": 11,
+                    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": 10,
+                },
+            },
+        });
+        const yieldOptions = new YieldOptions(mockLiveProvider, 360_000);
+        const result = await yieldOptions.getProtocolsByAsset(1, "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff");
+        expect(result.map(protocol => protocol.key)).toEqual([
+            "aaveV2",
+            "aaveV3"
         ]);
     });
 })
@@ -120,12 +146,12 @@ describe.concurrent("getYieldOptionsByProtocol", () => {
         const mockLiveProvider = new MockLiveProvider({
             1: {
                 "aaveV2": {
-                    "0xc4ad29ba4b3c580e6d59105fff484999997675ff": 12,
-                    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
+                    "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff": 12,
+                    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": 10,
                 },
                 "idleJunior": {
                     "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": 11,
-                    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
+                    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": 10,
                 },
             },
         });
@@ -133,12 +159,12 @@ describe.concurrent("getYieldOptionsByProtocol", () => {
         const result = await yieldOptions.getYieldOptionsByProtocol(1, "aaveV2");
         expect(result).toEqual([
             {
-                asset: '0xc4ad29ba4b3c580e6d59105fff484999997675ff',
-                yield: { total: 12, apy: [{ rewardToken: "0xc4ad29ba4b3c580e6d59105fff484999997675ff", apy: 12 }] }
+                asset: '0xc4AD29ba4B3c580e6D59105FFf484999997675Ff',
+                yield: { total: 12, apy: [{ rewardToken: "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff", apy: 12 }] }
             },
             {
-                asset: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-                yield: { total: 10, apy: [{ rewardToken: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", apy: 10 }] }
+                asset: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+                yield: { total: 10, apy: [{ rewardToken: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", apy: 10 }] }
             }
         ]);
     });
@@ -147,12 +173,12 @@ describe.concurrent("getYieldOptionsByProtocol", () => {
         const mockLiveProvider = new MockLiveProvider({
             1: {
                 "aaveV2": {
-                    "0xc4ad29ba4b3c580e6d59105fff484999997675ff": 12,
-                    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
+                    "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff": 12,
+                    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": 10,
                 },
                 "idleJunior": {
                     "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": 11,
-                    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
+                    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": 10,
                 },
             },
         });
@@ -160,25 +186,25 @@ describe.concurrent("getYieldOptionsByProtocol", () => {
         let result = await yieldOptions.getYieldOptionsByProtocol(1, "aaveV2");
         expect(result).toEqual([
             {
-                asset: '0xc4ad29ba4b3c580e6d59105fff484999997675ff',
-                yield: { total: 12, apy: [{ rewardToken: "0xc4ad29ba4b3c580e6d59105fff484999997675ff", apy: 12 }] }
+                asset: '0xc4AD29ba4B3c580e6D59105FFf484999997675Ff',
+                yield: { total: 12, apy: [{ rewardToken: "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff", apy: 12 }] }
             },
             {
-                asset: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-                yield: { total: 10, apy: [{ rewardToken: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", apy: 10 }] }
+                asset: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+                yield: { total: 10, apy: [{ rewardToken: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", apy: 10 }] }
             }
         ]);
 
-        mockLiveProvider.setAsset(1, "aaveV2", "0xc4ad29ba4b3c580e6d59105fff484999997675ff", 15);
+        mockLiveProvider.setAsset(1, "aaveV2", "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff", 15);
         result = await yieldOptions.getYieldOptionsByProtocol(1, "aaveV2");
         expect(result).toEqual([
             {
-                asset: '0xc4ad29ba4b3c580e6d59105fff484999997675ff',
-                yield: { total: 12, apy: [{ rewardToken: "0xc4ad29ba4b3c580e6d59105fff484999997675ff", apy: 12 }] }
+                asset: '0xc4AD29ba4B3c580e6D59105FFf484999997675Ff',
+                yield: { total: 12, apy: [{ rewardToken: "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff", apy: 12 }] }
             },
             {
-                asset: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-                yield: { total: 10, apy: [{ rewardToken: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", apy: 10 }] }
+                asset: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+                yield: { total: 10, apy: [{ rewardToken: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", apy: 10 }] }
             }
         ]);
     });
@@ -187,40 +213,39 @@ describe.concurrent("getYieldOptionsByProtocol", () => {
         const mockLiveProvider = new MockLiveProvider({
             1: {
                 "aaveV2": {
-                    "0xc4ad29ba4b3c580e6d59105fff484999997675ff": 12,
-                    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
+                    "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff": 12,
+                    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": 10,
                 },
                 "idleJunior": {
                     "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": 11,
-                    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": 10,
+                    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": 10,
                 },
             },
         });
         const yieldOptions = new YieldOptions(mockLiveProvider, 360_000);
-        const apy = await yieldOptions.getApy(1, "aaveV2", "0xc4ad29ba4b3c580e6d59105fff484999997675ff");
+        const apy = await yieldOptions.getApy(1, "aaveV2", "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff");
         expect(apy).toEqual({
             total: 12,
             apy: [{
                 apy: 12,
-                rewardToken: "0xc4ad29ba4b3c580e6d59105fff484999997675ff",
+                rewardToken: "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff",
             }],
         });
 
-        mockLiveProvider.setAsset(1, "aaveV2", "0xc4ad29ba4b3c580e6d59105fff484999997675ff", 15);
+        mockLiveProvider.setAsset(1, "aaveV2", "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff", 15);
 
         let result = await yieldOptions.getYieldOptionsByProtocol(1, "aaveV2");
         expect(result).toEqual([
             {
-                asset: '0xc4ad29ba4b3c580e6d59105fff484999997675ff',
-                yield: { total: 12, apy: [{ rewardToken: "0xc4ad29ba4b3c580e6d59105fff484999997675ff", apy: 12 }] }
+                asset: '0xc4AD29ba4B3c580e6D59105FFf484999997675Ff',
+                yield: { total: 12, apy: [{ rewardToken: "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff", apy: 12 }] }
             },
             {
-                asset: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-                yield: { total: 10, apy: [{ rewardToken: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", apy: 10 }] }
+                asset: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+                yield: { total: 10, apy: [{ rewardToken: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", apy: 10 }] }
             }
         ]);
     });
-
 });
 
 // Priority:
