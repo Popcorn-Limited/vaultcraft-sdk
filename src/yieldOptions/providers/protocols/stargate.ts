@@ -3,6 +3,7 @@ import { Yield } from "src/yieldOptions/types.js";
 import { Clients, IProtocol, getEmptyYield } from "./index.js";
 import axios from "axios";
 import { networkNames } from "@/lib/helpers.js";
+import NodeCache from "node-cache";
 
 // @dev Make sure the keys here are correct checksum addresses
 const STARGATE_LP_STAKING_ADDRESS: { [key: number]: Address } = { 1: "0xB0D502E938ed5f4df2E681fE6E419ff29631d62b", 42161: "0xeA8DfEE1898a7e0a59f7527F076106d7e44c2176" }
@@ -19,8 +20,11 @@ interface Pool {
 
 export class Stargate implements IProtocol {
   private clients: Clients;
-  constructor(clients: Clients) {
+  private cache: NodeCache;
+
+  constructor(clients: Clients, ttl: number) {
     this.clients = clients;
+    this.cache = new NodeCache({ stdTTL: ttl });
   }
 
   async getApy(chainId: number, asset: Address): Promise<Yield> {
@@ -32,11 +36,16 @@ export class Stargate implements IProtocol {
       abi: sTokenAbi,
       functionName: "token"
     });
-    const pools = (await axios.get("https://yields.llama.fi/pools")).data;
 
-    const filteredPools: Pool[] = pools.data.filter((pool: Pool) => pool.chain === networkNames[chainId] && pool.project === "stargate")
+    let pools = this.cache.get("llama-pools") as Pool[];
+    if (!pools) {
+      const res = (await axios.get("https://yields.llama.fi/pools")).data;
+      pools = res.data;
+      this.cache.set("llama-pools", pools);
+    }
+
+    const filteredPools: Pool[] = pools.filter((pool: Pool) => pool.chain === networkNames[chainId] && pool.project === "stargate")
     const pool = filteredPools.find(pool => getAddress(pool.underlyingTokens[0]) === getAddress(token))
-
 
     // TODO - Lps earn 1BPS on each transfer. Defillama has no data for this though so i currently dont know how to access that data.
     return pool ? {

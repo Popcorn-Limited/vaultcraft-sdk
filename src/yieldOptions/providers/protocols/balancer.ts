@@ -12,6 +12,7 @@ export class Balancer implements IProtocol {
     constructor(ttl: number) {
         this.cache = new NodeCache({ stdTTL: ttl });
     }
+
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         // we can get apy data for balancer through the aura subgraph
         const pools = await this.getAuraPoolData(chainId);
@@ -79,10 +80,10 @@ export class Balancer implements IProtocol {
     }
 
     private async getAuraPoolData(chainId: number): Promise<AuraPool[]> {
-        let pools = this.cache.get("pools") as AuraPool[];
+        let pools = this.cache.get("balancer-pools") as AuraPool[];
         if (!pools) {
             pools = await getAuraPools(chainId);
-            this.cache.set("pools", pools);
+            this.cache.set("balancer-pools", pools);
         }
         return pools;
     }

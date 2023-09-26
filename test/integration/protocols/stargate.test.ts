@@ -6,7 +6,7 @@ import { publicClient } from "../../setup.js";
 const clients: Clients = {
     1: publicClient,
 };
-const stargate = new Stargate(clients);
+const stargate = new Stargate(clients, 1000);
 
 const FORK_BLOCK_NUMBER = BigInt(18071114);
 describe.concurrent("read-only", () => {

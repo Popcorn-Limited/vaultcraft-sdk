@@ -23,7 +23,7 @@ export class LiveProvider implements IProtocolProvider {
             "idleJunior": new IdleJunior(clients),
             "idleSenior": new IdleSenior(clients),
             "origin": new Origin(),
-            "stargate": new Stargate(clients),
+            "stargate": new Stargate(clients, ttl),
             "yearn": new Yearn(clients, ttl),
         };
     }
