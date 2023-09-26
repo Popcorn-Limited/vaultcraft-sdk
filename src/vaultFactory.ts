@@ -1,4 +1,4 @@
-import { Hash, Address, PublicClient, WalletClient, Transport, Chain, maxUint256, pad, zeroAddress } from "viem";
+import { Hash, Address, PublicClient, WalletClient, Transport, Chain, maxUint256, zeroAddress } from "viem";
 
 import { VaultControllerABI } from "./abi/VaultControllerABI.js";
 import { Base } from "./base.js";
@@ -25,8 +25,10 @@ export type VaultMetadata = {
 };
 
 export type AdapterOptions = {
-    adapterId: Hash;
-    adapterData: Hash
+    asset: Address,
+    adapterData: [Hash, Hash];
+    strategyData: [Hash, Hash];
+    initialDeposit: bigint;
 }
 
 export class VaultController extends Base {
@@ -41,19 +43,19 @@ export class VaultController extends Base {
         };
     }
 
-    // We assume that the adapter was already created.
-    async deployVault(vault: VaultOptions, metadata: VaultMetadata, adapter: AdapterOptions, options: WriteOptions): Promise<Hash> {
+    async deployVault(vault: VaultOptions, metadata: VaultMetadata, adapter: AdapterOptions, options: WriteOptions): Promise<Hash[]> {
         const { request: deployAdapterRequest } = await this.publicClient.simulateContract({
-            ...adapter,
+            ...options,
             ...this.baseObj,
             functionName: "deployAdapter",
             args: [
-                {
-                    adapterId: adapter.adapterId
-                    adapterData: adapter.adapterData
-                }
+                adapter.asset,
+                { id: adapter.adapterData[0], data: adapter.adapterData[1] },
+                { id: adapter.strategyData[0], data: adapter.strategyData[1] },
+                adapter.initialDeposit
             ]
         });
+
         const { request: deployVaultRequest } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,
@@ -68,14 +70,11 @@ export class VaultController extends Base {
                     owner: vault.owner,
                 },
                 {
-                    // we expect the adapter to be deployed already
-                    id: pad("0x"),
-                    data: "0x",
+                    id: adapter.adapterData[0], data: adapter.adapterData[1]
                 },
                 {
-                    // we expect the strategy to be deployed already
-                    id: pad("0x"),
-                    data: "0x",
+                    id: adapter.strategyData[0], data: adapter.strategyData[1]
+
                 },
                 vault.staking,
                 "0x", // reward data should be added in a separate step
@@ -90,7 +89,10 @@ export class VaultController extends Base {
                 vault.initialDeposit,
             ]
         });
-        return this.walletClient.writeContract(deployVaultRequest);
+        const deployAdapterResult = await this.walletClient.writeContract(deployAdapterRequest);
+        const deployVaultResult = await this.walletClient.writeContract(deployVaultRequest);
+
+        return [deployAdapterResult, deployVaultResult];
     }
 
     async proposeVaultAdapters(vaults: Address[], adapters: Address[], options: WriteOptions): Promise<Hash> {
