@@ -92,6 +92,13 @@ const protocols: { [key: string]: Protocol } = {
     description: "",
     tags: []
   },
+  stargate: {
+    name: "Stargate",
+    key: "stargate",
+    logoURI: "https://icons.llamao.fi/icons/protocols/stargate",
+    description: "",
+    tags: []
+  },
   yearn: {
     name: "Yearn",
     key: "yearn",

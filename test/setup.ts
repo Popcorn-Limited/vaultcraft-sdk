@@ -23,6 +23,12 @@ export const anvil = {
             webSocket: [`ws://127.0.0.1:8545/${pool}`],
         },
     },
+    contracts: {
+        multicall3: {
+          address: '0xcA11bde05977b3631167028862bE2a173976CA11',
+          blockCreated: 5882,
+        },
+      },
 } as const satisfies Chain;
 
 export const publicClient = createTestClient({

@@ -49,7 +49,7 @@ export class CompoundV2 implements IProtocol {
         if (chainId !== 1) throw new Error("Compound V2 is only available on Ethereum mainnet");
 
         const client = this.clients[chainId];
-        if (!client) throw new Error(`missing public client for chain ID: ${chainId}`);
+        if (!client) throw new Error(`Missing public client for chain ID: ${chainId}`);
 
         const supplyRate = await client.readContract({
             address: assetToCToken[asset],

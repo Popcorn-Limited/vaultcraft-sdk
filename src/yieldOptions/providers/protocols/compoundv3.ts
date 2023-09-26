@@ -47,7 +47,7 @@ export class CompoundV3 implements IProtocol {
 
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         const client = this.clients[chainId];
-        if (!client) throw new Error(`missing public client for chain ID: ${chainId}`);
+        if (!client) throw new Error(`Missing public client for chain ID: ${chainId}`);
 
         const cToken = assetToCToken[chainId][asset] as Address;
         if (!cToken) throw new Error(`asset is not available on Compound on chain ${chainId}`);
