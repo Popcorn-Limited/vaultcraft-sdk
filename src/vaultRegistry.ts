@@ -29,15 +29,11 @@ export class VaultRegistry {
     }) as Promise<Address[]>;
   }
 
-  getVault(vault: Address): Promise<Address> {
-    return this.publicClient.readContract({
-      ...this.baseObj,
-      functionName: "getVault",
-      args: [vault],
-    });
+  getVault(vault: Address): Promise<Metadata> {
+    return this.metadata(vault);
   }
 
-  metadata(vault: Address): Promise<Metadata> {
+  private metadata(vault: Address): Promise<Metadata> {
     return this.publicClient.readContract({
       ...this.baseObj,
       functionName: "metadata",
