@@ -2,7 +2,7 @@ import { Address, PublicClient } from "viem";
 
 import { VaultRegistryABI } from "./abi/VaultRegistryABI";
 import { IVaultABI } from "./abi/IVaultABI";
-import { Vault } from "./types";
+import { Metadata } from "./types";
 
 const ABI = VaultRegistryABI;
 const vaultABI = IVaultABI;
@@ -22,107 +22,6 @@ export class VaultRegistry {
     };
   }
 
-  async getVault(vault: Address): Promise<Vault> {
-    const metadata = await this.publicClient.readContract({
-      ...this.baseObj,
-      functionName: "getVault",
-      args: [vault]
-    });
-    return this._getVault(vault, metadata);
-  }
-
-  private async _getVault(vault: Address, metadata: any): Promise<Vault> {
-    const vaultContract = {
-      address: vault,
-      abi: vaultABI
-    }
-    const results = await this.publicClient.multicall({
-      contracts: [
-        {
-          ...vaultContract,
-          functionName: 'name',
-        },
-        {
-          ...vaultContract,
-          functionName: 'symbol',
-        },
-        {
-          ...vaultContract,
-          functionName: 'decimals'
-        },
-        {
-          ...vaultContract,
-          functionName: 'asset'
-        },
-        {
-          ...vaultContract,
-          functionName: 'adapter'
-        },
-        {
-          ...vaultContract,
-          functionName: 'totalAssets'
-        },
-        {
-          ...vaultContract,
-          functionName: 'totalSupply'
-        },
-        {
-          ...vaultContract,
-          functionName: 'fees'
-        },
-        {
-          ...vaultContract,
-          functionName: 'depositLimit'
-        },
-      ]
-    })
-
-    return {
-      address: vault,
-      name: results[0],
-      symbol: results[1],
-      decimals: results[2],
-      asset: results[3],
-      adapter: results[4],
-      totalAssets: results[5],
-      totalSupply: results[6],
-      pricePerShare: (results[5] || 1) as bigint / (results[6] || 1) as bigint,
-      fees: results[7],
-      depositLimit: results[8],
-      creator: metadata.creator,
-      metadataCID: metadata.metadataCID
-    }
-  }
-
-  async getVaultsByCreator(creator: Address): Promise<Vault[]> {
-    const addresses = await this.publicClient.readContract({
-      ...this.baseObj,
-      functionName: "getRegisteredAddresses",
-    })
-
-    const metadatas = await this.publicClient.multicall({
-      contracts: addresses.map((address) => {
-        return {
-          ...this.baseObj,
-          functionName: "getVault",
-          args: [address]
-        }
-      })
-    })
-
-    return Promise.all(metadatas.filter(
-      (metadata) => metadata.result.creator.toLowerCase() === creator.toLowerCase())
-      .map((metadata) => this._getVault(metadata.result.vault, metadata.result)))
-  }
-
-  getVaultAddressesByAsset(asset: Address): Promise<Address[]> {
-    return this.publicClient.readContract({
-      ...this.baseObj,
-      functionName: "getVaultsByAsset",
-      args: [asset]
-    }) as Promise<Address[]>;
-  }
-
   getAllVaultAddresses(): Promise<Address[]> {
     return this.publicClient.readContract({
       ...this.baseObj,
@@ -130,22 +29,44 @@ export class VaultRegistry {
     }) as Promise<Address[]>;
   }
 
-  async getAllVaults(): Promise<Vault[]> {
-    const addresses = await this.publicClient.readContract({
+  getVault(vault: Address): Promise<Address> {
+    return this.publicClient.readContract({
+      ...this.baseObj,
+      functionName: "getVault",
+      args: [vault],
+    });
+  }
+
+  metadata(vault: Address): Promise<Metadata> {
+    return this.publicClient.readContract({
+      ...this.baseObj,
+      functionName: "metadata",
+      args: [vault]
+    })
+      .then((data: readonly [`0x${string}`, `0x${string}`, `0x${string}`, string, `0x${string}`, bigint]) => {
+        // Map the array values to the Metadata object
+        return {
+          vault: data[0],
+          staking: data[1],
+          creator: data[2],
+          metadataCID: data[3],
+          swapAddress: data[4],
+          exchange: data[5]
+        };
+      });
+  }
+
+  async getVaultByDeployer(creator: Address): Promise<Address[]> {
+    const allVaults: readonly Address[] = await this.publicClient.readContract({
       ...this.baseObj,
       functionName: "getRegisteredAddresses",
-    })
+    });
 
-    const metadatas = await this.publicClient.multicall({
-      contracts: addresses.map((address) => {
-        return {
-          ...this.baseObj,
-          functionName: "getVault",
-          args: [address]
-        }
+    return (await Promise.all(
+      allVaults.map(async (vault: Address) => {
+        const metaData: Metadata = await this.metadata(vault);
+        return metaData.creator === creator ? vault : null;
       })
-    })
-
-    return Promise.all(metadatas.map((metadata) => this._getVault(metadata.result.vault, metadata.result)))
+    )).filter(v => v !== null) as Address[];
   }
 }

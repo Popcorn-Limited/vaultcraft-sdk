@@ -1,7 +1,7 @@
 import { Address, PublicClient, WalletClient, Transport, Hash, Chain, Account, ParseAccount } from "viem";
 import { IVaultABI } from "./abi/IVaultABI";
 import { Base } from "./base";
-import { WriteOptions, VaultFees } from "./types";
+import { WriteOptions, VaultFees, Metadata } from "./types";
 
 const ABI = IVaultABI;
 

@@ -30,3 +30,12 @@ export type Vault = {
     creator: Address;
     metadataCID: string;
 }
+
+export type Metadata = {
+    vault: Address;
+    staking: Address;
+    creator: Address;
+    metadataCID: string;
+    swapAddress: Address;
+    exchange: bigint;
+}

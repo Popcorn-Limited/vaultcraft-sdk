@@ -178,62 +178,6 @@ export const VaultRegistryABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "vault",
-        "type": "address"
-      }
-    ],
-    "name": "getVault",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "vault",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "staking",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "creator",
-            "type": "address"
-          },
-          {
-            "internalType": "string",
-            "name": "metadataCID",
-            "type": "string"
-          },
-          {
-            "internalType": "address[8]",
-            "name": "swapTokenAddresses",
-            "type": "address[8]"
-          },
-          {
-            "internalType": "address",
-            "name": "swapAddress",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "exchange",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct VaultMetadata",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
         "name": "asset",
         "type": "address"
       }
@@ -244,6 +188,25 @@ export const VaultRegistryABI = [
         "internalType": "address[]",
         "name": "",
         "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "vault",
+        "type": "address"
+      }
+    ],
+    "name": "getVault",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address",
       }
     ],
     "stateMutability": "view",
