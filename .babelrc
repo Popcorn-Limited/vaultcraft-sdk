@@ -1,0 +1,31 @@
+{
+    "presets": [
+        "@babel/preset-typescript",
+        [
+            "@babel/preset-env",
+            {
+                "modules": false,
+            }
+        ]
+    ],
+    "plugins": [
+        [
+            "module-resolver",
+            {
+                "root": [
+                    "."
+                ],
+                "alias": {
+                    "@/lib": "./src/lib"
+                },
+                "extensions": [
+                    ".js",
+                    ".ts"
+                ]
+            }
+        ],
+        "@babel/plugin-proposal-class-properties",
+        "@babel/plugin-proposal-object-rest-spread",
+        ["@babel/plugin-syntax-import-attributes", {"deprecatedAssertSyntax":true}]
+    ]
+}

@@ -1,35 +1,45 @@
 {
   "name": "vaultcraft-sdk",
-  "version": "0.0.2",
+  "version": "0.0.27",
   "description": "TypeScript library for VaultCraft",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "typings": "./dist/index.d.ts",
   "author": "RedVeil",
   "license": "MIT",
   "private": false,
+  "type": "module",
   "scripts": {
-    "build": "tsc",
-    "test": "vitest run"
+    "clean": "rimraf dist",
+    "build": "yarn run clean && tsc && babel ./src --out-dir ./dist --extensions \".ts,.js\" --copy-files",
+    "test": "vitest run",
+    "test:unit": "vitest run unit",
+    "test:integration": "vitest run integration",
+    "test:yieldOptions": "vitest run yieldOptions"
   },
   "dependencies": {
-    "@curvefi/api": "^2.42.0",
-    "autoprefixer": "^10.4.13",
-    "bs58": "^5.0.0",
+    "axios": "^1.5.0",
     "dotenv": "^16.3.1",
-    "find-config": "^1.0.0",
-    "jotai": "^2.0.1",
-    "next": "^13.3.4",
-    "rc-tooltip": "^5.2.2",
-    "typescript": "^5.1.6",
-    "viem": "^1.5.3",
-    "wagmi": "^1.3.9",
-    "wido": "^0.3.5"
+    "node-cache": "^5.1.2",
+    "viem": "^1.5.3"
   },
   "devDependencies": {
+    "typescript": "^5.1.6",
+    "@babel/cli": "^7.22.10",
+    "@babel/core": "^7.22.11",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
+    "@babel/plugin-syntax-import-attributes": "^7.22.5",
+    "@babel/preset-env": "^7.22.10",
+    "@babel/preset-typescript": "^7.22.11",
     "@types/node": "^17.0.35",
     "@viem/anvil": "^0.0.6",
+    "babel-plugin-module-resolver": "^5.0.0",
     "eslint": "^8.15.0",
     "eslint-config-next": "^13.3.4",
     "prettier": "^2.8.8",
+    "rimraf": "^5.0.1",
+    "vite-tsconfig-paths": "^4.2.0",
     "vitest": "^0.34.1"
   }
 }

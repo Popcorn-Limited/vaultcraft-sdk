@@ -1,8 +1,8 @@
-import { Hash, Address, PublicClient, WalletClient, Transport, Chain, ParseAccount, Account, WriteContractParameters } from "viem";
+import type { Hash, Address, PublicClient, WalletClient, Transport, Chain } from "viem";
 
-import { VaultControllerABI } from "./abi/VaultControllerABI";
-import { Base } from "./base";
-import { VaultFees, WriteOptions } from "./types";
+import { VaultControllerABI } from "./abi/VaultControllerABI.js";
+import { Base } from "./base.js";
+import type { VaultFees, WriteOptions } from "./types.js";
 
 const ABI = VaultControllerABI;
 
@@ -17,6 +17,8 @@ export class VaultController extends Base {
             abi: ABI,
         };
     }
+
+    // CHANGE ADAPTER
 
     async proposeVaultAdapters(vaults: Address[], adapters: Address[], options: WriteOptions): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
@@ -38,6 +40,8 @@ export class VaultController extends Base {
         return this.walletClient.writeContract(request);
     }
 
+    // CHANGE FEES
+
     async proposeVaultFees(vaults: Address[], fees: VaultFees[], options: WriteOptions): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
@@ -58,16 +62,6 @@ export class VaultController extends Base {
         return this.walletClient.writeContract(request);
     }
 
-    async setVaultQuitPeriods(vaults: Address[], quitPeriods: bigint[], options: WriteOptions): Promise<Hash> {
-        const { request } = await this.publicClient.simulateContract({
-            ...options,
-            ...this.baseObj,
-            functionName: "setVaultQuitPeriods",
-            args: [vaults, quitPeriods],
-        });
-        return this.walletClient.writeContract(request);
-    }
-
     async setVaultFeeRecipients(vaults: Address[], recipients: Address[], options: WriteOptions): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
@@ -77,6 +71,8 @@ export class VaultController extends Base {
         });
         return this.walletClient.writeContract(request);
     }
+
+    // PAUSING
 
     async pauseVaults(vaults: Address[], options: WriteOptions): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
@@ -98,12 +94,24 @@ export class VaultController extends Base {
         return this.walletClient.writeContract(request);
     }
 
+    // OTHER
+
     async setVaultDepositLimits(vaults: Address[], limits: bigint[], options: WriteOptions): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,
             functionName: "setVaultDepositLimits",
             args: [vaults, limits],
+        });
+        return this.walletClient.writeContract(request);
+    }
+
+    async setVaultQuitPeriods(vaults: Address[], quitPeriods: bigint[], options: WriteOptions): Promise<Hash> {
+        const { request } = await this.publicClient.simulateContract({
+            ...options,
+            ...this.baseObj,
+            functionName: "setVaultQuitPeriods",
+            args: [vaults, quitPeriods],
         });
         return this.walletClient.writeContract(request);
     }
