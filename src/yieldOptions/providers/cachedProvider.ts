@@ -2,6 +2,7 @@ import axios from "axios";
 import { IProtocolProvider, Protocol, ProtocolName, Yield } from "../types.js";
 import { Address, getAddress } from "viem";
 import protocols from "@/lib/constants/protocols.js";
+import { getEmptyYield } from "./protocols/index.js";
 
 type Data = {
     [chainId: number]: {
@@ -29,7 +30,7 @@ export class CachedProvider implements IProtocolProvider {
     }
 
     getProtocols(chainId: number): Protocol[] {
-        return Object.keys(this.data[chainId]).map(key => protocols[key]);
+        return Object.entries(protocols).filter(([key, protocol]) => protocol.chains.includes(chainId)).map(([key, protocol]) => protocol);
     }
 
     getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
@@ -38,7 +39,11 @@ export class CachedProvider implements IProtocolProvider {
 
     getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield> {
         const result = this.data[chainId][protocol][getAddress(asset)];
-        result.apy = result.apy?.map(e => { return { rewardToken: getAddress(e.rewardToken), apy: e.apy } });
-        return Promise.resolve(result);
+        if (!result) {
+            return Promise.resolve(getEmptyYield(getAddress(asset)))
+        } else {
+            result.apy = result.apy?.map(e => { return { rewardToken: getAddress(e.rewardToken), apy: e.apy } });
+            return Promise.resolve(result);
+        }
     }
 }

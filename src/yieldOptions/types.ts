@@ -69,6 +69,7 @@ export type Protocol = {
   logoURI: string;
   description: string;
   tags: string[];
+  chains: number[];
 }
 
 export type ChainToAddress = { [key: number]: Address };

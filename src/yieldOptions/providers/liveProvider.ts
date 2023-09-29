@@ -30,8 +30,7 @@ export class LiveProvider implements IProtocolProvider {
     }
 
     getProtocols(chainId: number): Protocol[] {
-        // TODO: differentiate by chain
-        return Object.keys(this.protocols).map(key => protocols[key]);
+        return Object.entries(protocols).filter(([key, protocol]) => protocol.chains.includes(chainId)).map(([key, protocol]) => protocol);
     }
 
     async getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
