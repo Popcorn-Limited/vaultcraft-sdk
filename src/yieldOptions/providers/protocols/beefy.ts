@@ -34,7 +34,8 @@ export class Beefy implements IProtocol {
         vaults = vaults.filter((vault) =>
             vault.network === networkNames[chainId].toLowerCase()
         );
-        const beefyVaultObj = vaults.find(vault => vault.tokenAddress.toLowerCase() === asset.toLowerCase());
+        // there are cases where tokenAddress is undefined.
+        const beefyVaultObj = vaults.find(vault => vault.tokenAddress && getAddress(vault.tokenAddress) === getAddress(asset));
 
         return !beefyVaultObj ? getEmptyYield(asset) : {
             total: apy[beefyVaultObj.id].totalApy * 100,
