@@ -1,5 +1,5 @@
 import { Address, getAddress } from "viem";
-import { Yield } from "src/yieldOptions/types.js";
+import { ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { Clients, IProtocol } from "./index.js";
 import { CTOKEN_ABI } from "./abi/compound_v2_ctoken.js";
 
@@ -43,6 +43,10 @@ export class CompoundV2 implements IProtocol {
     private clients: Clients;
     constructor(clients: Clients) {
         this.clients = clients;
+    }
+
+    key(): ProtocolName {
+        return "compoundV2";
     }
 
     async getApy(chainId: number, asset: Address): Promise<Yield> {

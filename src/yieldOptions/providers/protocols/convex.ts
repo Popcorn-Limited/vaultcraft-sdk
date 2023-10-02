@@ -1,6 +1,6 @@
 import axios from "axios";
 import NodeCache from "node-cache";
-import type { ChainToAddress, Yield } from "src/yieldOptions/types.js";
+import type { ChainToAddress, ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { Address, getAddress } from "viem";
 import { IProtocol, getEmptyYield } from "./index.js";
 import { CRV } from "./curve.js";
@@ -18,6 +18,10 @@ export class Convex implements IProtocol {
     private cache: NodeCache;
     constructor(ttl: number) {
         this.cache = new NodeCache({ stdTTL: ttl });
+    }
+
+    key(): ProtocolName {
+        return "convex";
     }
 
     async getApy(chainId: number, asset: Address): Promise<Yield> {

@@ -1,5 +1,5 @@
 import { Address, getAddress } from "viem";
-import { Yield } from "src/yieldOptions/types.js";
+import { ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { Clients, IProtocol, getEmptyYield } from "./index.js";
 import axios from "axios";
 import { networkNames } from "@/lib/helpers.js";
@@ -25,6 +25,10 @@ export class Stargate implements IProtocol {
   constructor(clients: Clients, ttl: number) {
     this.clients = clients;
     this.cache = new NodeCache({ stdTTL: ttl });
+  }
+
+  key(): ProtocolName {
+    return "stargate";
   }
 
   async getApy(chainId: number, asset: Address): Promise<Yield> {

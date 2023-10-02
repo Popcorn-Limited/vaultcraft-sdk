@@ -1,7 +1,7 @@
 import axios from "axios";
 import NodeCache from "node-cache";
 import { Address, getAddress } from "viem";
-import { ChainToAddress, Yield } from "src/yieldOptions/types.js";
+import { ChainToAddress, ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { IProtocol, getEmptyYield } from "./index.js";
 import { networkNames } from "@/lib/helpers.js";
 
@@ -24,6 +24,10 @@ export class Curve implements IProtocol {
     private cache: NodeCache;
     constructor(ttl: number) {
         this.cache = new NodeCache({ stdTTL: ttl });
+    }
+
+    key(): ProtocolName {
+        return "curve";
     }
 
     async getApy(chainId: number, asset: Address): Promise<Yield> {

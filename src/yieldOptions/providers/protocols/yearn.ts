@@ -1,4 +1,4 @@
-import { ChainToAddress, Yield } from "src/yieldOptions/types.js";
+import { ChainToAddress, ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { Clients, IProtocol, getEmptyYield } from "./index.js";
 import { Address, getAddress } from "viem";
 import { ChainId } from "@/lib/helpers.js";
@@ -23,6 +23,10 @@ export class Yearn implements IProtocol {
     constructor(clients: Clients, ttl: number) {
         this.clients = clients;
         this.cache = new NodeCache({ stdTTL: ttl });
+    }
+
+    key(): ProtocolName {
+        return "yearn";
     }
 
     async getApy(chainId: number, asset: Address): Promise<Yield> {

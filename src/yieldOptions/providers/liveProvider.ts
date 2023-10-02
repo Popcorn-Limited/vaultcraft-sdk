@@ -9,28 +9,39 @@ export class LiveProvider implements IProtocolProvider {
     };
 
     // @dev Dont forget to add the protocolName in ./types.ts after adding a new protocol
-    constructor(clients: Clients, ttl: number) {
-        this.protocols = {
-            "aaveV2": new AaveV2(clients),
-            "aaveV3": new AaveV3(clients),
-            "aura": new Aura(ttl),
-            "balancer": new Balancer(ttl),
-            "beefy": new Beefy(ttl),
-            "compoundV2": new CompoundV2(clients),
-            "compoundV3": new CompoundV3(clients),
-            "convex": new Convex(ttl),
-            "curve": new Curve(ttl),
-            "flux": new Flux(clients[1]),
-            "idleJunior": new IdleJunior(clients),
-            "idleSenior": new IdleSenior(clients),
-            "origin": new Origin(),
-            "stargate": new Stargate(clients, ttl),
-            "yearn": new Yearn(clients, ttl),
-        };
+    constructor(clients: Clients, ttl: number, protocols?: IProtocol[]) {
+        // if a user passes their own list of protocols, we only use those in the provider.
+        // Otherwise, we use all the available ones (default behaviour).
+        if (protocols) {
+            this.protocols = {};
+            protocols.forEach((protocol) => {
+                this.protocols[protocol.key()] = protocol;
+            });
+        } else {
+            this.protocols = {
+                "aaveV2": new AaveV2(clients),
+                "aaveV3": new AaveV3(clients),
+                "aura": new Aura(ttl),
+                "balancer": new Balancer(ttl),
+                "beefy": new Beefy(ttl),
+                "compoundV2": new CompoundV2(clients),
+                "compoundV3": new CompoundV3(clients),
+                "convex": new Convex(ttl),
+                "curve": new Curve(ttl),
+                "flux": new Flux(clients[1]),
+                "idleJunior": new IdleJunior(clients),
+                "idleSenior": new IdleSenior(clients),
+                "origin": new Origin(),
+                "stargate": new Stargate(clients, ttl),
+                "yearn": new Yearn(clients, ttl),
+            };
+        }
     }
 
     getProtocols(chainId: number): Protocol[] {
-        return Object.entries(protocols).filter(([key, protocol]) => protocol.chains.includes(chainId)).map(([key, protocol]) => protocol);
+        return Object.entries(protocols)
+            .filter(([key, protocol]) => protocol.chains.includes(chainId) && Object.keys(this.protocols).includes(protocol.key))
+            .map(([key, protocol]) => protocol);
     }
 
     async getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {

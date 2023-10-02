@@ -1,5 +1,5 @@
 import { Address, getAddress } from "viem";
-import { ChainToAddress, Yield } from "src/yieldOptions/types.js";
+import { ChainToAddress, ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { Clients, IProtocol } from "./index.js";
 import { LENDING_POOL_ABI } from "./abi/aave_v2_lending_pool.js";
 
@@ -9,6 +9,9 @@ export class AaveV2 implements IProtocol {
     private clients: Clients;
     constructor(clients: Clients) {
         this.clients = clients;
+    }
+    key(): ProtocolName {
+        return "aaveV2";
     }
 
     async getApy(chainId: number, asset: Address): Promise<Yield> {

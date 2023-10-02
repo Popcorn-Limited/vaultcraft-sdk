@@ -1,4 +1,4 @@
-import { Yield } from "src/yieldOptions/types.js";
+import { ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { getEmptyYield, IProtocol } from "./index.js";
 import { Address, getAddress } from "viem";
 import { networkNames } from "@/lib/helpers.js";
@@ -26,6 +26,11 @@ export class Beefy implements IProtocol {
     constructor(ttl: number) {
         this.cache = new NodeCache({ stdTTL: ttl });
     }
+
+    key(): ProtocolName {
+        return "beefy";
+    }
+
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         let vaults = await this.getActiveVaults();
 
