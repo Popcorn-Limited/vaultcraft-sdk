@@ -1,4 +1,4 @@
-import { Yield } from "src/yieldOptions/types.js";
+import { ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { IProtocol, getEmptyYield } from "./index.js";
 import { Address, getAddress } from "viem";
 import { AuraPool, getAuraPools } from "./aura.js";
@@ -11,6 +11,10 @@ export class Balancer implements IProtocol {
 
     constructor(ttl: number) {
         this.cache = new NodeCache({ stdTTL: ttl });
+    }
+
+    key(): ProtocolName {
+        return "balancer";
     }
 
     async getApy(chainId: number, asset: Address): Promise<Yield> {

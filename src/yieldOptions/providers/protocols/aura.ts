@@ -1,6 +1,6 @@
 import axios from "axios";
 import NodeCache from "node-cache";
-import { Yield } from "src/yieldOptions/types.js";
+import { ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { Address, getAddress } from "viem";
 import { getEmptyYield, IProtocol } from "./index.js";
 
@@ -10,6 +10,10 @@ export class Aura implements IProtocol {
 
     constructor(ttl: number) {
         this.cache = new NodeCache({ stdTTL: ttl });
+    }
+
+    key(): ProtocolName {
+        return "aura";
     }
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         const pools = await this.getPools(chainId);

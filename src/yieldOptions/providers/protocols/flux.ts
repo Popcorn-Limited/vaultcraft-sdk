@@ -1,4 +1,4 @@
-import type { Yield } from "src/yieldOptions/types.js";
+import type { ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { Address, PublicClient, getAddress } from "viem";
 import { CTOKEN_ABI } from "./abi/compound_v2_ctoken.js";
 import { IProtocol } from "./index.js";
@@ -23,6 +23,10 @@ export class Flux implements IProtocol {
     private client: PublicClient;
     constructor(client: PublicClient) {
         this.client = client;
+    }
+
+    key(): ProtocolName {
+        return "flux";
     }
 
     async getApy(chainId: number, asset: Address): Promise<Yield> {

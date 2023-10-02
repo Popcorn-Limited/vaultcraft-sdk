@@ -1,6 +1,6 @@
 import { Address, getAddress, parseAbi, PublicClient } from "viem";
 import { Clients, IProtocol } from "./index.js";
-import { ChainToAddress, Yield } from "src/yieldOptions/types.js";
+import { ChainToAddress, ProtocolName, Yield } from "src/yieldOptions/types.js";
 
 // @dev Make sure the keys here are correct checksum addresses
 const assetToCToken: { [key: number]: { [key: Address]: Address } } = {
@@ -43,6 +43,10 @@ export class CompoundV3 implements IProtocol {
             throw new Error("CompoundV3 needs access to a mainnet client to pull price data for ETH & COMP");
         }
         this.clients = clients;
+    }
+
+    key(): ProtocolName {
+        return "compoundV3";
     }
 
     async getApy(chainId: number, asset: Address): Promise<Yield> {

@@ -1,5 +1,5 @@
 import { Address, getAddress } from "viem";
-import { Yield } from "src/yieldOptions/types.js";
+import { ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { IProtocol } from "./index.js";
 import axios from "axios";
 
@@ -18,6 +18,9 @@ const ORIGIN_TOKENS: Address[] = ["0x856c4Efb76C1D1AE02e20CEB03A2A6a08b0b8dC3", 
 
 
 export class Origin implements IProtocol {
+    key(): ProtocolName {
+        return "origin";
+    }
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         if (chainId !== 1) throw new Error("Origin is only supported on Ethereum mainnet");
 

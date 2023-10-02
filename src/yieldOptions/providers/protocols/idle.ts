@@ -1,4 +1,4 @@
-import type { Yield } from "src/yieldOptions/types.js";
+import type { ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { Clients, IProtocol, getEmptyYield } from "./index.js";
 import { Address, getAddress } from "viem";
 import { IDLE_CDO_ABI } from "./abi/idle_cdo.js";
@@ -47,10 +47,14 @@ const apr2apy = (apr: BigInt) => {
     return (1 + (Number(apr) / 1e20) / 365) ** 365 - 1;
 };
 
-class IdleAbstract implements IProtocol {
+abstract class IdleAbstract implements IProtocol {
     private clients: Clients;
     constructor(clients: Clients) {
         this.clients = clients;
+    }
+
+    key(): ProtocolName {
+        return "idleJunior";
     }
 
     async getApy(chainId: number, asset: Address): Promise<Yield> {
@@ -89,12 +93,20 @@ class IdleAbstract implements IProtocol {
 }
 
 export class IdleJunior extends IdleAbstract {
+    key(): ProtocolName {
+        return "idleJunior";
+    }
+
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         return super._getApy(chainId, asset, "junior");
     }
 }
 
 export class IdleSenior extends IdleAbstract {
+    key(): ProtocolName {
+        return "idleSenior";
+    }
+
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         return super._getApy(chainId, asset, "senior");
     }

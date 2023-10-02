@@ -1,7 +1,8 @@
 import { Address, PublicClient, getAddress } from "viem";
-import { Yield } from "src/yieldOptions/index.js";
+import { ProtocolName, Yield } from "src/yieldOptions/index.js";
 
 export interface IProtocol {
+    key(): ProtocolName;
     getAssets(chainId: number): Promise<Address[]>;
     getApy(chainId: number, asset: Address): Promise<Yield>;
 }
