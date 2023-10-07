@@ -1,14 +1,7 @@
-<<<<<<< HEAD
-import { Address, PublicClient, WalletClient, Transport, Hash, Chain, Account, ParseAccount } from "viem";
-import { IVaultABI } from "./abi/IVaultABI";
-import { Base } from "./base";
-import { WriteOptions, VaultFees, Metadata } from "./types";
-=======
 import type { Address, PublicClient, WalletClient, Transport, Hash, Chain } from "viem";
 import { IVaultABI } from "./abi/IVaultABI.js";
 import { Base } from "./base.js";
 import type { WriteOptions, VaultFees } from "./types.js";
->>>>>>> main
 
 const ABI = IVaultABI;
 
@@ -24,34 +17,7 @@ export class Vault extends Base {
         };
     }
 
-<<<<<<< HEAD
-    // ERC20
-
-    name(): Promise<string> {
-        return this.publicClient.readContract({
-            ...this.baseObj,
-            functionName: "name",
-        });
-    }
-
-    symbol(): Promise<string> {
-        return this.publicClient.readContract({
-            ...this.baseObj,
-            functionName: "symbol",
-        });
-    }
-
-    decimals(): Promise<number> {
-        return this.publicClient.readContract({
-            ...this.baseObj,
-            functionName: "decimals",
-        });
-    }
-
-    // ERC4626
-=======
     // ERC-20 VIEWS
->>>>>>> main
 
     name(): Promise<string> {
         return this.publicClient.readContract({
@@ -295,7 +261,7 @@ export class Vault extends Base {
             functionName: "depositLimit",
         });
     }
- 
+
     // ERC-20 WRITES
 
     async approve(spender: Address, amount: bigint, options: WriteOptions): Promise<Hash> {

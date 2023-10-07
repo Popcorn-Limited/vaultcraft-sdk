@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeAll } from "vitest";
-import { publicClient } from "./setup";
-import { VaultRegistry } from "../src/vaultRegistry";
+import { publicClient } from "../setup";
+import { VaultRegistry } from "../../src/vaultRegistry";
 
 
 let registry = new VaultRegistry("0x007318Dc89B314b47609C684260CfbfbcD412864", publicClient);
@@ -12,7 +12,7 @@ describe.concurrent("read-only", () => {
         await publicClient.reset({
             blockNumber: FORK_BLOCK_NUMBER,
         });
-    });
+    }, 100000);
 
     test("getAllVaultAddresses() should give back all registered addresses", async () => {
         const allVaults = await registry.getAllVaultAddresses();

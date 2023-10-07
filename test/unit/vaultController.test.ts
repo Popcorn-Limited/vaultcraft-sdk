@@ -32,11 +32,6 @@ describe("write-only", () => {
         });
     });
 
-<<<<<<< HEAD:test/vaultController.test.ts
-=======
-    // CHANGE ADAPTER
-
->>>>>>> main:test/unit/vaultController.test.ts
     test("proposeVaultAdapters() should propose the given adapters for the given vaults", async () => {
         const hash = await controller.proposeVaultAdapters([VAULT_ADDRESS], ["0x612465C8d6F1B2Bc85DF43224a8A3b5e04F634fc"], { account: ADMIN_ADDRESS });
         const tx = await publicClient.getTransaction({

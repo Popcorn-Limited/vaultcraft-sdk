@@ -7,7 +7,7 @@ import { Vault } from "../../src/vault";
 import { IVaultABI } from "../../src/abi/IVaultABI";
 
 let vault = new Vault("0x5d344226578DC100b2001DA251A4b154df58194f", publicClient, walletClient);
-const FORK_BLOCK_NUMBER = BigInt(17883751);
+const FORK_BLOCK_NUMBER = BigInt(1296974);
 // some random address that has a lot of ETH & DAI
 const USER_ADDRESS = "0x6FF8E4DB500cBd77d1D181B8908E022E29e0Ec4A";
 const DAI_ADDRESS = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
