@@ -20,7 +20,7 @@ describe.concurrent("read-only", () => {
     test("getAssets() should return all the available assets", async () => {
         const result = await yearn.getAssets(1);
         expect(result.length).toBeGreaterThan(0);
-    }, 10000);
+    });
 
     test("getApy() should return the APY for a given asset", async () => {
         const result = await yearn.getApy(1, "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48");

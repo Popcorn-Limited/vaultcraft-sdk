@@ -31,5 +31,5 @@ describe.concurrent("read-only", () => {
     test("getApy() should return the APY for a given asset", async () => {
         const result = await idle.getApy(1, "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48");
         expect(result.total).toBe(4.570539386579764);
-    }, 10_000);
+    });
 });

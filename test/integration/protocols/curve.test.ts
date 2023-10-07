@@ -19,5 +19,5 @@ describe.concurrent("read-only", () => {
         results.forEach((result) => {
             expect(result.total).toBeGreaterThanOrEqual(0);
         });
-    }, 10000);
+    });
 });
