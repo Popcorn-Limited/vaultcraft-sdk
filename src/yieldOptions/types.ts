@@ -1,3 +1,5 @@
+import { Address } from "viem";
+
 export interface RpcUrls {
   [chain: number]: string;
 }
@@ -18,7 +20,7 @@ export interface Chain {
 }
 
 export interface YieldOption {
-  address: string;
+  asset: string;
   yield: Yield;
 }
 
@@ -42,6 +44,7 @@ export type Adapter = {
   initParams?: InitParam[];
   resolver?: string;
 };
+
 export type InitParam = {
   name: string;
   type: string;
@@ -49,10 +52,30 @@ export type InitParam = {
   description?: string;
   multiple?: boolean;
 };
+
 export enum InitParamRequirement {
   "Required",
   "NotAddressZero",
   "NotZero",
 }
 
-export type ProtocolName = 'aaveV2' | 'aaveV3' | 'aura' | 'beefy' | 'compoundV2' | 'curve' | 'idle' | 'origin' | 'yearn';
+// @dev Dont forget to add the protocol name in here after adding a new one
+export type ProtocolName = 'aaveV2' | 'aaveV3' | 'aura' | 'balancer' | 'beefy' | 'compoundV2' | 'compoundV3'
+  | 'convex' | 'curve' | 'flux' | 'idleJunior' | 'idleSenior' | 'origin' | 'stargate' | 'yearn';
+
+export type Protocol = {
+  name: string;
+  key: ProtocolName;
+  logoURI: string;
+  description: string;
+  tags: string[];
+  chains: number[];
+}
+
+export type ChainToAddress = { [key: number]: Address };
+
+export interface IProtocolProvider {
+  getProtocols(chainId: number): Protocol[];
+  getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]>;
+  getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield>;
+}

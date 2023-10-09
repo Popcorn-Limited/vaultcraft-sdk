@@ -1,6 +1,7 @@
 .github/
 src/
 test/
+docs/
 .babelrc
 .env
 .env.example

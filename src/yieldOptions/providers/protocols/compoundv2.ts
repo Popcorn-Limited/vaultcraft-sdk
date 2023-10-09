@@ -1,11 +1,11 @@
 import { Address, getAddress } from "viem";
-import { Yield } from "src/yieldOptions/types.js";
+import { ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { Clients, IProtocol } from "./index.js";
 import { CTOKEN_ABI } from "./abi/compound_v2_ctoken.js";
 
 // Compound V2 is mainnet only. Thus we can simplify a lot of stuff
 // @dev Make sure the keys here are correct checksum addresses
-const assetToCToken = {
+const assetToCToken: { [key: Address]: Address } = {
     // TODO: add ETH
     // AAVE
     "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9": "0xe65cdB6479BaC1e22340E4E755fAE7E509EcD06c",
@@ -45,18 +45,18 @@ export class CompoundV2 implements IProtocol {
         this.clients = clients;
     }
 
+    key(): ProtocolName {
+        return "compoundV2";
+    }
+
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         if (chainId !== 1) throw new Error("Compound V2 is only available on Ethereum mainnet");
 
         const client = this.clients[chainId];
-        if (!client) throw new Error(`missing public client for chain ID: ${chainId}`);
-
-        // @ts-ignore
-        const cToken = assetToCToken[asset];
+        if (!client) throw new Error(`Missing public client for chain ID: ${chainId}`);
 
         const supplyRate = await client.readContract({
-            // @ts-ignore
-            address: cToken,
+            address: assetToCToken[asset],
             abi: CTOKEN_ABI,
             functionName: 'supplyRatePerBlock'
         });

@@ -1,4 +1,4 @@
-import { mainnet, arbitrum, bsc, goerli, localhost, optimism, polygon } from "viem/chains";
+import { mainnet, arbitrum, bsc, goerli, localhost, optimism, polygon, Chain } from "viem/chains";
 
 export function noOp() { }
 
@@ -41,7 +41,7 @@ export enum ChainId {
   ALL = 0,
 }
 
-export const networkNames = {
+export const networkNames: { [key: number]: string } = {
   [ChainId.Ethereum]: "Ethereum",
   [ChainId.Goerli]: "Goerli",
   [ChainId.Arbitrum]: "Arbitrum",
@@ -54,7 +54,7 @@ export const networkNames = {
 
 export const SUPPORTED_NETWORKS = [mainnet, localhost];
 
-export const networkMap = {
+export const networkMap: { [key: number]: Chain } = {
   [ChainId.Ethereum]: mainnet,
   [ChainId.Goerli]: goerli,
   [ChainId.Arbitrum]: arbitrum,

@@ -1,10 +1,8 @@
 import NodeCache from "node-cache";
-import { Address } from "viem";
-import { IProtocolProvider } from "./providers/protocolProvider.js";
-import type { ProtocolName, Yield, YieldOption } from "./types.js";
+import { Address, getAddress } from "viem";
+import type { IProtocolProvider, Protocol, ProtocolName, Yield, YieldOption } from "./types.js";
 
 
-// TODO how to differentiate between adapter and protocol? --> make it all strategies (Vaults V2 design)
 // TODO deal with multichain
 
 export class YieldOptions {
@@ -17,7 +15,7 @@ export class YieldOptions {
     }
 
 
-    getProtocols(chainId: number): ProtocolName[] {
+    getProtocols(chainId: number): Protocol[] {
         return this.provider.getProtocols(chainId);
     }
 
@@ -25,23 +23,26 @@ export class YieldOptions {
         const cacheKey = `${chainId}_assets`;
         let allAssets = this.cache.get(cacheKey) as Address[];
         if (!allAssets) {
-            allAssets = (await Promise.all(this.getProtocols(chainId).map(async (protocol) => await this.provider.getAssets(chainId, protocol)))).flat();
+            allAssets = (await Promise.all(this.getProtocols(chainId).map(async (protocol) => await this.provider.getProtocolAssets(chainId, protocol.key)))).flat();
             allAssets = allAssets.filter((asset, i, arr) => arr.indexOf(asset) === i);
             this.cache.set(cacheKey, allAssets);
         }
-
         return allAssets;
     }
 
-    async getProtocolsByAsset(chainId: number, asset: Address): Promise<ProtocolName[]> {
+    async getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
+        return this.provider.getProtocolAssets(chainId, protocol);
+    }
+
+    async getProtocolsByAsset(chainId: number, asset: Address): Promise<Protocol[]> {
         const protocols = this.getProtocols(chainId);
-        const result: ProtocolName[] = [];
-        for (let protocol in protocols) {
-            const assets = await this.provider.getAssets(1, protocol as ProtocolName);
-            if (assets.indexOf(asset) !== -1) {
-                result.push(protocol as ProtocolName);
+        const result: Protocol[] = [];
+        protocols.forEach(async (protocol) => {
+            const assets = await this.provider.getProtocolAssets(1, protocol.key as ProtocolName);
+            if (assets.indexOf(getAddress(asset)) !== -1) {
+                result.push(protocol);
             }
-        }
+        })
         return result;
     }
 
@@ -49,10 +50,10 @@ export class YieldOptions {
         const cacheKey = `${chainId}_${protocol}_assets`;
         let result = this.cache.get(cacheKey) as YieldOption[];
         if (!result) {
-            const assetList = await this.provider.getAssets(chainId, protocol);
+            const assetList = await this.provider.getProtocolAssets(chainId, protocol);
             result = await Promise.all(assetList.map(async (asset) => {
                 return {
-                    address: asset,
+                    asset: asset,
                     yield: await this.getApy(chainId, protocol, asset),
                 };
             }));

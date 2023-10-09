@@ -1,12 +1,12 @@
 import { describe, test, beforeAll, expect } from "vitest";
-import { Idle } from "../../../src/yieldOptions/providers/protocols/idle.js";
+import { IdleSenior } from "../../../src/yieldOptions/providers/protocols/idle.js";
 import { Clients } from "../../../src/yieldOptions/providers/protocols/index.js";
 import { publicClient } from "../../setup.js";
 
 const clients: Clients = {
     1: publicClient,
 };
-const idle = new Idle(clients);
+const idle = new IdleSenior(clients);
 
 const FORK_BLOCK_NUMBER = BigInt(18071114);
 describe.concurrent("read-only", () => {
@@ -30,6 +30,6 @@ describe.concurrent("read-only", () => {
 
     test("getApy() should return the APY for a given asset", async () => {
         const result = await idle.getApy(1, "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48");
-        expect(result.total).toBe(16.07897128568019);
-    }, 10_000);
+        expect(result.total).toBe(4.570539386579764);
+    });
 });
