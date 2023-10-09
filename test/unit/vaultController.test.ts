@@ -71,7 +71,7 @@ describe("write-only", () => {
         expect(tx.to).toBe(controller.address.toLowerCase());
         expect(functionName).toBe("changeVaultAdapters");
         expect(args).toEqual([[VAULT_ADDRESS]]);
-    }, 10_000);
+    });
 
     // CHANGE FEES
 
@@ -217,4 +217,4 @@ describe("write-only", () => {
         expect(functionName).toBe("setVaultQuitPeriods");
         expect(args).toEqual([[VAULT_ADDRESS], [newQuitPeriod]]);
     });
-}, 10_000);
+});

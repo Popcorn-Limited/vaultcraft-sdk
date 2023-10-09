@@ -15,3 +15,27 @@ export type VaultFees = {
     performance: bigint;
 };
 
+export type Vault = {
+    address: Address;
+    name: string;
+    symbol: string;
+    decimals: number;
+    asset: Address;
+    adapter: Address;
+    totalAssets: bigint;
+    totalSupply: bigint;
+    pricePerShare: bigint;
+    fees: VaultFees;
+    depositLimit: bigint;
+    creator: Address;
+    metadataCID: string;
+}
+
+export type Metadata = {
+    vault: Address;
+    staking: Address;
+    creator: Address;
+    metadataCID: string;
+    swapAddress: Address;
+    exchange: bigint;
+}
