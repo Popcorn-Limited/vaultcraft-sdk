@@ -1,34 +1,61 @@
 import { balancer } from "./balancer";
 import { Address } from "viem";
 import { ZERO } from "@/lib/constants";
-import { StrategyDefaultResolverParams } from "..";
+import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "..";
+
+const BASE_RESPONSE = {
+  key: "",
+  params: [
+    {
+      name: "rewardTokens",
+      type: "uint256[]",
+    },
+    {
+      name: "minTradeAmounts",
+      type: "uint256[]",
+    },
+    {
+      name: "baseAsset",
+      type: "address",
+    },
+    {
+      name: "optionalData",
+      type: "bytes",
+    }
+  ]
+}
 
 // @dev Make sure the addresses here are correct checksum addresses
 const BAL: { [key: number]: Address } = { 1: "0xba100000625a3754423978a60c9317c58a424e3D" }
 const BALANCER_VAULT: { [key: number]: Address } = { 1: "0xBA12222222228d8Ba445958a75a0704d566BF2C8" }
 
-export async function balancerLpCompounder({ chainId, client, address }: StrategyDefaultResolverParams): Promise<any[]> {
-  const poolId = await client.readContract({
-    address: address,
-    abi: poolAbi,
-    functionName: "getPoolId"
-  })
+export async function balancerLpCompounder({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+  if (Object.keys(BAL).indexOf(chainId.toString()) === -1) {
+    return ERROR_RESPONSE;
+  } else {
+    const poolId = await client.readContract({
+      address: address,
+      abi: poolAbi,
+      functionName: "getPoolId"
+    })
 
-  const poolTokens = await client.readContract({
-    address: BALANCER_VAULT[chainId],
-    abi: balancerVaultAbi,
-    functionName: "getPoolTokens",
-    args: [poolId]
-  })
-
-  const rewardTokens = [BAL[chainId]];
-  const baseAsset = poolTokens[0][0] // TODO - find a smarter algorithm to determine the base asset
-  const minTradeAmounts = [ZERO.toString()];
-  const optionalData = [poolId, 0];
-
-  const [gaugeAddress] = await balancer({ chainId, client, address })
-
-  return [gaugeAddress, rewardTokens, minTradeAmounts, baseAsset, optionalData]
+    const poolTokens = await client.readContract({
+      address: BALANCER_VAULT[chainId],
+      abi: balancerVaultAbi,
+      functionName: "getPoolTokens",
+      args: [poolId]
+    })
+    
+    return {
+      ...BASE_RESPONSE,
+      default: [
+        { name: "rewardTokens", value: [BAL[chainId]] },
+        { name: "minTradeAmounts", value: [ZERO] },
+        { name: "baseAsset", value: poolTokens[0][0] }, // TODO - find a smarter algorithm to determine the base asset
+        { name: "optionalData", value: [poolId, 0] }
+      ]
+    }
+  }
 }
 
 

@@ -1,10 +1,17 @@
-import { ADDRESS_ZERO } from "@/lib/constants";
-import { Address,  getAddress} from "viem";
-import { StrategyDefaultResolverParams } from "..";
+import { Address, getAddress } from "viem";
+import { StrategyDefault, StrategyDefaultResolverParams } from "..";
+
+const BASE_RESPONSE = {
+    key: "",
+    params: [{
+        name: "gauge",
+        type: "address",
+    }]
+}
 
 const CONTROLLER_ADDRESS: Address = "0xC128468b7Ce63eA702C1f104D55A2566b13D3ABD";
 
-export async function balancer({ chainId, client, address }: StrategyDefaultResolverParams): Promise<any[]> {
+export async function balancer({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
     const n_gauges = await client.readContract({
         address: CONTROLLER_ADDRESS,
         abi: abiController,
@@ -48,9 +55,12 @@ export async function balancer({ chainId, client, address }: StrategyDefaultReso
 
     const tokenIdx = lpTokens.findIndex(lpToken => lpToken?.toLowerCase() === address.toLowerCase())
 
-    return [
-        tokenIdx !== -1 ? aliveGauges[tokenIdx] : ADDRESS_ZERO,
-    ]
+    return {
+        ...BASE_RESPONSE,
+        default: [
+            { name: "gauge", value: tokenIdx !== -1 ? aliveGauges[tokenIdx] : null },
+        ]
+    }
 }
 
 const abiController = [

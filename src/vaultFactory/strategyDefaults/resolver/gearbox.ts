@@ -1,10 +1,18 @@
 import { ADDRESS_ZERO } from "@/lib/constants";
 import { Address } from "viem";
-import { StrategyDefaultResolverParams } from "..";
+import { StrategyDefault, StrategyDefaultResolverParams } from "..";
+
+const BASE_RESPONSE = {
+    key: "",
+    params: [{
+        name: "poolId",
+        type: "uint256",
+    }]
+}
 
 const REGISTER_ADDRESS: Address = "0xA50d4E7D8946a7c90652339CDBd262c375d54D99";
 
-export async function gearbox({ chainId, client, address }: StrategyDefaultResolverParams): Promise<any[]> {
+export async function gearbox({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
     const pools = await client.readContract({
         address: REGISTER_ADDRESS,
         abi: abiRegister,
@@ -22,7 +30,12 @@ export async function gearbox({ chainId, client, address }: StrategyDefaultResol
 
     const assetIdx = tokens.findIndex(token => token.toLowerCase() === address.toLowerCase());
 
-    return [assetIdx !== -1 ? assetIdx : ADDRESS_ZERO]; // TODO this should be a number we can clearly distinguish as wrong --> maybe undefined?
+    return {
+        ...BASE_RESPONSE,
+        default: [
+            { name: "poolId", value: assetIdx === -1 ? null : assetIdx }
+        ]
+    }
 }
 
 const abiRegister = [

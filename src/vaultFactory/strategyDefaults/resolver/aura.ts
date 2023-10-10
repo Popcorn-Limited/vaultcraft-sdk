@@ -1,8 +1,21 @@
-import { StrategyDefaultResolverParams } from "..";
+import { StrategyDefault, StrategyDefaultResolverParams } from "..";
 import getAuraPools from "@/lib/external/aura/getAuraPools";
 
-export async function aura({ chainId, client, address }: StrategyDefaultResolverParams): Promise<any[]> {
+const BASE_RESPONSE = {
+    key: "",
+    params: [{
+        name: "poolId",
+        type: "uint256",
+    }]
+}
+
+export async function aura({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
     const pools = await getAuraPools(chainId)
     const pool = pools.filter(pool => !pool.isShutdown).find(pool => pool.lpToken.address.toLowerCase() === address.toLowerCase())
-    return [pool !== undefined ? pool.id : 0] // TODO this should be a number we can clearly distinguish as wrong --> maybe undefined?
+    return {
+        ...BASE_RESPONSE,
+        default: [
+            { name: "poolId", value: pool !== undefined ? pool.id : null }
+        ]
+    }
 }

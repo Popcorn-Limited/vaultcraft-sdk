@@ -1,6 +1,13 @@
 import { Address, getAddress } from "viem";
-import { StrategyDefaultResolverParams } from "..";
+import { StrategyDefault, StrategyDefaultResolverParams } from "..";
 
+const BASE_RESPONSE = {
+    key: "",
+    params: [{
+        name: "poolId",
+        type: "uint256",
+    }]
+}
 
 const CurveControllerByChain: { [key: number]: Address } = { 1: "0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB" }
 
@@ -9,7 +16,7 @@ const CurveControllerByChain: { [key: number]: Address } = { 1: "0x2F50D538606Fa
 const GaugeTypesToSkip = [1, 2, 4, 7, 8, 9, 10, 11]
 
 
-export async function curve({ chainId, client, address }: StrategyDefaultResolverParams): Promise<any[]> {
+export async function curve({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
     const poolLength = await client.readContract({
         address: CurveControllerByChain[chainId],
         abi: controllerAbi,
@@ -58,7 +65,12 @@ export async function curve({ chainId, client, address }: StrategyDefaultResolve
     const successFiltered = filteredWithLp.filter(gauge => gauge.success)
 
     const result = successFiltered.find(gauge => gauge.lp === getAddress(address))
-    return [result !== undefined ? result.id : 0] // TODO this should be a number we can clearly distinguish as wrong --> maybe undefined?
+    return {
+        ...BASE_RESPONSE,
+        default: [
+            { name: "poolId", value: result !== undefined ? result.id : null }
+        ]
+    }
 }
 
 

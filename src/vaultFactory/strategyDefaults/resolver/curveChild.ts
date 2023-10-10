@@ -1,5 +1,13 @@
-import { Address } from "viem";
-import { StrategyDefaultResolverParams } from "..";
+import { Address, getAddress } from "viem";
+import { StrategyDefault, StrategyDefaultResolverParams } from "..";
+
+const BASE_RESPONSE = {
+    key: "",
+    params: [{
+        name: "crv",
+        type: "address",
+    }]
+}
 
 export const CURVE_ADDRESS: { [chainId: number]: Address; } = {
     1: "0xD533a949740bb3306d119CC777fa900bA034cd52",
@@ -9,6 +17,11 @@ export const CURVE_ADDRESS: { [chainId: number]: Address; } = {
     42161: "0x11cdb42b0eb46d95f990bedd4695a6e3fa034978",
 };
 
-export async function curveChild({ chainId, client, address }: StrategyDefaultResolverParams): Promise<any[]> {
-    return [ CURVE_ADDRESS[chainId] ]
+export async function curveChild({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+    return {
+        ...BASE_RESPONSE,
+        default: [
+            { name: "crv", value: Object.keys(CURVE_ADDRESS).includes(String(chainId)) ? getAddress(CURVE_ADDRESS[chainId]) : null }
+        ]
+    }
 }

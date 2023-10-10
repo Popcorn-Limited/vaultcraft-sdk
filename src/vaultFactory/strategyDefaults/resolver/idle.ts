@@ -1,6 +1,15 @@
 import { ADDRESS_ZERO } from "@/lib/constants";
 import { Address, mainnet } from "wagmi";
-import { StrategyDefaultResolverParams } from "..";
+import { StrategyDefault, StrategyDefaultResolverParams } from "..";
+import { getAddress } from "viem";
+
+const BASE_RESPONSE = {
+  key: "",
+  params: [{
+    name: "CDO",
+    type: "address",
+  }]
+}
 
 // @dev Make sure the keys here are correct checksum addresses
 const assetToCdo: { [key: Address]: Address } = {
@@ -10,6 +19,11 @@ const assetToCdo: { [key: Address]: Address } = {
   "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84": "0x8E0A8A5c1e5B3ac0670Ea5a613bB15724D51Fc37", // stEth instadapp
 }
 
-export async function idle({ chainId, client, address }: StrategyDefaultResolverParams): Promise<any[]> {
-  return chainId === mainnet.id ? [(assetToCdo[address] || ADDRESS_ZERO)] : [ADDRESS_ZERO];
+export async function idle({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+  return {
+    ...BASE_RESPONSE,
+    default: [
+      { name: "CDO", value: chainId === mainnet.id ? (getAddress(assetToCdo[address]) || null) : null }
+    ]
+  }
 }

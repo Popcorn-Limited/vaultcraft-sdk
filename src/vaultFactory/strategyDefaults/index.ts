@@ -1,5 +1,5 @@
 
-import { Address } from "viem";
+import { Address, PublicClient } from "viem";
 import {
   alpacaV1,
   alpacaV2,
@@ -25,7 +25,23 @@ import {
   velodrome,
   yearn,
 } from "./resolver";
-import { PublicClient } from "wagmi";
+
+export type ParamAbi = {
+  name: string;
+  type: string;
+  internalType?: string;
+}
+
+export type ParamDefault = {
+  name: string;
+  value: any;
+}
+
+export type StrategyDefault = {
+  key: string;
+  params: ParamAbi[];
+  default: ParamDefault[];
+}
 
 export type StrategyDefaultResolverParams = {
   chainId: number,
@@ -35,7 +51,13 @@ export type StrategyDefaultResolverParams = {
 
 export type StrategyDefaultResolvers = typeof StrategyDefaultResolvers;
 
-export const StrategyDefaultResolvers: { [key: string]: ({ chainId, client, address }: StrategyDefaultResolverParams) => Promise<any[]> } = {
+export const ERROR_RESPONSE = {
+  key: "error",
+  params: [{ name: "error", type: "null" }],
+  default: [{ name: "error", value: null }]
+}
+
+export const StrategyDefaultResolvers: { [key: string]: ({ chainId, client, address }: StrategyDefaultResolverParams) => Promise<StrategyDefault> } = {
   alpacaV1,
   alpacaV2,
   aura,

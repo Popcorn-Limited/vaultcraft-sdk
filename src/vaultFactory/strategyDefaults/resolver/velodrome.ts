@@ -1,13 +1,19 @@
 import { ADDRESS_ZERO } from "@/lib/constants";
 import { Address, getAddress } from "viem";
-import { StrategyDefaultResolverParams } from "..";
+import { StrategyDefault, StrategyDefaultResolverParams } from "..";
+
+const BASE_RESPONSE = {
+    key: "",
+    params: [{
+        name: "gauge",
+        type: "address",
+    }]
+}
 
 const VELODROME_LENSE_ADDRESS: Address = "0x8B70C5E53235AbBd1415957f7110FBFe5d0529d4";
 
-export async function velodrome({ chainId, client, address }: StrategyDefaultResolverParams): Promise<any[]> {
-
-
-    const { gauge, gauge_alive } = await client.readContract({
+export async function velodrome({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+const { gauge, gauge_alive } = await client.readContract({
         address: VELODROME_LENSE_ADDRESS,
         abi,
         functionName: "byAddress",
@@ -20,7 +26,12 @@ export async function velodrome({ chainId, client, address }: StrategyDefaultRes
         gauge_alive: boolean
     }
 
-    return gauge_alive && parseInt(gauge, 16) ? [getAddress(gauge)] : [ADDRESS_ZERO];
+    return {
+        ...BASE_RESPONSE,
+        default: [
+            { name: "gauge", value: gauge_alive && parseInt(gauge, 16) ? getAddress(gauge) : null }
+        ]
+    }
 }
 
 const abi = [

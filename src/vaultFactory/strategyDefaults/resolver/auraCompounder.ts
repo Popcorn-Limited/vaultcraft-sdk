@@ -2,35 +2,62 @@
 import { Address } from "viem";
 import { aura } from "./aura";
 import { ZERO } from "@/lib/constants";
-import { StrategyDefaultResolverParams } from "..";
+import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "..";
+
+const BASE_RESPONSE = {
+  key: "",
+  params: [
+    {
+      name: "rewardTokens",
+      type: "uint256[]",
+    },
+    {
+      name: "minTradeAmounts",
+      type: "uint256[]",
+    },
+    {
+      name: "baseAsset",
+      type: "address",
+    },
+    {
+      name: "optionalData",
+      type: "bytes",
+    }
+  ]
+}
 
 // @dev Make sure the addresses here are correct checksum addresses
 const BAL: { [key: number]: Address } = { 1: "0xba100000625a3754423978a60c9317c58a424e3D" }
 const AURA: { [key: number]: Address } = { 1: "0xC0c293ce456fF0ED870ADd98a0828Dd4d2903DBF" }
 const BALANCER_VAULT: { [key: number]: Address } = { 1: "0xBA12222222228d8Ba445958a75a0704d566BF2C8" }
 
-export async function auraCompounder({ chainId, client, address }: StrategyDefaultResolverParams): Promise<any[]> {
-  const poolId = await client.readContract({
-    address: address,
-    abi: poolAbi,
-    functionName: "getPoolId"
-  })
+export async function auraCompounder({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+  if (Object.keys(BAL).indexOf(chainId.toString()) === -1) {
+    return ERROR_RESPONSE;
+  } else {
+    const poolId = await client.readContract({
+      address: address,
+      abi: poolAbi,
+      functionName: "getPoolId"
+    })
 
-  const poolTokens = await client.readContract({
-    address: BALANCER_VAULT[chainId],
-    abi: balancerVaultAbi,
-    functionName: "getPoolTokens",
-    args: [poolId]
-  })
+    const poolTokens = await client.readContract({
+      address: BALANCER_VAULT[chainId],
+      abi: balancerVaultAbi,
+      functionName: "getPoolTokens",
+      args: [poolId]
+    })
 
-  const rewardTokens = [BAL[chainId], AURA[chainId]];
-  const baseAsset = poolTokens[0][0] // TODO - find a smarter algorithm to determine the base asset
-  const minTradeAmounts = [ZERO.toString(), ZERO.toString()];
-  const optionalData = [poolId, 0];
-
-  const [auraPoolId] = await aura({ chainId, client, address })
-
-  return [auraPoolId, rewardTokens, minTradeAmounts, baseAsset, optionalData]
+    return {
+      ...BASE_RESPONSE,
+      default: [
+        { name: "rewardTokens", value: [BAL[chainId], AURA[chainId]] },
+        { name: "minTradeAmounts", value: [ZERO, ZERO] },
+        { name: "baseAsset", value: poolTokens[0][0] }, // TODO - find a smarter algorithm to determine the base asset
+        { name: "optionalData", value: [poolId, 0] }
+      ]
+    }
+  }
 }
 
 

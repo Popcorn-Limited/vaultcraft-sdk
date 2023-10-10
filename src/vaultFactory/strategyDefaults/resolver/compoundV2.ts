@@ -1,10 +1,18 @@
 import { ADDRESS_ZERO } from "@/lib/constants";
 import { Address, getAddress } from "viem";
-import { StrategyDefaultResolverParams } from "..";
+import { StrategyDefault, StrategyDefaultResolverParams } from "..";
+
+const BASE_RESPONSE = {
+    key: "",
+    params: [{
+        name: "cToken",
+        type: "address",
+    }]
+}
 
 const COMPTROLLER_ADDRESS: Address = "0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B";
 
-export async function compoundV2({ chainId, client, address }: StrategyDefaultResolverParams): Promise<any[]> {
+export async function compoundV2({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
     const cTokens = await client.readContract({
         address: COMPTROLLER_ADDRESS,
         abi: abiComptroller,
@@ -22,11 +30,17 @@ export async function compoundV2({ chainId, client, address }: StrategyDefaultRe
     })
     const underlying: Address[] = underlyingRes.filter(token => token.status === "success").map((token: any) => getAddress(token.result))
 
-    return [
-        underlying.includes(getAddress(address))
-            ? getAddress(cTokens[underlying.indexOf(getAddress(address))])
-            : ADDRESS_ZERO
-    ]
+    return {
+        ...BASE_RESPONSE,
+        default: [
+            {
+                name: "cToken", value:
+                    underlying.includes(getAddress(address))
+                        ? getAddress(cTokens[underlying.indexOf(getAddress(address))])
+                        : null
+            }
+        ]
+    }
 }
 
 const abiComptroller = [

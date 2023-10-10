@@ -1,11 +1,19 @@
 import { ADDRESS_ZERO } from "@/lib/constants";
 import { Address } from "viem";
-import { StrategyDefaultResolverParams } from "..";
+import { StrategyDefault, StrategyDefaultResolverParams } from "..";
+
+const BASE_RESPONSE = {
+    key: "",
+    params: [{
+        name: "poolId",
+        type: "uint256",
+    }]
+}
 
 const STAKING_ADDRESS: Address = "0x5B74C99AA2356B4eAa7B85dC486843eDff8Dfdbe";
 
-export async function ellipsis({ chainId, client, address }: StrategyDefaultResolverParams): Promise<any[]> {
-    
+export async function ellipsis({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+
 
     const poolLength = await client.readContract({
         address: STAKING_ADDRESS,
@@ -27,7 +35,12 @@ export async function ellipsis({ chainId, client, address }: StrategyDefaultReso
 
     const assetIdx = registeredTokens.findIndex(item => item.toLowerCase() === address.toLowerCase())
 
-    return [assetIdx !== -1 ? assetIdx : ADDRESS_ZERO]; // TODO this should be a number we can clearly distinguish as wrong --> maybe undefined?
+    return {
+        ...BASE_RESPONSE,
+        default: [
+            { name: "poolId", value: assetIdx !== -1 ? assetIdx : null }
+        ]
+    }
 }
 
 const abiStaking = [

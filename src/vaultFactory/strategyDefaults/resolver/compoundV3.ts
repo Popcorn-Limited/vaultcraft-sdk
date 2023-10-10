@@ -1,6 +1,18 @@
 import { ADDRESS_ZERO } from "@/lib/constants";
 import { Address } from "viem";
-import { StrategyDefaultResolverParams } from "..";
+import { StrategyDefault, StrategyDefaultResolverParams } from "..";
+
+const BASE_RESPONSE = {
+  key: "",
+  params: [{
+    name: "cToken",
+    type: "address",
+  },
+  {
+    name: "CometRewarder",
+    type: "address",
+  }]
+}
 
 // @dev Make sure the keys here are correct checksum addresses
 const assetToCToken: { [key: number]: { [key: Address]: Address } } = {
@@ -36,10 +48,22 @@ const COMET_REWARDER: { [key: number]: Address } = {
   84553: "0x123964802e6ABabBE1Bc9547D72Ef1B69B00A6b1"
 }
 
-export async function compoundV3({ chainId, client, address }: StrategyDefaultResolverParams): Promise<any[]> {
+export async function compoundV3({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
   if (Object.keys(assetToCToken).includes(String(chainId)) && Object.keys(assetToCToken[chainId]).includes(address)) {
-    return [assetToCToken[chainId][address], COMET_REWARDER[chainId]];
+    return {
+      ...BASE_RESPONSE,
+      default: [
+        { name: "cToken", value: assetToCToken[chainId][address] },
+        { name: "CometRewarder", value: COMET_REWARDER[chainId] }
+      ]
+    }
   } else {
-    return [ADDRESS_ZERO, ADDRESS_ZERO];
+    return {
+      ...BASE_RESPONSE,
+      default: [
+        { name: "cToken", value: null },
+        { name: "CometRewarder", value: null }
+      ]
+    }
   }
 }

@@ -6,7 +6,7 @@ const strategies: { [key: string]: Strategy } = {
     key: "CurveStargateCompounder",
     resolver: "curveStargateCompounder",
     protocol: "stargate",
-    adapter: "StargateLpStakingAdapter",
+    adapter: "StargateDepositor",
     chains: [1],
     description: "description",
     logoURI: "/images/icons/popLogo.svg",
@@ -14,33 +14,33 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "Staking Id",
         type: "uint256",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Pid used for stargate staking"
       },
       {
         name: "Reward Token",
         type: "address",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Addresses of reward tokens",
-        "multiple": true
+        multiple: true
       },
       {
         name: "Minimum Trade Amounts",
         type: "uint256",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "The minimum amount of tokens to trade (in wei)",
-        "multiple": true
+        multiple: true
       },
       {
         name: "Base Asset",
         type: "address",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Middle asset to trade through"
       },
       {
         name: "Stargate Router",
         type: "uint256",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Stargate Router Address"
       }
     ]
@@ -50,7 +50,7 @@ const strategies: { [key: string]: Strategy } = {
     key: "CurveCompounder",
     resolver: "curveCompounder",
     protocol: "curve",
-    adapter: "CurveGaugeAdapterV2",
+    adapter: "CurveGaugeDepositor",
     chains: [1],
     description: "description",
     logoURI: "/images/icons/popLogo.svg",
@@ -58,27 +58,27 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "GaugeId",
         type: "uint256",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Id of the Gauge to use"
       },
       {
         name: "Reward Token",
         type: "address",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Addresses of reward tokens",
-        "multiple": true
+        multiple: true
       },
       {
         name: "Minimum Trade Amounts",
         type: "uint256",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "The minimum amount of tokens to trade (in wei)",
-        "multiple": true
+        multiple: true
       },
       {
         name: "Base Asset",
         type: "address",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Middle asset to trade through"
       }
     ]
@@ -88,7 +88,7 @@ const strategies: { [key: string]: Strategy } = {
     key: "CurveCompounder",
     resolver: "convexCompounder",
     protocol: "convex",
-    adapter: "ConvexAdapterV2",
+    adapter: "ConvexDepositor",
     chains: [1],
     description: "description",
     logoURI: "/images/icons/popLogo.svg",
@@ -96,27 +96,27 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "Pid",
         type: "uint256",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Pid of the Convex Pool"
       },
       {
         name: "Reward Token",
         type: "address",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Addresses of reward tokens",
-        "multiple": true
+        multiple: true
       },
       {
         name: "Minimum Trade Amounts",
         type: "uint256",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "The minimum amount of tokens to trade (in wei)",
-        "multiple": true
+        multiple: true
       },
       {
         name: "Base Asset",
         type: "address",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Middle asset to trade through"
       }
     ]
@@ -126,7 +126,7 @@ const strategies: { [key: string]: Strategy } = {
     key: "BalancerLpCompounder",
     resolver: "balancerLpCompounder",
     protocol: "balancer",
-    adapter: "BalancerGaugeAdapter",
+    adapter: "BalancerGaugeDepositor",
     chains: [1],
     description: "description",
     logoURI: "/images/icons/popLogo.svg",
@@ -134,35 +134,35 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "BalancerGauge",
         type: "address",
-        "requirements": ["Required", "NotAddressZero"],
+        requirements: ["Required", "NotAddressZero"],
         description: "Address of the Balancer Gauge to use"
       },
       {
         name: "Reward Token",
         type: "address",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Addresses of reward tokens",
-        "multiple": true
+        multiple: true
       },
       {
         name: "Minimum Trade Amounts",
         type: "uint256",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "The minimum amount of tokens to trade (in wei)",
-        "multiple": true
+        multiple: true
       },
       {
         name: "Base Asset",
         type: "address",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Middle asset to trade through"
       },
       {
         name: "Optional Data",
         type: "bytes32",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Pool Id of the LpToken and Index of the DepositToken",
-        "multiple": true
+        multiple: true
       }
     ]
   },
@@ -171,7 +171,7 @@ const strategies: { [key: string]: Strategy } = {
     key: "BalancerLpCompounder",
     resolver: "auraCompounder",
     protocol: "aura",
-    adapter: "AuraAdapter",
+    adapter: "AuraDepositor",
     chains: [1],
     description: "description",
     logoURI: "/images/icons/popLogo.svg",
@@ -179,35 +179,35 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "Pid",
         type: "uint256",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Pid of the Aura Pool"
       },
       {
         name: "Reward Token",
         type: "address",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Addresses of reward tokens",
-        "multiple": true
+        multiple: true
       },
       {
         name: "Minimum Trade Amounts",
         type: "uint256",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "The minimum amount of tokens to trade (in wei)",
-        "multiple": true
+        multiple: true
       },
       {
         name: "Base Asset",
         type: "address",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Middle asset to trade through"
       },
       {
         name: "Optional Data",
         type: "bytes32",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Pool Id of the LpToken and Index of the DepositToken",
-        "multiple": true
+        multiple: true
       }
     ]
   },
@@ -239,7 +239,7 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "AlpacaVault",
         type: "address",
-        "requirements": ["Required", "NotAddressZero"],
+        requirements: ["Required", "NotAddressZero"],
         description: "Address of the Alpaca Vault to use"
       }
     ],
@@ -256,7 +256,7 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "Pid",
         type: "uint256",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Pid of the AlpacaV2 Pool"
       }
     ],
@@ -273,7 +273,7 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "Pid",
         type: "uint256",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Pid of the Aura Pool"
       }
     ],
@@ -290,7 +290,7 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "BalancerGauge",
         type: "address",
-        "requirements": ["Required", "NotAddressZero"],
+        requirements: ["Required", "NotAddressZero"],
         description: "Address of the Balancer Gauge to use"
       }
     ],
@@ -307,7 +307,7 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "BeefyVault",
         type: "address",
-        "requirements": ["Required", "NotAddressZero"],
+        requirements: ["Required", "NotAddressZero"],
         description: "Address of the Beefy Vault to use"
       },
       {
@@ -329,7 +329,7 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "CToken",
         type: "address",
-        "requirements": ["Required", "NotAddressZero"],
+        requirements: ["Required", "NotAddressZero"],
         description: "Address of the fitting CToken for the asset"
       }
     ],
@@ -346,13 +346,13 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "CToken",
         type: "address",
-        "requirements": ["Required", "NotAddressZero"],
+        requirements: ["Required", "NotAddressZero"],
         description: "Address of the fitting CToken for the asset"
       },
       {
         name: "CometRewarder",
         type: "address",
-        "requirements": ["Required", "NotAddressZero"],
+        requirements: ["Required", "NotAddressZero"],
         description: "Address of the fitting CometRewarder for the asset"
       }
     ],
@@ -369,7 +369,7 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "CToken",
         type: "address",
-        "requirements": ["Required", "NotAddressZero"],
+        requirements: ["Required", "NotAddressZero"],
         description: "Address of the fitting CToken for the asset"
       }
     ],
@@ -386,7 +386,7 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "Pid",
         type: "uint256",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Pid of the Convex Pool"
       }
     ],
@@ -403,7 +403,7 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "GaugeId",
         type: "uint256",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Id of the Gauge to use"
       }
     ],
@@ -420,7 +420,7 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "CRV",
         type: "address",
-        "requirements": ["Required", "NotAddressZero"],
+        requirements: ["Required", "NotAddressZero"],
         description: "Address of the CRV-Token on the specific network"
       }
     ],
@@ -446,7 +446,7 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "Pid",
         type: "uint256",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Pid of the Ellipsis Pool"
       }
     ],
@@ -463,7 +463,7 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "Pid",
         type: "uint256",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Pid of the Gearbox Pool"
       }
     ],
@@ -480,7 +480,7 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "CDO",
         type: "address",
-        "requirements": ["Required", "NotAddressZero"],
+        requirements: ["Required", "NotAddressZero"],
         description: "Address of the CDO Contract"
       }
     ],
@@ -497,7 +497,7 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "CDO",
         type: "address",
-        "requirements": ["Required", "NotAddressZero"],
+        requirements: ["Required", "NotAddressZero"],
         description: "Address of the CDO Contract"
       }
     ],
@@ -514,7 +514,7 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "Wrapped Asset",
         type: "address",
-        "requirements": ["Required", "NotAddressZero"],
+        requirements: ["Required", "NotAddressZero"],
         description: "Address of the wrapped version of the asset"
       }
     ],
@@ -540,7 +540,7 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "Gauge",
         type: "address",
-        "requirements": ["Required", "NotAddressZero"],
+        requirements: ["Required", "NotAddressZero"],
         description: "Address of the Solidly Gauge"
       }
     ],
@@ -557,7 +557,7 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "Staking Id",
         type: "uint256",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Pid used for stargate staking"
       }
     ],
@@ -574,13 +574,13 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "Pid",
         type: "uint256",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Pid of the Convex Pool"
       },
       {
         name: "RewardsToken",
         type: "address",
-        "requirements": ["Required", "NotAddressZero"],
+        requirements: ["Required", "NotAddressZero"],
         description: "RewardToken of the MasterChef contract"
       }
     ],
@@ -597,13 +597,13 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "Pid",
         type: "uint256",
-        "requirements": ["Required"],
+        requirements: ["Required"],
         description: "Pid of the Convex Pool"
       },
       {
         name: "RewardsToken",
         type: "address",
-        "requirements": ["Required", "NotAddressZero"],
+        requirements: ["Required", "NotAddressZero"],
         description: "RewardToken of the MasterChef contract"
       }
     ],
@@ -620,7 +620,7 @@ const strategies: { [key: string]: Strategy } = {
       {
         name: "Gauge",
         type: "address",
-        "requirements": ["Required", "NotAddressZero"],
+        requirements: ["Required", "NotAddressZero"],
         description: "Address of the Velodrome Gauge"
       }
     ],
@@ -644,3 +644,5 @@ const strategies: { [key: string]: Strategy } = {
     resolver: "yearn"
   }
 }
+
+export default strategies;

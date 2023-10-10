@@ -1,10 +1,18 @@
 import { ADDRESS_ZERO } from "@/lib/constants";
 import { Address, getAddress } from "viem";
-import { StrategyDefaultResolverParams } from "..";
+import { StrategyDefault, StrategyDefaultResolverParams } from "..";
+
+const BASE_RESPONSE = {
+    key: "",
+    params: [{
+        name: "oToken",
+        type: "address",
+    }]
+}
 
 const STAKING_ADDRESS: Address = "0xB0D502E938ed5f4df2E681fE6E419ff29631d62b";
 
-export async function stargate({ chainId, client, address }: StrategyDefaultResolverParams): Promise<any[]> {
+export async function stargate({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
     const poolLength = await client.readContract({
         address: STAKING_ADDRESS,
         abi,
@@ -23,11 +31,17 @@ export async function stargate({ chainId, client, address }: StrategyDefaultReso
     })
     const lpTokens: Address[] = tokenRes.filter(token => token.status === "success").map((token: any) => getAddress(token.result[0]))
 
-    return [
-        lpTokens.includes(getAddress(address))
-            ? lpTokens.indexOf(getAddress(address))
-            : ADDRESS_ZERO // TODO this should be a number we can clearly distinguish as wrong --> maybe undefined?
-    ]
+    return {
+        ...BASE_RESPONSE,
+        default: [
+            {
+                name: "poolId", value:
+                    lpTokens.includes(getAddress(address))
+                        ? lpTokens.indexOf(getAddress(address))
+                        : null
+            }
+        ]
+    }
 }
 
 const abi = [
