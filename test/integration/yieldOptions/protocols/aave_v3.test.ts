@@ -1,8 +1,8 @@
 import { describe, test, expect, beforeAll } from "vitest";
 
-import { AaveV3 } from "../../../src/yieldOptions/providers/protocols/aavev3.js";
-import { Clients } from "../../../src/yieldOptions/providers/protocols/index.js";
-import { publicClient } from "../../setup.js";
+import { AaveV3 } from "../../../../src/yieldOptions/providers/protocols/aavev3.js";
+import { Clients } from "../../../../src/yieldOptions/providers/protocols/index.js";
+import { publicClient } from "../../../setup.js";
 
 const clients: Clients = {
     1: publicClient,

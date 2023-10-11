@@ -1,10 +1,10 @@
 import { describe, test, expect, beforeAll } from "vitest";
 
-import { AaveV2 } from "../../src/yieldOptions/providers/protocols/aavev2.js";
-import { Clients } from "../../src/yieldOptions/providers/protocols/index.js";
-import { publicClient } from "../setup.js";
-import { CompoundV2 } from "../../src/yieldOptions/providers/protocols/compoundv2.js";
-import { LiveProvider } from "../../src/yieldOptions/providers/liveProvider.js";
+import { AaveV2 } from "../../../../src/yieldOptions/providers/protocols/aavev2.js";
+import { Clients } from "../../../../src/yieldOptions/providers/protocols/index.js";
+import { publicClient } from "../../../setup.js";
+import { CompoundV2 } from "../../../../src/yieldOptions/providers/protocols/compoundv2.js";
+import { LiveProvider } from "../../../src/yieldOptions/providers/liveProvider.js";
 
 const clients: Clients = {
     1: publicClient,

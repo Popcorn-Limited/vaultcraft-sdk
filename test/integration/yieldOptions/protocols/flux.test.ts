@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeAll } from "vitest";
 
-import { Flux } from "../../../src/yieldOptions/providers/protocols/flux.js";
-import { publicClient } from "../../setup.js";
+import { Flux } from "../../../../src/yieldOptions/providers/protocols/flux.js";
+import { publicClient } from "../../../setup.js";
 
 const FORK_BLOCK_NUMBER = BigInt(18071114);
 const flux = new Flux(publicClient);

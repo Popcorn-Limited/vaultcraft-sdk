@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { Balancer } from "../../../src/yieldOptions/providers/protocols/balancer.js";
+import { Balancer } from "../../../../src/yieldOptions/providers/protocols/balancer.js";
 
 const balancer = new Balancer(1000);
 

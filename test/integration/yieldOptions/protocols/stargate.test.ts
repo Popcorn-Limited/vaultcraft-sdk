@@ -1,7 +1,7 @@
 import { describe, test, beforeAll, expect } from "vitest";
-import { Stargate } from "../../../src/yieldOptions/providers/protocols/stargate.js";
-import { Clients } from "../../../src/yieldOptions/providers/protocols/index.js";
-import { publicClient } from "../../setup.js";
+import { Stargate } from "../../../../src/yieldOptions/providers/protocols/stargate.js";
+import { Clients } from "../../../../src/yieldOptions/providers/protocols/index.js";
+import { publicClient } from "../../../setup.js";
 
 const clients: Clients = {
     1: publicClient,

@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { Curve } from "../../../src/yieldOptions/providers/protocols/curve.js";
+import { Curve } from "../../../../src/yieldOptions/providers/protocols/curve.js";
 
 const hour = 3600000;
 const curve = new Curve(hour);

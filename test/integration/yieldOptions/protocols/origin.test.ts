@@ -1,6 +1,6 @@
 
 import { describe, test, expect } from "vitest";
-import { Origin } from "../../../src/yieldOptions/providers/protocols/origin.js";
+import { Origin } from "../../../../src/yieldOptions/providers/protocols/origin.js";
 
 const origin = new Origin();
 

@@ -1,7 +1,7 @@
 import { describe, test, beforeAll, expect } from "vitest";
-import { Yearn } from "../../../src/yieldOptions/providers/protocols/yearn.js";
-import { Clients } from "../../../src/yieldOptions/providers/protocols/index.js";
-import { publicClient } from "../../setup.js";
+import { Yearn } from "../../../../src/yieldOptions/providers/protocols/yearn.js";
+import { Clients } from "../../../../src/yieldOptions/providers/protocols/index.js";
+import { publicClient } from "../../../setup.js";
 
 const clients: Clients = {
     1: publicClient,

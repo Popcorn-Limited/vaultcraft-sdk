@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { Convex } from "../../../src/yieldOptions/providers/protocols/convex.js";
+import { Convex } from "../../../../src/yieldOptions/providers/protocols/convex.js";
 
 const convex = new Convex(1000);
 

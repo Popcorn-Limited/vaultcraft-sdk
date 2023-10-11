@@ -1,8 +1,8 @@
 import { describe, test, expect, beforeAll } from "vitest";
 
-import { CompoundV3 } from "../../../src/yieldOptions/providers/protocols/compoundv3.js";
-import { Clients } from "../../../src/yieldOptions/providers/protocols/index.js";
-import { publicClient } from "../../setup.js";
+import { CompoundV3 } from "../../../../src/yieldOptions/providers/protocols/compoundv3.js";
+import { Clients } from "../../../../src/yieldOptions/providers/protocols/index.js";
+import { publicClient } from "../../../setup.js";
 
 const clients: Clients = {
     1: publicClient,
