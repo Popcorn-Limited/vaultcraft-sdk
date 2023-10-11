@@ -4,7 +4,7 @@ import { getAddress } from "viem";
 
 const BASE_RESPONSE = {
   params: [{
-    name: "CDO",
+    name: "cdo",
     type: "address",
   }]
 }
@@ -23,7 +23,7 @@ export async function idle({ client, address }: StrategyDefaultResolverParams): 
   return {
     ...BASE_RESPONSE,
     default: [
-      { name: "CDO", value: chainId === mainnet.id ? (getAddress(assetToCdo[address]) || null) : null }
+      { name: "cdo", value: chainId === mainnet.id ? (getAddress(assetToCdo[address]) || null) : null }
     ]
   }
 }

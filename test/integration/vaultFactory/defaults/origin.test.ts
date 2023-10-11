@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeAll } from "vitest";
 
-import { alpacaV1 } from "../../../../src/vaultFactory/strategyDefaults/resolver/alpacaV1.js";
+import { origin } from "../../../../src/vaultFactory/strategyDefaults/resolver/origin.js";
 import { publicClient } from "../../../setup.js";
 
 
@@ -13,17 +13,17 @@ describe.concurrent("read-only", () => {
     });
   });
 
-  test("alpacaV1() should return correct params and defaults", async () => {
-    const result = await alpacaV1({ client: publicClient, address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c" }); // BNB
+  test("origin() should return correct params and defaults", async () => {
+    const result = await origin({ client: publicClient, address: "0xDcEe70654261AF21C44c093C300eD3Bb97b78192" }); // OETH
 
     // Test params
     expect(result.params.length).toBe(1);
-    expect(result.params[0].name).toBe("alpacaVault");
+    expect(result.params[0].name).toBe("oToken");
     expect(result.params[0].type).toBe("address");
 
     // Test defaults
     expect(result.default.length).toBe(1);
-    expect(result.default[0].name).toBe("alpacaVault");
-    expect(result.default[0].value).toBe("0xd7D069493685A581d27824Fc46EdA46B7EfC0063");
+    expect(result.default[0].name).toBe("oToken");
+    expect(result.default[0].value).toBe("0x856c4Efb76C1D1AE02e20CEB03A2A6a08b0b8dC3");
   });
 });

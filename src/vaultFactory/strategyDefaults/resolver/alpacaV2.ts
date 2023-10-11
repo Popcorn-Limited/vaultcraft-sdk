@@ -16,8 +16,8 @@ type MoneyMarketResponse = {
 
 const BASE_RESPONSE = {
     params: [{
-        name: "poolId",
-        type: "uint256",
+        name: "alpacaVault",
+        type: "address",
     }]
 }
 
@@ -31,7 +31,7 @@ export async function alpacaV2({ client, address }: StrategyDefaultResolverParam
     return {
         ...BASE_RESPONSE,
         default: [
-            { name: "poolId", value: matchingMarket?.ibToken ? getAddress(matchingMarket?.ibToken) : ADDRESS_ZERO }
+            { name: "alpacaVault", value: matchingMarket?.ibToken ? getAddress(matchingMarket?.ibToken) : null }
         ]
     }
 }

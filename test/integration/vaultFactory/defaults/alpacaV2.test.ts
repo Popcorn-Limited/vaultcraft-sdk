@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeAll } from "vitest";
 
-import { alpacaV1 } from "../../../../src/vaultFactory/strategyDefaults/resolver/alpacaV1.js";
+import { alpacaV2 } from "../../../../src/vaultFactory/strategyDefaults/resolver/alpacaV2.js";
 import { publicClient } from "../../../setup.js";
 
 
@@ -13,8 +13,8 @@ describe.concurrent("read-only", () => {
     });
   });
 
-  test("alpacaV1() should return correct params and defaults", async () => {
-    const result = await alpacaV1({ client: publicClient, address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c" }); // BNB
+  test("alpacaV2() should return correct params and defaults", async () => {
+    const result = await alpacaV2({ client: publicClient, address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c" }); // BNB
 
     // Test params
     expect(result.params.length).toBe(1);
@@ -24,6 +24,6 @@ describe.concurrent("read-only", () => {
     // Test defaults
     expect(result.default.length).toBe(1);
     expect(result.default[0].name).toBe("alpacaVault");
-    expect(result.default[0].value).toBe("0xd7D069493685A581d27824Fc46EdA46B7EfC0063");
+    expect(result.default[0].value).toBe("0x2928623eFF453Fb8C9BC744041637a4D2D5Fc56b");
   });
 });
