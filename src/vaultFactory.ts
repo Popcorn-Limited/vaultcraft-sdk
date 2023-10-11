@@ -31,7 +31,7 @@ export type AdapterOptions = {
     initialDeposit: bigint;
 }
 
-export class VaultController extends Base {
+export class VaultFactory extends Base {
     private baseObj;
 
     constructor(address: Address, publicClient: PublicClient, walletClient: WalletClient<Transport, Chain>) {
