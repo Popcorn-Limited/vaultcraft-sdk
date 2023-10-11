@@ -2,8 +2,7 @@ import { Address, getAddress } from "viem";
 import { StrategyDefault, StrategyDefaultResolverParams } from "..";
 
 const BASE_RESPONSE = {
-    key: "",
-    params: [{
+      params: [{
         name: "crv",
         type: "address",
     }]
@@ -17,7 +16,9 @@ export const CURVE_ADDRESS: { [chainId: number]: Address; } = {
     42161: "0x11cdb42b0eb46d95f990bedd4695a6e3fa034978",
 };
 
-export async function curveChild({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+export async function curveChild({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+    const chainId = client.chain?.id as number
+
     return {
         ...BASE_RESPONSE,
         default: [

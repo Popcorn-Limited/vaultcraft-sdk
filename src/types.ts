@@ -31,6 +31,24 @@ export type Vault = {
     metadataCID: string;
 }
 
+export type VaultOptions = {
+    asset: Address;
+    adapter: Address;
+    fees: VaultFees;
+    feeRecipient: Address;
+    depositLimit: bigint;
+    owner: Address;
+    staking: boolean;
+    initialDeposit: bigint;
+};
+
+export type VaultMetadata = {
+    metadataCID: string;
+    swapTokenAddresses: [Address, Address, Address, Address, Address, Address, Address, Address];
+    swapAddress: Address;
+    exchange: bigint;
+};
+
 export type Metadata = {
     vault: Address;
     staking: Address;

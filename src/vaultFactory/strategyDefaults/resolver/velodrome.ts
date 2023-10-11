@@ -1,10 +1,9 @@
-import { ADDRESS_ZERO } from "@/lib/constants";
 import { Address, getAddress } from "viem";
 import { StrategyDefault, StrategyDefaultResolverParams } from "..";
+import { ADDRESS_ZERO } from "@/lib/constants";
 
 const BASE_RESPONSE = {
-    key: "",
-    params: [{
+      params: [{
         name: "gauge",
         type: "address",
     }]
@@ -12,7 +11,7 @@ const BASE_RESPONSE = {
 
 const VELODROME_LENSE_ADDRESS: Address = "0x8B70C5E53235AbBd1415957f7110FBFe5d0529d4";
 
-export async function velodrome({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+export async function velodrome({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
 const { gauge, gauge_alive } = await client.readContract({
         address: VELODROME_LENSE_ADDRESS,
         abi,

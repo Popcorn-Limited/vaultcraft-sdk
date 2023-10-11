@@ -3,7 +3,6 @@ import { Address, mainnet } from "wagmi";
 import { StrategyDefault, StrategyDefaultResolverParams } from "..";
 
 const BASE_RESPONSE = {
-  key: "",
   params: [{
     name: "fToken",
     type: "address",
@@ -25,11 +24,13 @@ const assetToCToken: { [key: Address]: Address } = {
   "0x1B19C19393e2d034D8Ff31ff34c81252FcBbee92": "0x1dD7950c266fB1be96180a8FDb0591F70200E018",
 };
 
-export async function flux({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+export async function flux({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+  const chainId = client.chain?.id as number
+
   return {
     ...BASE_RESPONSE,
     default: [
-      { name: "fToken", value: chainId === mainnet.id ? assetToCToken[address] || null : null}
+      { name: "fToken", value: chainId === mainnet.id ? assetToCToken[address] || null : null }
     ]
   }
 }

@@ -1,9 +1,7 @@
-import { ADDRESS_ZERO } from "@/lib/constants";
 import { Address } from "viem";
 import { StrategyDefault, StrategyDefaultResolverParams } from "..";
 
 const BASE_RESPONSE = {
-  key: "",
   params: [{
     name: "cToken",
     type: "address",
@@ -48,7 +46,8 @@ const COMET_REWARDER: { [key: number]: Address } = {
   84553: "0x123964802e6ABabBE1Bc9547D72Ef1B69B00A6b1"
 }
 
-export async function compoundV3({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+export async function compoundV3({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+  const chainId = client.chain?.id as number
   if (Object.keys(assetToCToken).includes(String(chainId)) && Object.keys(assetToCToken[chainId]).includes(address)) {
     return {
       ...BASE_RESPONSE,

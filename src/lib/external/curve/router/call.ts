@@ -2,7 +2,7 @@ import { ADDRESS_ZERO, ZERO } from "@/lib/constants";
 import { CurveRoute } from "@/lib/external/curve/router/interfaces";
 import curve from '@curvefi/api'
 import { IRoute } from "@curvefi/api/lib/interfaces";
-import { encodeAbiParameters, parseAbiParameters } from "viem";
+import { Hash, encodeAbiParameters, parseAbiParameters } from "viem";
 
 const EMPTY_ROUTE = [ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO]
 
@@ -70,8 +70,8 @@ export const curveApiCall = async ({
     baseAsset: string,
     router: string,
     minTradeAmounts: BigInt[],
-    optionalData: string
-}): Promise<{ baseAsset: string, router: string, toBaseAssetRoutes: CurveRoute[], toAssetRoute: CurveRoute, minTradeAmounts: BigInt[], optionalData: string }> => {
+    optionalData: Hash
+}): Promise<{ baseAsset: string, router: string, toBaseAssetRoutes: CurveRoute[], toAssetRoute: CurveRoute, minTradeAmounts: BigInt[], optionalData: Hash }> => {
     if (rewardTokens.length !== minTradeAmounts.length) {
         throw new Error("rewardTokens and minTradeAmounts must be the same length");
     }
@@ -116,8 +116,8 @@ export const curveApiCallToBytes = async ({
     baseAsset: string,
     router: string,
     minTradeAmounts: BigInt[],
-    optionalData: string
-}): Promise<string> => {
+    optionalData: Hash
+}): Promise<Hash> => {
     const curveData = await curveApiCall({ depositAsset, rewardTokens, baseAsset, router, minTradeAmounts, optionalData });
 
     // Prepare the data for encoding.

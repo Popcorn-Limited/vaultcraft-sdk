@@ -2,8 +2,7 @@ import { Address, getAddress } from "viem";
 import { StrategyDefault, StrategyDefaultResolverParams } from "..";
 
 const BASE_RESPONSE = {
-    key: "",
-    params: [{
+      params: [{
         name: "poolId",
         type: "uint256",
     }]
@@ -16,7 +15,9 @@ const CurveControllerByChain: { [key: number]: Address } = { 1: "0x2F50D538606Fa
 const GaugeTypesToSkip = [1, 2, 4, 7, 8, 9, 10, 11]
 
 
-export async function curve({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+export async function curve({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+    const chainId = client.chain?.id as number
+    
     const poolLength = await client.readContract({
         address: CurveControllerByChain[chainId],
         abi: controllerAbi,

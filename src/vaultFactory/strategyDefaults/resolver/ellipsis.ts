@@ -1,10 +1,8 @@
-import { ADDRESS_ZERO } from "@/lib/constants";
 import { Address } from "viem";
 import { StrategyDefault, StrategyDefaultResolverParams } from "..";
 
 const BASE_RESPONSE = {
-    key: "",
-    params: [{
+      params: [{
         name: "poolId",
         type: "uint256",
     }]
@@ -12,9 +10,7 @@ const BASE_RESPONSE = {
 
 const STAKING_ADDRESS: Address = "0x5B74C99AA2356B4eAa7B85dC486843eDff8Dfdbe";
 
-export async function ellipsis({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
-
-
+export async function ellipsis({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
     const poolLength = await client.readContract({
         address: STAKING_ADDRESS,
         abi: abiStaking,

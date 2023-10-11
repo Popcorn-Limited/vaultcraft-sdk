@@ -1,10 +1,8 @@
-import { ADDRESS_ZERO } from "@/lib/constants";
 import { Address, mainnet } from "wagmi";
 import { StrategyDefault, StrategyDefaultResolverParams } from "..";
 import { getAddress } from "viem";
 
 const BASE_RESPONSE = {
-  key: "",
   params: [{
     name: "CDO",
     type: "address",
@@ -19,7 +17,9 @@ const assetToCdo: { [key: Address]: Address } = {
   "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84": "0x8E0A8A5c1e5B3ac0670Ea5a613bB15724D51Fc37", // stEth instadapp
 }
 
-export async function idle({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+export async function idle({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+  const chainId = client.chain?.id as number
+
   return {
     ...BASE_RESPONSE,
     default: [

@@ -1,9 +1,9 @@
 import { curveApiCallToBytes } from "@/lib/external/curve/router/call";
-import { encodeAbiParameters, parseAbiParameters } from "viem";
+import { Hash, encodeAbiParameters, parseAbiParameters } from "viem";
 import { StrategyEncodingResolverParams } from "..";
 import { MAX_UINT256 } from "@/lib/constants";
 
-export async function curveStargateCompounder({ chainId, client, address, params }: StrategyEncodingResolverParams): Promise<string> {
+export async function curveStargateCompounder({ client, address, params }: StrategyEncodingResolverParams): Promise<Hash> {
   const token = await client.readContract({
     address,
     abi: lpTokenAbi,

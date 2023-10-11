@@ -38,13 +38,11 @@ export type ParamDefault = {
 }
 
 export type StrategyDefault = {
-  key: string;
   params: ParamAbi[];
   default: ParamDefault[];
 }
 
 export type StrategyDefaultResolverParams = {
-  chainId: number,
   client: PublicClient,
   address: Address
 }
@@ -52,12 +50,11 @@ export type StrategyDefaultResolverParams = {
 export type StrategyDefaultResolvers = typeof StrategyDefaultResolvers;
 
 export const ERROR_RESPONSE = {
-  key: "error",
   params: [{ name: "error", type: "null" }],
   default: [{ name: "error", value: null }]
 }
 
-export const StrategyDefaultResolvers: { [key: string]: ({ chainId, client, address }: StrategyDefaultResolverParams) => Promise<StrategyDefault> } = {
+export const StrategyDefaultResolvers: { [key: string]: ({ client, address }: StrategyDefaultResolverParams) => Promise<StrategyDefault> } = {
   alpacaV1,
   alpacaV2,
   aura,

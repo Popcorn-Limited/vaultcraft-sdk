@@ -2,8 +2,7 @@ import { Address, getAddress } from "viem";
 import { StrategyDefault, StrategyDefaultResolverParams } from "..";
 
 const BASE_RESPONSE = {
-    key: "",
-    params: [{
+      params: [{
         name: "gauge",
         type: "address",
     }]
@@ -11,7 +10,7 @@ const BASE_RESPONSE = {
 
 const CONTROLLER_ADDRESS: Address = "0xC128468b7Ce63eA702C1f104D55A2566b13D3ABD";
 
-export async function balancer({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+export async function balancer({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
     const n_gauges = await client.readContract({
         address: CONTROLLER_ADDRESS,
         abi: abiController,

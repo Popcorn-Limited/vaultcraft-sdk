@@ -1,10 +1,8 @@
-import { ADDRESS_ZERO } from "@/lib/constants";
 import { Address, getAddress } from "viem";
 import { StrategyDefault, StrategyDefaultResolverParams } from "..";
 
 const BASE_RESPONSE = {
-    key: "",
-    params: [{
+      params: [{
         name: "cToken",
         type: "address",
     }]
@@ -12,7 +10,7 @@ const BASE_RESPONSE = {
 
 const COMPTROLLER_ADDRESS: Address = "0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B";
 
-export async function compoundV2({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+export async function compoundV2({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
     const cTokens = await client.readContract({
         address: COMPTROLLER_ADDRESS,
         abi: abiComptroller,

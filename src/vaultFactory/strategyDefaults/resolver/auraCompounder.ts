@@ -5,8 +5,11 @@ import { ZERO } from "@/lib/constants";
 import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "..";
 
 const BASE_RESPONSE = {
-  key: "",
   params: [
+    {
+      name: "poolId",
+      type: "uint256",
+    },
     {
       name: "rewardTokens",
       type: "uint256[]",
@@ -31,7 +34,8 @@ const BAL: { [key: number]: Address } = { 1: "0xba100000625a3754423978a60c9317c5
 const AURA: { [key: number]: Address } = { 1: "0xC0c293ce456fF0ED870ADd98a0828Dd4d2903DBF" }
 const BALANCER_VAULT: { [key: number]: Address } = { 1: "0xBA12222222228d8Ba445958a75a0704d566BF2C8" }
 
-export async function auraCompounder({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+export async function auraCompounder({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+  const chainId = client.chain?.id as number
   if (Object.keys(BAL).indexOf(chainId.toString()) === -1) {
     return ERROR_RESPONSE;
   } else {
@@ -48,9 +52,12 @@ export async function auraCompounder({ chainId, client, address }: StrategyDefau
       args: [poolId]
     })
 
+    const auraDefaults = await aura({ client, address })
+
     return {
       ...BASE_RESPONSE,
       default: [
+        { name: "poolId", value: auraDefaults.default[0].value },
         { name: "rewardTokens", value: [BAL[chainId], AURA[chainId]] },
         { name: "minTradeAmounts", value: [ZERO, ZERO] },
         { name: "baseAsset", value: poolTokens[0][0] }, // TODO - find a smarter algorithm to determine the base asset

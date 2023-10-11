@@ -3,8 +3,7 @@ import { Address } from "viem";
 import { StrategyDefault, StrategyDefaultResolverParams } from "..";
 
 const BASE_RESPONSE = {
-    key: "",
-    params: [{
+      params: [{
         name: "poolId",
         type: "uint256",
     }]
@@ -12,7 +11,7 @@ const BASE_RESPONSE = {
 
 const REGISTER_ADDRESS: Address = "0xA50d4E7D8946a7c90652339CDBd262c375d54D99";
 
-export async function gearbox({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+export async function gearbox({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
     const pools = await client.readContract({
         address: REGISTER_ADDRESS,
         abi: abiRegister,

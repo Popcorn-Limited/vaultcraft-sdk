@@ -1,9 +1,9 @@
 import { ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { getEmptyYield, IProtocol } from "./index.js";
 import { Address, getAddress } from "viem";
-import { networkNames } from "@/lib/helpers.js";
 import NodeCache from "node-cache";
 import axios from "axios";
+import { networkNames } from "@/lib/constants/index.js";
 
 interface BeefyVault {
     id: string;

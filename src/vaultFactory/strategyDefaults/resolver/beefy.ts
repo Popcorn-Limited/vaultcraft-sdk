@@ -13,7 +13,6 @@ interface Boost {
 }
 
 const BASE_RESPONSE = {
-  key: "beefy",
   params: [{
     name: "beefyVault",
     type: "address",
@@ -33,7 +32,8 @@ const networkNameByChainId: { [key: number]: string } = {
   10: "optimism"
 }
 
-export async function beefy({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+export async function beefy({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+  const chainId = client.chain?.id as number
   if (Object.keys(networkNameByChainId).indexOf(chainId.toString()) === -1) {
     return ERROR_RESPONSE;
   } else {

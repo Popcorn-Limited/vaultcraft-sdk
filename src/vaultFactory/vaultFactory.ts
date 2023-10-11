@@ -1,48 +1,16 @@
-import { Hash, Address, PublicClient, WalletClient, Transport, Chain, maxUint256, pad, zeroAddress, getAddress, stringToHex, parseAbiParameters, encodeAbiParameters } from "viem";
+import { Hash, Address, PublicClient, WalletClient, Transport, Chain, zeroAddress, getAddress, stringToHex, encodeAbiParameters } from "viem";
 
 import { VaultControllerABI } from "../abi/VaultControllerABI.js";
 import { Base } from "../base.js";
-import type { VaultFees, WriteOptions } from "../types.js";
+import type { VaultMetadata, VaultOptions, WriteOptions } from "../types.js";
 import { EMPTY_BYTES } from "../lib/constants/index.js";
 import { resolveStrategyDefaults } from "./strategyDefaults/strategyDefaults.js";
-import { StrategyDefault } from "./strategyDefaults/index.js";
 import strategies from "@/lib/constants/strategies.js";
-import { resolveStrategyEncoding } from "./strategyEncoding/strategyDefaults.js";
+import { resolveStrategyEncoding } from "./strategyEncoding/strategyEncoding.js";
+import { SimulationResponse, StrategyData } from "./types.js";
+import { StrategyDefault } from "./strategyDefaults/index.js";
 
 const ABI = VaultControllerABI;
-
-export type VaultOptions = {
-    asset: Address;
-    adapter: Address;
-    fees: VaultFees;
-    feeRecipient: Address;
-    depositLimit?: bigint;
-    owner: Address;
-    staking: boolean;
-    initialDeposit: bigint;
-};
-
-export type VaultMetadata = {
-    metadataCID: string;
-    swapTokenAddresses: [Address, Address, Address, Address, Address, Address, Address, Address];
-    swapAddress: Address;
-    exchange: bigint;
-};
-
-export type AdapterOptions = {
-    asset: Address,
-    adapterData: [Hash, Hash];
-    strategyData: [Hash, Hash];
-    initialDeposit: bigint;
-}
-
-type Data = {
-    [chainId: number]: {
-        [protocol: string]: {
-            [asset: string]: Yield;
-        };
-    };
-};
 
 export class VaultFactory extends Base {
     private baseObj;
@@ -56,196 +24,164 @@ export class VaultFactory extends Base {
         };
     }
 
-    async getStrategyParams(chainId: number, strategy: string, asset: Address): Promise<StrategyDefault> {
-        return resolveStrategyDefaults({
-            chainId,
-            client: this.publicClient,
-            address: getAddress(asset),
-            resolver: strategy
-        })
+    private strategyDefaultsAreValid(data: StrategyDefault): boolean {
+        return data.default.every(v => v.value !== null)
     }
 
-    async createVaultByKey(vault: VaultOptions, strategy: string, options: WriteOptions): Promise<Hash> {
-        const params = await resolveStrategyDefaults({
-            chainId,
-            client: this.publicClient,
-            address: getAddress(vault.asset),
-            resolver: strategy
-        })
-    }
-
-    private encodeAdapter(asset: Address, resolver: string): Promise<Hash> {
+    private async encodeAdapter(asset: Address, resolver: string): Promise<Hash> {
         const data = await resolveStrategyDefaults({
-            chainId,
             client: this.publicClient,
             address: getAddress(asset),
             resolver
         })
-        // TODO ERROR HANDLING
-        // 1. if key === "error"
-        // 2. if any value in data.default is null
+        if (!this.strategyDefaultsAreValid(data)) throw new Error(`Invalid adapter defaults for ${resolver} on ${asset}`);
 
         return encodeAbiParameters(data.params, data.default.map(v => v.value))
 
     }
 
-    private encodeStrategy(asset: Address, resolver: string): Promise<Hash> {
+    private async encodeStrategy(asset: Address, resolver: string): Promise<Hash> {
         const data = await resolveStrategyDefaults({
-            chainId,
             client: this.publicClient,
             address: getAddress(asset),
             resolver
         })
-        // TODO ERROR HANDLING
-        // 1. if key === "error"
-        // 2. if any value in data.default is null
+        if (!this.strategyDefaultsAreValid(data)) throw new Error(`Invalid strategy defaults for ${resolver} on ${asset}`);
 
         return resolveStrategyEncoding({
-            chainId,
             client: this.publicClient,
             address: getAddress(asset),
-            params: data.default.map(v => v.value),
+            params: data.default.slice(1).map(v => v.value), // @dev since the compounder return also the adapter param we remove it here
             resolver
         })
-
     }
 
-    async createStrategyByKey(vault: VaultOptions, metadata: VaultMetadata, strategy: string, options: WriteOptions): Promise<Hash> {
-        let adapterId = stringToHex("", { size: 32 })
+    private async getAdapterAndStrategyData(strategy: string, asset: Address): Promise<{ adapter: StrategyData, strategy: StrategyData }> {
+        let adapterId: Hash = stringToHex("", { size: 32 })
         let adapterInitParams: Hash = "0x"
 
-        let strategyId = stringToHex("", { size: 32 })
+        let strategyId: Hash = stringToHex("", { size: 32 })
         let strategyInitParams: Hash = "0x"
 
         if (strategy.includes("Depositor")) {
             // Encode Adapter
             adapterId = stringToHex(strategies[strategy].key, { size: 32 })
-            adapterInitParams = await this.encodeAdapter(vault.asset, strategies[strategy].resolver)
+            adapterInitParams = await this.encodeAdapter(asset, strategies[strategy].resolver as string)
         } else {
             // Encode Adapter
-            const adapter = strategies[strategies[strategy].adapter]
+            const adapter = strategies[strategies[strategy].adapter as string]
             adapterId = stringToHex((adapter.key as string), { size: 32 })
-            adapterInitParams = await this.encodeAdapter(vault.asset, adapter.resolver)
+            adapterInitParams = await this.encodeAdapter(asset, adapter.resolver as string)
 
             // Encode Strategy
             strategyId = stringToHex((strategies[strategy].key as string), { size: 32 })
-            strategyInitParams = await this.encodeStrategy(vault.asset, strategies[strategy].resolver)
+            strategyInitParams = await this.encodeStrategy(asset, strategies[strategy].resolver as string)
         }
-
-        const { request } = await this.publicClient.simulateContract({
-            ...options,
-            ...this.baseObj,
-            functionName: "deployVault",
-            args: [
-                {
-                    asset: vault.asset,
-                    adapter: vault.adapter,
-                    fees: vault.fees,
-                    feeRecipient: vault.feeRecipient,
-                    depositLimit: vault.depositLimit ? vault.depositLimit : maxUint256 - BigInt(1),
-                    owner: vault.owner,
-                },
-                { id: adapterId, data: adapterInitParams },
-                { id: strategyId, data: strategyInitParams },
-                false,
-                EMPTY_BYTES, // reward data should be added in a separate step
-                {
-                    ...metadata,
-                    // these three will be overriden by the VaultController. Specifying them here is pointless.
-                    // But, we have to include them in the type so that viem doesn't throw an error
-                    vault: zeroAddress,
-                    staking: zeroAddress,
-                    creator: zeroAddress,
-                },
-                vault.initialDeposit,
-            ]
-        });
+        return {
+            adapter: { id: adapterId, data: adapterInitParams },
+            strategy: { id: strategyId, data: strategyInitParams },
+        }
     }
 
-    async createVault(vault: VaultOptions, adapter: AdapterOptions, metadata: VaultMetadata, options: WriteOptions): Promise<Hash> {
-        const { request } = await this.publicClient.simulateContract({
-            ...options,
-            ...this.baseObj,
-            functionName: "deployVault",
-            args: [
-                {
-                    asset: vault.asset,
-                    adapter: vault.adapter,
-                    fees: vault.fees,
-                    feeRecipient: vault.feeRecipient,
-                    depositLimit: vault.depositLimit ? vault.depositLimit : maxUint256 - BigInt(1),
-                    owner: vault.owner,
-                },
-                { id: adapter.adapterData[0], data: adapter.adapterData[1] },
-                { id: adapter.strategyData[0], data: adapter.strategyData[1] },
-                false,
-                EMPTY_BYTES, // reward data should be added in a separate step
-                {
-                    ...metadata,
-                    // these three will be overriden by the VaultController. Specifying them here is pointless.
-                    // But, we have to include them in the type so that viem doesn't throw an error
-                    vault: zeroAddress,
-                    staking: zeroAddress,
-                    creator: zeroAddress,
-                },
-                vault.initialDeposit,
-            ]
-        });
-        return this.walletClient.writeContract(request);
+    private async simulateVaultCreation(vault: VaultOptions, metadata: VaultMetadata, adapterData: StrategyData, strategyData: StrategyData, options: WriteOptions): Promise<SimulationResponse> {
+        try {
+            const { request } = await this.publicClient.simulateContract({
+                ...options,
+                ...this.baseObj,
+                functionName: "deployVault",
+                args: [
+                    {
+                        asset: vault.asset,
+                        adapter: vault.adapter,
+                        fees: vault.fees,
+                        feeRecipient: vault.feeRecipient,
+                        depositLimit: vault.depositLimit,
+                        owner: vault.owner,
+                    },
+                    adapterData,
+                    strategyData,
+                    false,
+                    EMPTY_BYTES, // reward data should be added in a separate step
+                    {
+                        ...metadata,
+                        // these three will be overriden by the VaultController. Specifying them here is pointless.
+                        // But, we have to include them in the type so that viem doesn't throw an error
+                        vault: zeroAddress,
+                        staking: zeroAddress,
+                        creator: zeroAddress,
+                    },
+                    vault.initialDeposit,
+                ]
+            });
+            return { request: request, success: true, error: undefined }
+        } catch (error: any) {
+            return { request: undefined, success: false, error: error.shortMessage }
+        }
     }
 
-    async createVaultWithPredeployedStrategy(vault: VaultOptions, metadata: VaultMetadata, options: WriteOptions): Promise<Hash> {
-        const { request } = await this.publicClient.simulateContract({
-            ...options,
-            ...this.baseObj,
-            functionName: "deployVault",
-            args: [
-                {
-                    asset: vault.asset,
-                    adapter: vault.adapter,
-                    fees: vault.fees,
-                    feeRecipient: vault.feeRecipient,
-                    depositLimit: vault.depositLimit ? vault.depositLimit : maxUint256 - BigInt(1),
-                    owner: vault.owner,
-                },
-                {
-                    // we expect the adapter to be deployed already
-                    id: pad("0x"),
-                    data: "0x",
-                },
-                {
-                    // we expect the strategy to be deployed already
-                    id: pad("0x"),
-                    data: "0x",
-                },
-                false,
-                EMPTY_BYTES, // reward data should be added in a separate step
-                {
-                    ...metadata,
-                    // these three will be overriden by the VaultController. Specifying them here is pointless.
-                    // But, we have to include them in the type so that viem doesn't throw an error
-                    vault: zeroAddress,
-                    staking: zeroAddress,
-                    creator: zeroAddress,
-                },
-                vault.initialDeposit,
-            ]
-        });
-        return this.walletClient.writeContract(request);
+    private async simulateAdapterCreation(asset: Address, adapterData: StrategyData, strategyData: StrategyData, initialDeposit: bigint, options: WriteOptions): Promise<SimulationResponse> {
+        try {
+            const { request } = await this.publicClient.simulateContract({
+                ...options,
+                ...this.baseObj,
+                functionName: "deployAdapter",
+                args: [
+                    asset,
+                    adapterData,
+                    strategyData,
+                    initialDeposit
+                ]
+            });
+            return { request: request, success: true, error: undefined }
+        } catch (error: any) {
+            return { request: undefined, success: false, error: error.shortMessage }
+        }
     }
 
-    async createStrategy(adapter: AdapterOptions, options: WriteOptions): Promise<Hash> {
-        const { request } = await this.publicClient.simulateContract({
-            ...options,
-            ...this.baseObj,
-            functionName: "deployAdapter",
-            args: [
-                adapter.asset,
-                { id: adapter.adapterData[0], data: adapter.adapterData[1] },
-                { id: adapter.strategyData[0], data: adapter.strategyData[1] },
-                adapter.initialDeposit
-            ]
-        });
-        return this.walletClient.writeContract(request);
+    async getStrategyParams(strategy: string, asset: Address): Promise<StrategyDefault> {
+        return resolveStrategyDefaults({
+            client: this.publicClient,
+            address: getAddress(asset),
+            resolver: strategy
+        })
+    }
+
+    async createVaultByKey(vault: VaultOptions, metadata: VaultMetadata, strategy: string, options: WriteOptions): Promise<Hash> {
+        const { adapter: adapterData, strategy: strategyData } = await this.getAdapterAndStrategyData(strategy, vault.asset)
+        const { request, success, error: simulationError } = await this.simulateVaultCreation(vault, metadata, adapterData, strategyData, options)
+        if (success) {
+            return this.walletClient.writeContract(request);
+        } else {
+            throw new Error(simulationError)
+        }
+    }
+
+    async createStrategyByKey(asset: Address, initialDeposit: bigint, strategy: string, options: WriteOptions): Promise<Hash> {
+        const { adapter: adapterData, strategy: strategyData } = await this.getAdapterAndStrategyData(strategy, asset)
+        const { request, success, error: simulationError } = await this.simulateAdapterCreation(asset, adapterData, strategyData, initialDeposit, options)
+        if (success) {
+            return this.walletClient.writeContract(request);
+        } else {
+            throw new Error(simulationError)
+        }
+    }
+
+    async createVault(vault: VaultOptions, adapterData: StrategyData, strategyData: StrategyData, metadata: VaultMetadata, options: WriteOptions): Promise<Hash> {
+        const { request, success, error: simulationError } = await this.simulateVaultCreation(vault, metadata, adapterData, strategyData, options)
+        if (success) {
+            return this.walletClient.writeContract(request);
+        } else {
+            throw new Error(simulationError)
+        }
+    }
+
+
+    async createStrategy(asset: Address, adapterData: StrategyData, strategyData: StrategyData, initialDeposit: bigint, options: WriteOptions): Promise<Hash> {
+        const { request, success, error: simulationError } = await this.simulateAdapterCreation(asset, adapterData, strategyData, initialDeposit, options)
+        if (success) {
+            return this.walletClient.writeContract(request);
+        } else {
+            throw new Error(simulationError)
+        }
     }
 }

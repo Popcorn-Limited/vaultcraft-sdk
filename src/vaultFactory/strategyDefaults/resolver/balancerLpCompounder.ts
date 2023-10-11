@@ -4,8 +4,11 @@ import { ZERO } from "@/lib/constants";
 import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "..";
 
 const BASE_RESPONSE = {
-  key: "",
   params: [
+    {
+      name: "gauge",
+      type: "address",
+    },
     {
       name: "rewardTokens",
       type: "uint256[]",
@@ -29,7 +32,8 @@ const BASE_RESPONSE = {
 const BAL: { [key: number]: Address } = { 1: "0xba100000625a3754423978a60c9317c58a424e3D" }
 const BALANCER_VAULT: { [key: number]: Address } = { 1: "0xBA12222222228d8Ba445958a75a0704d566BF2C8" }
 
-export async function balancerLpCompounder({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+export async function balancerLpCompounder({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+  const chainId = client.chain?.id as number
   if (Object.keys(BAL).indexOf(chainId.toString()) === -1) {
     return ERROR_RESPONSE;
   } else {
@@ -45,10 +49,13 @@ export async function balancerLpCompounder({ chainId, client, address }: Strateg
       functionName: "getPoolTokens",
       args: [poolId]
     })
-    
+
+    const balancerDefaults = await balancer({ client, address })
+
     return {
       ...BASE_RESPONSE,
       default: [
+        { name: "gauge", value: balancerDefaults.default[0].value },
         { name: "rewardTokens", value: [BAL[chainId]] },
         { name: "minTradeAmounts", value: [ZERO] },
         { name: "baseAsset", value: poolTokens[0][0] }, // TODO - find a smarter algorithm to determine the base asset

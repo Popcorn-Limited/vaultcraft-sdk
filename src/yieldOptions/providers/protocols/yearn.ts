@@ -1,9 +1,9 @@
 import { ChainToAddress, ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { Clients, IProtocol, getEmptyYield } from "./index.js";
 import { Address, getAddress } from "viem";
-import { ChainId } from "@/lib/helpers.js";
 import NodeCache from "node-cache";
 import axios from "axios";
+import { mainnet } from "viem/dist/types/chains/index.js";
 
 const VAULT_REGISTRY_ADDRESS: ChainToAddress = { 1: "0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804", 42161: "0x3199437193625DCcD6F9C9e98BDf93582200Eb1f" };
 const VAULT_FACTORY_ADDRESS: ChainToAddress = { 1: "0x21b1FC8A52f179757bf555346130bF27c0C2A17A" };
@@ -71,7 +71,7 @@ export class Yearn implements IProtocol {
         ));
 
         let factoryTokens: Address[] = [];
-        if (chainId === ChainId.Ethereum) {
+        if (chainId === mainnet.id) {
             const allDeployedVaults = await client.readContract({
                 address: VAULT_FACTORY_ADDRESS[chainId],
                 abi: abiFactory,

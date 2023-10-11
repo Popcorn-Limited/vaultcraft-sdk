@@ -1,18 +1,16 @@
-import { ADDRESS_ZERO } from "@/lib/constants";
 import { Address, getAddress } from "viem";
 import { StrategyDefault, StrategyDefaultResolverParams } from "..";
 
 const BASE_RESPONSE = {
-    key: "",
-    params: [{
-        name: "oToken",
-        type: "address",
+      params: [{
+        name: "poolId",
+        type: "uint256",
     }]
 }
 
 const STAKING_ADDRESS: Address = "0xB0D502E938ed5f4df2E681fE6E419ff29631d62b";
 
-export async function stargate({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+export async function stargate({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
     const poolLength = await client.readContract({
         address: STAKING_ADDRESS,
         abi,

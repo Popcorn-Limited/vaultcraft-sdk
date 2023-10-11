@@ -15,14 +15,13 @@ type MoneyMarketResponse = {
 }
 
 const BASE_RESPONSE = {
-    key: "alpacaV2",
     params: [{
         name: "poolId",
         type: "uint256",
     }]
 }
 
-export async function alpacaV2({ chainId, client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
+export async function alpacaV2({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
     const { data } = await axios.get("https://api.github.com/repos/alpaca-finance/alpaca-v2-money-market/contents/.mainnet.json")
 
     const { moneyMarket } = JSON.parse(atob(data.content)) as MoneyMarketResponse

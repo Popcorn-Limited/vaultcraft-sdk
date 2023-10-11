@@ -2,8 +2,8 @@ import { Address, getAddress } from "viem";
 import { ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { Clients, IProtocol, getEmptyYield } from "./index.js";
 import axios from "axios";
-import { networkNames } from "@/lib/helpers.js";
 import NodeCache from "node-cache";
+import { networkNames } from "@/lib/constants/index.js";
 
 // @dev Make sure the keys here are correct checksum addresses
 const STARGATE_LP_STAKING_ADDRESS: { [key: number]: Address } = { 1: "0xB0D502E938ed5f4df2E681fE6E419ff29631d62b", 42161: "0xeA8DfEE1898a7e0a59f7527F076106d7e44c2176" }
