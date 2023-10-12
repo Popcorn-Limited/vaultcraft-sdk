@@ -1,11 +1,6 @@
 import { Address, PublicClient } from "viem";
-
-import { VaultRegistryABI } from "./abi/VaultRegistryABI";
-import { IVaultABI } from "./abi/IVaultABI";
-import { Metadata } from "./types";
-
-const ABI = VaultRegistryABI;
-const vaultABI = IVaultABI;
+import { Metadata } from "../types";
+import { VaultRegistyAbi } from "@/lib/constants/abi";
 
 export class VaultRegistry {
     address: Address;
@@ -18,7 +13,7 @@ export class VaultRegistry {
         this.publicClient = publicClient;
         this.baseObj = {
             address,
-            abi: ABI,
+            abi: VaultRegistyAbi,
         };
     }
 

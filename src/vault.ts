@@ -1,9 +1,7 @@
 import type { Address, PublicClient, WalletClient, Transport, Hash, Chain } from "viem";
-import { IVaultABI } from "./abi/IVaultABI.js";
 import { Base } from "./base.js";
 import type { WriteOptions, VaultFees } from "./types.js";
-
-const ABI = IVaultABI;
+import { VaultAbi } from "./lib/constants/abi/Vault.js";
 
 export class Vault extends Base {
     private baseObj;
@@ -13,7 +11,7 @@ export class Vault extends Base {
 
         this.baseObj = {
             address,
-            abi: ABI,
+            abi: VaultAbi,
         };
     }
 
@@ -190,18 +188,30 @@ export class Vault extends Base {
 
     // VAULT FEE VIEWS
 
-    fees(): Promise<VaultFees> {
-        return this.publicClient.readContract({
+    async fees(): Promise<VaultFees> {
+        const fees = await this.publicClient.readContract({
             ...this.baseObj,
             functionName: "fees",
         });
+        return {
+            deposit: fees[0],
+            withdrawal: fees[1],
+            management: fees[2],
+            performance: fees[3],
+        }
     }
 
-    proposedFees(): Promise<VaultFees> {
-        return this.publicClient.readContract({
+    async proposedFees(): Promise<VaultFees> {
+        const proposedFees = await this.publicClient.readContract({
             ...this.baseObj,
             functionName: "proposedFees",
         });
+        return {
+            deposit: proposedFees[0],
+            withdrawal: proposedFees[1],
+            management: proposedFees[2],
+            performance: proposedFees[3],
+        }
     }
 
     proposedFeeTime(): Promise<bigint> {
@@ -261,7 +271,7 @@ export class Vault extends Base {
             functionName: "depositLimit",
         });
     }
- 
+
     // ERC-20 WRITES
 
     async approve(spender: Address, amount: bigint, options: WriteOptions): Promise<Hash> {

@@ -1,4 +1,4 @@
-export const VaultControllerABI = [
+export const VaultControllerAbi = [
     {
         "inputs": [
             {

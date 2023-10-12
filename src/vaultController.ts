@@ -1,10 +1,8 @@
 import type { Hash, Address, PublicClient, WalletClient, Transport, Chain } from "viem";
 
-import { VaultControllerABI } from "./abi/VaultControllerABI.js";
 import { Base } from "./base.js";
 import type { VaultFees, WriteOptions } from "./types.js";
-
-const ABI = VaultControllerABI;
+import { VaultControllerAbi } from "./lib/constants/abi/VaultController.js";
 
 export class VaultController extends Base {
     private baseObj;
@@ -14,7 +12,7 @@ export class VaultController extends Base {
 
         this.baseObj = {
             address,
-            abi: ABI,
+            abi: VaultControllerAbi,
         };
     }
 
