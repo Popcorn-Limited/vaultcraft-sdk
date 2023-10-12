@@ -38,7 +38,6 @@ export type VaultOptions = {
     feeRecipient: Address;
     depositLimit: bigint;
     owner: Address;
-    staking: boolean;
     initialDeposit: bigint;
 };
 

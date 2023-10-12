@@ -83,7 +83,7 @@ export class VaultFactory extends Base {
         }
     }
 
-    private async simulateVaultCreation(vault: VaultOptions, metadata: VaultMetadata, adapterData: StrategyData, strategyData: StrategyData, options: WriteOptions): Promise<SimulationResponse> {
+    private async simulateVaultCreation(vault: VaultOptions, metadata: VaultMetadata, adapterData: StrategyData, strategyData: StrategyData, options?: WriteOptions): Promise<SimulationResponse> {
         try {
             const { request } = await this.publicClient.simulateContract({
                 ...options,
@@ -119,7 +119,7 @@ export class VaultFactory extends Base {
         }
     }
 
-    private async simulateAdapterCreation(asset: Address, adapterData: StrategyData, strategyData: StrategyData, initialDeposit: bigint, options: WriteOptions): Promise<SimulationResponse> {
+    private async simulateAdapterCreation(asset: Address, adapterData: StrategyData, strategyData: StrategyData, initialDeposit: bigint, options?: WriteOptions): Promise<SimulationResponse> {
         try {
             const { request } = await this.publicClient.simulateContract({
                 ...options,
@@ -138,7 +138,7 @@ export class VaultFactory extends Base {
         }
     }
 
-    async getStrategyParams(strategy: string, asset: Address): Promise<StrategyDefault> {
+    async getStrategyParams({ strategy, asset }: { strategy: string, asset: Address }): Promise<StrategyDefault> {
         return resolveStrategyDefaults({
             client: this.publicClient,
             address: getAddress(asset),
@@ -146,7 +146,7 @@ export class VaultFactory extends Base {
         })
     }
 
-    async createVaultByKey(vault: VaultOptions, metadata: VaultMetadata, strategy: string, options: WriteOptions): Promise<Hash> {
+    async createVaultByKey({ vault, metadata, strategy, options }: { vault: VaultOptions, metadata: VaultMetadata, strategy: string, options?: WriteOptions }): Promise<Hash> {
         const { adapter: adapterData, strategy: strategyData } = await this.getAdapterAndStrategyData(strategy, vault.asset)
         const { request, success, error: simulationError } = await this.simulateVaultCreation(vault, metadata, adapterData, strategyData, options)
         if (success) {
@@ -156,7 +156,7 @@ export class VaultFactory extends Base {
         }
     }
 
-    async createStrategyByKey(asset: Address, initialDeposit: bigint, strategy: string, options: WriteOptions): Promise<Hash> {
+    async createStrategyByKey({ asset, initialDeposit, strategy, options }: { asset: Address, initialDeposit: bigint, strategy: string, options?: WriteOptions }): Promise<Hash> {
         const { adapter: adapterData, strategy: strategyData } = await this.getAdapterAndStrategyData(strategy, asset)
         const { request, success, error: simulationError } = await this.simulateAdapterCreation(asset, adapterData, strategyData, initialDeposit, options)
         if (success) {
@@ -166,7 +166,7 @@ export class VaultFactory extends Base {
         }
     }
 
-    async createVault(vault: VaultOptions, adapterData: StrategyData, strategyData: StrategyData, metadata: VaultMetadata, options: WriteOptions): Promise<Hash> {
+    async createVault({ vault, adapterData, strategyData, metadata, options }: { vault: VaultOptions, adapterData: StrategyData, strategyData: StrategyData, metadata: VaultMetadata, options?: WriteOptions }): Promise<Hash> {
         const { request, success, error: simulationError } = await this.simulateVaultCreation(vault, metadata, adapterData, strategyData, options)
         if (success) {
             return this.walletClient.writeContract(request);
@@ -176,7 +176,7 @@ export class VaultFactory extends Base {
     }
 
 
-    async createStrategy(asset: Address, adapterData: StrategyData, strategyData: StrategyData, initialDeposit: bigint, options: WriteOptions): Promise<Hash> {
+    async createStrategy({ asset, adapterData, strategyData, initialDeposit, options }: { asset: Address, adapterData: StrategyData, strategyData: StrategyData, initialDeposit: bigint, options?: WriteOptions }): Promise<Hash> {
         const { request, success, error: simulationError } = await this.simulateAdapterCreation(asset, adapterData, strategyData, initialDeposit, options)
         if (success) {
             return this.walletClient.writeContract(request);
