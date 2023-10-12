@@ -1,5 +1,6 @@
 import { getAddress } from "viem";
 import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "..";
+import { ADDRESS_ZERO } from "@/lib/constants";
 
 interface Vault {
   tokenAddress: string;
@@ -44,14 +45,17 @@ export async function beefy({ client, address }: StrategyDefaultResolverParams):
     const vaultAddress = vaults.find(vault => vault.tokenAddress.toLowerCase() === address.toLowerCase())?.earnContractAddress;
     const boost = boosts.find(boost => boost.tokenAddress.toLowerCase() === vaultAddress?.toLowerCase());
 
-    return {
-      ...BASE_RESPONSE,
-      default: [
-        { name: "beefyVault", value: !!vaultAddress ? getAddress(vaultAddress) : null },
-        {
-          name: "beefyVault", value: boost && boost.status === "active" ? getAddress(boost.earnContractAddress) : null
-        }
-      ]
-    }
+
+    return !!vaultAddress ?
+      {
+        ...BASE_RESPONSE,
+        default: [
+          { name: "beefyVault", value: getAddress(vaultAddress) },
+          {
+            name: "beefyBooster", value: boost && boost.status === "active" ? getAddress(boost.earnContractAddress) : ADDRESS_ZERO
+          }
+        ]
+      }
+      : { ...BASE_RESPONSE, default: [{ name: "beefyVault", value: null }, { name: "beefyBooster", value: null }] }
   }
 }

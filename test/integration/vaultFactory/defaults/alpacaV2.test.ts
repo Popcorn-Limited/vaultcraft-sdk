@@ -6,7 +6,7 @@ import { publicClient } from "../../../setup.js";
 
 const FORK_BLOCK_NUMBER = BigInt(18071114);
 
-describe.concurrent("read-only", () => {
+describe.skip("read-only", () => {
   beforeAll(async () => {
     await publicClient.reset({
       blockNumber: FORK_BLOCK_NUMBER,

@@ -55,8 +55,6 @@ export const ERROR_RESPONSE = {
 }
 
 export const StrategyDefaultResolvers: { [key: string]: ({ client, address }: StrategyDefaultResolverParams) => Promise<StrategyDefault> } = {
-  alpacaV1,
-  alpacaV2,
   aura,
   auraCompounder,
   balancer,
@@ -70,13 +68,11 @@ export const StrategyDefaultResolvers: { [key: string]: ({ client, address }: St
   curveCompounder,
   curveStargateCompounder,
   initDefault,
-  ellipsis,
   flux,
   gearbox,
   idle,
   origin,
   stargate,
-  velodrome,
   yearn,
 };
 

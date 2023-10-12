@@ -1,4 +1,3 @@
-import { ADDRESS_ZERO } from "@/lib/constants";
 import { Address } from "viem";
 import { StrategyDefault, StrategyDefaultResolverParams } from "..";
 
