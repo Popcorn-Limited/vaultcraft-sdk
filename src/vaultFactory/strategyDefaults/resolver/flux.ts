@@ -1,6 +1,6 @@
-import { ADDRESS_ZERO } from "@/lib/constants";
-import { Address, mainnet } from "wagmi";
+import { mainnet } from "viem/dist/types/chains";
 import { StrategyDefault, StrategyDefaultResolverParams } from "..";
+import { Address } from "viem";
 
 const BASE_RESPONSE = {
   params: [{

@@ -1,4 +1,3 @@
-import { localhost, mainnet } from "wagmi/chains";
 import StrategyEncodingResolvers, { StrategyEncodingResolverParams } from ".";
 import { Hash, getAddress } from "viem";
 
