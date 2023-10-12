@@ -1,9 +1,9 @@
-import TokenMetadata, { addLpMetadata } from "@/lib/utils/metadata/tokenMetadata";
-import ProtocolMetadata from "@/lib/utils/metadata/protocolMetadata";
-import StrategyMetadata, { addGenericStrategyDescription } from "@/lib/utils/metadata/strategyMetadata";
-import { Token } from "../types";
+import { OptionalMetadata } from "../types";
 import { Address } from "viem";
-import { OptionalMetadata } from "./getVault";
+import TokenMetadata, { addLpMetadata } from "./metadata/tokenMetadata";
+import ProtocolMetadata from "./metadata/protocolMetadata";
+import StrategyMetadata, { addGenericStrategyDescription } from "./metadata/strategyMetadata";
+import { Token } from "src/types";
 
 function getLocalMetadata(address: string): OptionalMetadata | undefined {
   switch (address) {

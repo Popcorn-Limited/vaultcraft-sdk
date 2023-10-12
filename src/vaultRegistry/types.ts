@@ -1,15 +1,5 @@
-import { ProtocolName } from "vaultcraft-sdk";
+import { ProtocolName, Token } from "src/types";
 import { Address } from "viem";
-
-export type Token = {
-  address: Address;
-  name: string;
-  symbol: string;
-  decimals: number;
-  logoURI: string;
-  balance: number;
-  price: number;
-};
 
 export type TokenConstant = {
   chains: number[];

@@ -1,6 +1,8 @@
 import { Address, PublicClient } from "viem";
-import { Metadata } from "../types";
 import { VaultRegistyAbi } from "@/lib/constants/abi";
+import { ADDRESS_ZERO } from "@/lib/helpers";
+import { getVault, getVaults } from "./vault/getVault";
+import { VaultData } from "./types";
 
 export class VaultRegistry {
     address: Address;
@@ -24,40 +26,25 @@ export class VaultRegistry {
         }) as Promise<Address[]>;
     }
 
-    getVault(vault: Address): Promise<Metadata> {
-        return this.metadata(vault);
+    getVault({ vault, user }: { vault: Address, user?: Address }): Promise<VaultData> {
+        const account = user || ADDRESS_ZERO;
+        return getVault({ vault, account, client: this.publicClient })
     }
 
-    private metadata(vault: Address): Promise<Metadata> {
-        return this.publicClient.readContract({
-            ...this.baseObj,
-            functionName: "metadata",
-            args: [vault]
-        })
-            .then((data: readonly [`0x${string}`, `0x${string}`, `0x${string}`, string, `0x${string}`, bigint]) => {
-                // Map the array values to the Metadata object
-                return {
-                    vault: data[0],
-                    staking: data[1],
-                    creator: data[2],
-                    metadataCID: data[3],
-                    swapAddress: data[4],
-                    exchange: data[5]
-                };
-            });
+    getVaults({ vaults, user }: { vaults: Address[], user?: Address }): Promise<VaultData[]> {
+        const account = user || ADDRESS_ZERO;
+        return getVaults({ vaults, account, client: this.publicClient })
     }
 
-    async getVaultByDeployer(creator: Address): Promise<Address[]> {
-        const allVaults: readonly Address[] = await this.publicClient.readContract({
-            ...this.baseObj,
-            functionName: "getRegisteredAddresses",
-        });
+    async getAllVaults({ user }: { user?: Address }): Promise<VaultData[]> {
+        const account = user || ADDRESS_ZERO;
+        const vaults = await this.getAllVaultAddresses();
+        return getVaults({ vaults, account, client: this.publicClient })
+    }
 
-        return (await Promise.all(
-            allVaults.map(async (vault: Address) => {
-                const metaData: Metadata = await this.metadata(vault);
-                return metaData.creator === creator ? vault : null;
-            })
-        )).filter(v => v !== null) as Address[];
+    async getVaultsByDeployer({ creator, user }: { creator: Address, user?: Address }): Promise<VaultData[]> {
+        const account = user || ADDRESS_ZERO;
+        const vaults = await this.getAllVaultAddresses();
+        return getVaults({ vaults, account, owner: creator, client: this.publicClient })
     }
 }

@@ -1,6 +1,6 @@
-import { getAssetsByChain } from "../constants";
 import { Address, getAddress } from "viem";
-import { Token } from "../types";
+import { getAssetsByChain } from "@/lib/helpers";
+import { Token } from "src/types";
 
 const EmptyTokenByChain: { [key: number]: string } = {
   1: "https://etherscan.io/images/main/empty-token.png",

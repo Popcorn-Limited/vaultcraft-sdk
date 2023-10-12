@@ -1,4 +1,6 @@
 import { mainnet, arbitrum, bsc, goerli, localhost, optimism, polygon, Chain } from "viem/chains";
+import assets from "./constants/assets";
+import { Token } from "src/types";
 
 export function noOp() { }
 
@@ -28,6 +30,20 @@ export function transformNetwork(network: string | undefined): string {
 
 export function cleanFileName(fileName: string): string {
   return fileName.replace(/ /g, "-").replace(/[^a-zA-Z0-9]/g, "");
+}
+
+export function getAssetsByChain(chainId: number): Token[] {
+  return assets.filter((asset) => asset.chains.includes(chainId)).map((asset) => {
+    return {
+      address: asset.address[chainId],
+      name: asset.name,
+      symbol: asset.symbol,
+      decimals: asset.decimals,
+      logoURI: asset.logoURI,
+      balance: 0,
+      price: 0
+    }
+  });
 }
 
 export enum ChainId {
