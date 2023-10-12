@@ -3,7 +3,7 @@ import { Clients, IProtocol, getEmptyYield } from "./index.js";
 import { Address, getAddress } from "viem";
 import NodeCache from "node-cache";
 import axios from "axios";
-import { mainnet } from "viem/dist/types/chains/index.js";
+import { mainnet } from "viem/chains";
 
 const VAULT_REGISTRY_ADDRESS: ChainToAddress = { 1: "0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804", 42161: "0x3199437193625DCcD6F9C9e98BDf93582200Eb1f" };
 const VAULT_FACTORY_ADDRESS: ChainToAddress = { 1: "0x21b1FC8A52f179757bf555346130bF27c0C2A17A" };
@@ -59,7 +59,7 @@ export class Yearn implements IProtocol {
             address: VAULT_REGISTRY_ADDRESS[chainId],
             abi: abiRegistry,
             functionName: "numTokens",
-        }) as BigInt;
+        }) as bigint;
 
         const registryTokens = await Promise.all(Array(Number(numTokens)).fill(undefined).map((_, i) =>
             client.readContract({

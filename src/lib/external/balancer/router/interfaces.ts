@@ -15,9 +15,9 @@ export enum SwapKind {
 
 export interface BatchSwapStep {
     poolId: string;
-    assetInIndex: BigInt;
-    assetOutIndex: BigInt;
-    amount: BigInt;
+    assetInIndex: bigint;
+    assetOutIndex: bigint;
+    amount: bigint;
     userData: string;
 }
 
@@ -27,8 +27,8 @@ interface SwapResponse extends BatchSwapStep {
 
 export interface BatchSwapStruct {
     poolId: string;
-    assetInIndex: BigInt;
-    assetOutIndex: BigInt;
+    assetInIndex: bigint;
+    assetOutIndex: bigint;
 }
 
 export interface FundManagement {

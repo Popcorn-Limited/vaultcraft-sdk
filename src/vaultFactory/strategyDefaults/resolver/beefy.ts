@@ -1,6 +1,7 @@
 import { getAddress } from "viem";
 import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "..";
 import { ADDRESS_ZERO } from "@/lib/constants";
+import axios from "axios";
 
 interface Vault {
   tokenAddress: string;
@@ -39,8 +40,8 @@ export async function beefy({ client, address }: StrategyDefaultResolverParams):
     return ERROR_RESPONSE;
   } else {
 
-    const vaults = await (await fetch(`https://api.beefy.finance/vaults/${networkNameByChainId[chainId]}`)).json() as Vault[];
-    const boosts = await (await fetch(`https://api.beefy.finance/boosts/${networkNameByChainId[chainId]}`)).json() as Boost[];
+    const vaults = (await axios.get(`https://api.beefy.finance/vaults/${networkNameByChainId[chainId]}`)).data as Vault[];
+    const boosts = (await axios.get(`https://api.beefy.finance/boosts/${networkNameByChainId[chainId]}`)).data as Boost[];
 
     const vaultAddress = vaults.find(vault => vault.tokenAddress.toLowerCase() === address.toLowerCase())?.earnContractAddress;
     const boost = boosts.find(boost => boost.tokenAddress.toLowerCase() === vaultAddress?.toLowerCase());

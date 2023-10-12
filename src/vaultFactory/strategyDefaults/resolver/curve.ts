@@ -48,7 +48,7 @@ export async function curve({ client, address }: StrategyDefaultResolverParams):
             }
         }),
         allowFailure: false
-    }) as BigInt[]
+    }) as bigint[]
     const gaugesWithIdAndType = gaugesWithId.map((gauge, idx) => { return { ...gauge, type: Number(gaugeTypes[idx]) } })
 
     const filtered = gaugesWithIdAndType.filter(gauge => !GaugeTypesToSkip.includes(gauge.type))

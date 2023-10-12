@@ -1,8 +1,12 @@
-import { ADDRESS_ZERO, ZERO } from "@/lib/constants";
-import { CurveRoute } from "@/lib/external/curve/router/interfaces";
 import curve from '@curvefi/api'
-import { IRoute } from "@curvefi/api/lib/interfaces";
-import { Hash, encodeAbiParameters, parseAbiParameters } from "viem";
+import { ADDRESS_ZERO, ZERO } from "@/lib/constants";
+import type { IRoute } from "@curvefi/api/lib/interfaces";
+import { Address, Hash, encodeAbiParameters, getAddress } from "viem";
+
+export interface CurveRoute {
+    route: Address[];
+    swapParams: bigint[][]
+}
 
 const EMPTY_ROUTE = [ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO, ADDRESS_ZERO]
 
@@ -23,17 +27,17 @@ const curveInit: () => Promise<void> = async () => {
 }
 
 function processRoute(route: IRoute): CurveRoute {
-    const routeSteps: string[] = [];
-    const swapParams: BigInt[][] = [];
+    const routeSteps: Address[] = [];
+    const swapParams: bigint[][] = [];
     for (let i = 0; i < route.length; i++) {
         swapParams[i] = [BigInt(route[i].swapParams[0]), BigInt(route[i].swapParams[1]), BigInt(route[i].swapParams[2])];
         if (i === 0) {
-            routeSteps.push(route[i].inputCoinAddress);
-            routeSteps.push(route[i].poolAddress);
-            routeSteps.push(route[i].outputCoinAddress);
+            routeSteps.push(getAddress(route[i].inputCoinAddress));
+            routeSteps.push(getAddress(route[i].poolAddress));
+            routeSteps.push(getAddress(route[i].outputCoinAddress));
         } else {
-            routeSteps.push(route[i].poolAddress);
-            routeSteps.push(route[i].outputCoinAddress);
+            routeSteps.push(getAddress(route[i].poolAddress));
+            routeSteps.push(getAddress(route[i].outputCoinAddress));
         }
     }
     if (routeSteps.length < 9) {
@@ -65,13 +69,13 @@ export const curveApiCall = async ({
     minTradeAmounts,
     optionalData
 }: {
-    depositAsset: string,
-    rewardTokens: string[],
-    baseAsset: string,
-    router: string,
-    minTradeAmounts: BigInt[],
+    depositAsset: Address,
+    rewardTokens: Address[],
+    baseAsset: Address,
+    router: Address,
+    minTradeAmounts: bigint[],
     optionalData: Hash
-}): Promise<{ baseAsset: string, router: string, toBaseAssetRoutes: CurveRoute[], toAssetRoute: CurveRoute, minTradeAmounts: BigInt[], optionalData: Hash }> => {
+}): Promise<{ baseAsset: Address, router: Address, toBaseAssetRoutes: CurveRoute[], toAssetRoute: CurveRoute, minTradeAmounts: bigint[], optionalData: Hash }> => {
     if (rewardTokens.length !== minTradeAmounts.length) {
         throw new Error("rewardTokens and minTradeAmounts must be the same length");
     }
@@ -111,11 +115,11 @@ export const curveApiCallToBytes = async ({
     minTradeAmounts,
     optionalData
 }: {
-    depositAsset: string,
-    rewardTokens: string[],
-    baseAsset: string,
-    router: string,
-    minTradeAmounts: BigInt[],
+    depositAsset: Address,
+    rewardTokens: Address[],
+    baseAsset: Address,
+    router: Address,
+    minTradeAmounts: bigint[],
     optionalData: Hash
 }): Promise<Hash> => {
     const curveData = await curveApiCall({ depositAsset, rewardTokens, baseAsset, router, minTradeAmounts, optionalData });

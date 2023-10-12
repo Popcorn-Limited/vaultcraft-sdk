@@ -15,7 +15,7 @@ export async function stargate({ client, address }: StrategyDefaultResolverParam
         address: STAKING_ADDRESS,
         abi,
         functionName: "poolLength",
-    }) as BigInt
+    }) as bigint
 
     const tokenRes = await client.multicall({
         contracts: Array(Number(poolLength)).fill(undefined).map((item, idx) => {

@@ -2,7 +2,7 @@ import axios from "axios";
 import { Address } from "viem";
 
 export type ConvexPool = {
-  poolid: BigInt;
+  poolid: bigint;
   active: boolean;
   lpToken: Address;
   crvApr: string;
