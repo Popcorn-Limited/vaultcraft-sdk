@@ -26,7 +26,7 @@ export async function alpacaV1({ client, address }: StrategyDefaultResolverParam
     const { data } = await axios.get(TOKEN_ADDRESS?.[chainId])
     const { Vaults: vaults } = JSON.parse(atob(data.content)) as VaultsResponse
 
-    const vault = vaults.find(item => item.baseToken.toLowerCase() === address.toLowerCase())
+    const vault = vaults.find(item => getAddress(item.baseToken) === getAddress(address))
 
     return {
         ...BASE_RESPONSE,
