@@ -10,9 +10,9 @@ export type Strategy = {
 };
 
 export type SimulationResponse = {
-  request: any | undefined,
+  request?: any,
   success: boolean,
-  error: string | undefined
+  error?: string
 }
 
 export type StrategyData = {
