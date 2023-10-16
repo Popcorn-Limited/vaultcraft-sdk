@@ -2,7 +2,7 @@ import { Address, getAddress } from "viem";
 import { StrategyDefault, StrategyDefaultResolverParams } from "..";
 
 const BASE_RESPONSE = {
-      params: [{
+    params: [{
         name: "gauge",
         type: "address",
     }]
@@ -52,7 +52,7 @@ export async function balancer({ client, address }: StrategyDefaultResolverParam
     })
     const lpTokens: Address[] = lpTokensRes.filter(token => token.status === "success").map((token: any) => token.result)
 
-    const tokenIdx = lpTokens.findIndex(lpToken => lpToken?.toLowerCase() === address.toLowerCase())
+    const tokenIdx = lpTokens.findIndex(lpToken => getAddress(lpToken) === getAddress(address))
 
     return {
         ...BASE_RESPONSE,

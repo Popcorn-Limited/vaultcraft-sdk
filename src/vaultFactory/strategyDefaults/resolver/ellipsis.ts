@@ -1,8 +1,8 @@
-import { Address } from "viem";
+import { Address, getAddress } from "viem";
 import { StrategyDefault, StrategyDefaultResolverParams } from "..";
 
 const BASE_RESPONSE = {
-      params: [{
+    params: [{
         name: "poolId",
         type: "uint256",
     }]
@@ -29,7 +29,7 @@ export async function ellipsis({ client, address }: StrategyDefaultResolverParam
     })
     const registeredTokens: Address[] = registeredTokensRes.filter(token => token.status === "success").map((token: any) => token.result)
 
-    const assetIdx = registeredTokens.findIndex(item => item.toLowerCase() === address.toLowerCase())
+    const assetIdx = registeredTokens.findIndex(item => getAddress(item) === getAddress(address))
 
     return {
         ...BASE_RESPONSE,

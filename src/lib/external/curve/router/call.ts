@@ -92,7 +92,7 @@ export const curveApiCall = async ({
     }
 
     let toAssetRoute;
-    if (baseAsset.toLowerCase() !== depositAsset.toLowerCase()) {
+    if (getAddress(baseAsset) !== getAddress(depositAsset)) {
         const { route: assetRoute, } = await curve.router.getBestRouteAndOutput(baseAsset, depositAsset, '100000000');
         toAssetRoute = processRoute(assetRoute);
     } else {

@@ -1,4 +1,3 @@
-import { ADDRESS_ZERO } from "@/lib/constants"
 import axios from "axios"
 import { getAddress } from "viem";
 import { StrategyDefault, StrategyDefaultResolverParams } from "..";
@@ -26,7 +25,7 @@ export async function alpacaV2({ client, address }: StrategyDefaultResolverParam
 
     const { moneyMarket } = JSON.parse(atob(data.content)) as MoneyMarketResponse
 
-    const matchingMarket = moneyMarket.markets.find(market => market.token.toLowerCase() === address.toLowerCase())
+    const matchingMarket = moneyMarket.markets.find(market => getAddress(market.token) === getAddress(address))
 
     return {
         ...BASE_RESPONSE,

@@ -1,8 +1,8 @@
-import { Address } from "viem";
+import { Address, getAddress } from "viem";
 import { StrategyDefault, StrategyDefaultResolverParams } from "..";
 
 const BASE_RESPONSE = {
-      params: [{
+    params: [{
         name: "poolId",
         type: "uint256",
     }]
@@ -26,7 +26,7 @@ export async function gearbox({ client, address }: StrategyDefaultResolverParams
     })
     const tokens: Address[] = tokenRes.filter(token => token.status === "success").map((token: any) => token.result)
 
-    const assetIdx = tokens.findIndex(token => token.toLowerCase() === address.toLowerCase());
+    const assetIdx = tokens.findIndex(token => getAddress(token) === getAddress(address));
 
     return {
         ...BASE_RESPONSE,

@@ -1,5 +1,5 @@
 import { getAddress } from "viem";
-import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "..";
+import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 import { ADDRESS_ZERO } from "@/lib/constants";
 import axios from "axios";
 
@@ -43,11 +43,11 @@ export async function beefy({ client, address }: StrategyDefaultResolverParams):
     const vaults = (await axios.get(`https://api.beefy.finance/vaults/${networkNameByChainId[chainId]}`)).data as Vault[];
     const boosts = (await axios.get(`https://api.beefy.finance/boosts/${networkNameByChainId[chainId]}`)).data as Boost[];
 
-    const vaultAddress = vaults.find(vault => vault.tokenAddress.toLowerCase() === address.toLowerCase())?.earnContractAddress;
-    const boost = boosts.find(boost => boost.tokenAddress.toLowerCase() === vaultAddress?.toLowerCase());
+    const vaultAddress = vaults.find(vault => getAddress(vault.tokenAddress) === getAddress(address))?.earnContractAddress;
+    const boost = boosts.find(boost => getAddress(boost.tokenAddress) === getAddress(vaultAddress as string));
 
 
-    return !!vaultAddress ?
+    return vaultAddress ?
       {
         ...BASE_RESPONSE,
         default: [
