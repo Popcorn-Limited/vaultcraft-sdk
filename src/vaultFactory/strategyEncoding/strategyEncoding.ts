@@ -2,7 +2,7 @@ import StrategyEncodingResolvers, { StrategyEncodingResolverParams } from ".";
 import { Hash, getAddress } from "viem";
 
 export async function resolveStrategyEncoding({ client, address, params, resolver }: StrategyEncodingResolverParams & { resolver?: string }): Promise<Hash> {
-  if (client.chain === undefined) throw new Error(`Chain not initialized`);
+  if (!client.chain) throw new Error(`Chain not initialized`);
   try {
     return resolver
       ? StrategyEncodingResolvers[resolver]({ client, address: getAddress(address), params })
