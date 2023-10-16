@@ -20,7 +20,7 @@ export class Balancer implements IProtocol {
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         // we can get apy data for balancer through the aura subgraph
         const pools = await this.getAuraPoolData(chainId);
-        const pool = pools.find(pool => pool.lpToken.address.toLowerCase() === asset.toLowerCase());
+        const pool = pools.find(pool => getAddress(pool.lpToken.address) === getAddress(asset));
 
         if (!pool) {
             return getEmptyYield(asset);

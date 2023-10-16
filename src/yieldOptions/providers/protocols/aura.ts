@@ -18,7 +18,7 @@ export class Aura implements IProtocol {
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         const pools = await this.getPools(chainId);
 
-        const pool = pools.find(pool => pool.lpToken.address.toLowerCase() === asset.toLowerCase());
+        const pool = pools.find(pool => getAddress(pool.lpToken.address) === getAddress(asset));
         if (!pool) {
             return getEmptyYield(asset);
         }

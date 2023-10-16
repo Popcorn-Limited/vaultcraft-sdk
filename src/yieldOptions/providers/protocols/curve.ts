@@ -32,7 +32,7 @@ export class Curve implements IProtocol {
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         const poolData = await this.getPoolData(chainId);
 
-        const pool = poolData.find(pool => pool.lpTokenAddress?.toLowerCase() === asset.toLowerCase());
+        const pool = poolData.find(pool => getAddress(pool.lpTokenAddress) === getAddress(asset));
         if (!pool) return getEmptyYield(asset);
         // TODO: there are quite a number of pools that have `null` or no gauge reward data at all.
         // This covers all such cases. It sets the apy to 0 for all of them. Ideally we'd filter those out

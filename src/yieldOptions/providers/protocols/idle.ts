@@ -1,7 +1,8 @@
 import type { ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { Clients, IProtocol, getEmptyYield } from "./index.js";
-import { Address, getAddress } from "viem";
+import { Address, PublicClient, getAddress } from "viem";
 import { IDLE_CDO_ABI } from "./abi/idle_cdo.js";
+import axios from "axios";
 
 // @dev Make sure the keys here are correct checksum addresses
 const tranches: {
@@ -40,7 +41,7 @@ const assets: Address[] = [
     "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", // USDC
     "0xdAC17F958D2ee523a2206206994597C13D831ec7", // USDT
     "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84", // stETH
-    "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0"  // Matic
+    // "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0"  // Matic
 ];
 
 const apr2apy = (apr: bigint) => {
@@ -68,12 +69,12 @@ abstract class IdleAbstract implements IProtocol {
         const idleAddresses = tranches[asset];
         if (!idleAddresses) return getEmptyYield(asset);
 
-        const apr = await client.readContract({
-            address: idleAddresses.cdo,
-            abi: IDLE_CDO_ABI,
-            functionName: 'getApr',
-            args: [idleAddresses[tranche]]
-        });
+        let apr;
+        if (getAddress(asset) === "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84") {
+            apr = await this._getStEthApy(client, idleAddresses.cdo, tranche === "senior");
+        } else {
+            apr = await this._getTrancheApr(client, idleAddresses.cdo, idleAddresses[tranche]);
+        }
 
         const apy = apr2apy(apr) * 100;
 
@@ -84,6 +85,42 @@ abstract class IdleAbstract implements IProtocol {
                 apy: apy
             }]
         };
+    }
+
+    private async _getTrancheApr(client: PublicClient, cdo: Address, tranche: Address): Promise<bigint> {
+        return client.readContract({
+            address: cdo,
+            abi: IDLE_CDO_ABI,
+            functionName: 'getApr',
+            args: [tranche]
+        });
+    }
+
+    private async _getStEthApy(client: PublicClient, cdo: Address, isBBTranche: boolean): Promise<bigint> {
+        const poLidoStats = (await axios.get('https://api.idle.finance/poLidoStats', { headers: { Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRJZCI6IkFwcDciLCJpYXQiOjE2NzAyMzc1Mjd9.L12KJEt8fW1Cvy3o7Nl4OJ2wtEjzlObaAYJ9aC_CY6M` } })).data
+        const strategyApr = poLidoStats.apr;
+        const FULL_ALLOC = await client.readContract({
+            address: cdo,
+            abi: IDLE_CDO_ABI,
+            functionName: 'FULL_ALLOC',
+        });
+        let currentAARatio = await client.readContract({
+            address: cdo,
+            abi: IDLE_CDO_ABI,
+            functionName: 'getCurrentAARatio',
+        });
+        let trancheAPRSplitRatio = await client.readContract({
+            address: cdo,
+            abi: IDLE_CDO_ABI,
+            functionName: 'trancheAPRSplitRatio',
+        });
+
+        if (isBBTranche) {
+            trancheAPRSplitRatio = FULL_ALLOC - trancheAPRSplitRatio;
+            currentAARatio = FULL_ALLOC - currentAARatio;
+        }
+
+        return strategyApr * trancheAPRSplitRatio / currentAARatio;
     }
 
     async getAssets(chainId: number): Promise<Address[]> {
