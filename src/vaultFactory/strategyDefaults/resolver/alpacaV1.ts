@@ -31,7 +31,7 @@ export async function alpacaV1({ client, address }: StrategyDefaultResolverParam
     return {
         ...BASE_RESPONSE,
         default: [
-            { name: "alpacaVault", value: vault !== undefined ? getAddress(vault.address) : null }
+            { name: "alpacaVault", value: vault ? getAddress(vault.address) : null }
         ]
     }
 }
