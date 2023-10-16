@@ -1,5 +1,5 @@
 import { mainnet } from "viem/dist/types/chains";
-import { StrategyDefault, StrategyDefaultResolverParams } from "..";
+import { StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 import { Address, getAddress } from "viem";
 
 const BASE_RESPONSE = {

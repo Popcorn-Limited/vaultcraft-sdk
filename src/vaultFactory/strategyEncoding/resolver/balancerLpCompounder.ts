@@ -2,7 +2,7 @@ import { MAX_INT256, MAX_UINT256, ZERO } from "@/lib/constants";
 import { balancerApiProxyCall } from "@/lib/external/balancer/router/call";
 import { BatchSwapStep } from "@/lib/external/balancer/router/interfaces";
 import { Address, Hash, PublicClient, encodeAbiParameters, getAddress, parseUnits } from "viem";
-import { StrategyEncodingResolverParams } from "..";
+import { StrategyEncodingResolverParams } from "../index.js";
 
 interface BalancerRoute {
   swaps: BatchSwapStep[];

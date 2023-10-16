@@ -1,4 +1,4 @@
-import { StrategyDefault, StrategyDefaultResolverParams } from "..";
+import { StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 import getAuraPools from "@/lib/external/aura/getAuraPools";
 import { getAddress } from "viem";
 

@@ -1,5 +1,5 @@
 import { curveApiCallToBytes } from "@/lib/external/curve/router/call";
-import { StrategyEncodingResolverParams } from "..";
+import { StrategyEncodingResolverParams } from "../index.js";
 import { MAX_UINT256 } from "@/lib/constants";
 import { Hash } from "viem";
 

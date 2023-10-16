@@ -2,7 +2,7 @@
 import { Address } from "viem";
 import { aura } from "./aura";
 import { ZERO } from "@/lib/constants";
-import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "..";
+import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 
 const BASE_RESPONSE = {
   params: [

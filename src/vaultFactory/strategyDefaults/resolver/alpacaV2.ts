@@ -1,6 +1,6 @@
 import axios from "axios"
 import { getAddress } from "viem";
-import { StrategyDefault, StrategyDefaultResolverParams } from "..";
+import { StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 
 type MoneyMarketResponse = {
     moneyMarket: {

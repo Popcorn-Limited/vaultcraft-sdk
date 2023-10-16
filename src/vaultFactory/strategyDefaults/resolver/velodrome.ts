@@ -1,5 +1,5 @@
 import { Address, getAddress } from "viem";
-import { StrategyDefault, StrategyDefaultResolverParams } from "..";
+import { StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 import { ADDRESS_ZERO } from "@/lib/constants";
 
 const BASE_RESPONSE = {
