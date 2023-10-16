@@ -35,7 +35,7 @@ export class Yearn implements IProtocol {
             vaults = (await axios.get(`https://api.yexporter.io/v1/chains/${chainId}/vaults/all`)).data;
             this.cache.set("vaults", vaults);
         }
-        const vault = vaults.find((vault: any) => vault.token.address.toLowerCase() === asset.toLowerCase());
+        const vault = vaults.find((vault: any) => getAddress(vault.token.address) === getAddress(asset));
 
         return !vault ?
             getEmptyYield(asset) :
