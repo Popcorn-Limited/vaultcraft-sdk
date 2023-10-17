@@ -31,11 +31,16 @@ export type Vault = {
     metadataCID: string;
 }
 
-export type Metadata = {
-    vault: Address;
-    staking: Address;
-    creator: Address;
-    metadataCID: string;
-    swapAddress: Address;
-    exchange: bigint;
-}
+export type Token = {
+    address: Address;
+    name: string;
+    symbol: string;
+    decimals: number;
+    logoURI: string;
+    balance: number;
+    price: number;
+};
+
+// @dev Dont forget to add the protocol name in here after adding a new one
+export type ProtocolName = 'aaveV2' | 'aaveV3' | 'aura' | 'balancer' | 'beefy' | 'compoundV2' | 'compoundV3'
+  | 'convex' | 'curve' | 'flux' | 'idleJunior' | 'idleSenior' | 'origin' | 'stargate' | 'yearn';

@@ -1,3 +1,4 @@
+import { ProtocolName } from "src/types";
 import { Address } from "viem";
 
 export interface RpcUrls {
@@ -58,10 +59,6 @@ export enum InitParamRequirement {
   "NotAddressZero",
   "NotZero",
 }
-
-// @dev Dont forget to add the protocol name in here after adding a new one
-export type ProtocolName = 'aaveV2' | 'aaveV3' | 'aura' | 'balancer' | 'beefy' | 'compoundV2' | 'compoundV3'
-  | 'convex' | 'curve' | 'flux' | 'idleJunior' | 'idleSenior' | 'origin' | 'stargate' | 'yearn';
 
 export type Protocol = {
   name: string;
