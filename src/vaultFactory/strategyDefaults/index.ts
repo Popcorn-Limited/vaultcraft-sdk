@@ -67,13 +67,15 @@ export const StrategyDefaultResolvers: { [key: string]: ({ client, address }: St
   curve,
   curveCompounder,
   curveStargateCompounder,
-  initDefault,
   flux,
   gearbox,
   idle,
   origin,
   stargate,
   yearn,
+  aaveV2: initDefault,
+  aaveV3: initDefault,
+  default: initDefault,
 };
 
 export default StrategyDefaultResolvers;

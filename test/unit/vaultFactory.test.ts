@@ -5,7 +5,7 @@ import { publicClient, walletClient } from "../setup";
 
 import { VaultControllerABI } from "../../src/abi/VaultControllerABI.js";
 import { StrategyData, VaultFactory } from "../../src/vaultFactory";
-import { WriteOptions, VaultOptions, VaultMetadata } from "../../src/types.js";
+import { WriteOptions, VaultOptions } from "../../src/types.js";
 import { MAX_UINT256 } from "../../src/lib/constants";
 
 let vaultFactory = new VaultFactory("0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb", publicClient, walletClient);
@@ -50,12 +50,6 @@ describe("write-only", () => {
       depositLimit: MAX_UINT256
     };
 
-    const metadata: VaultMetadata = {
-      metadataCID: "bafkreiewrachblhjeuv4laknz7z4nwyjtzcovar5tc2rqy4xutmbx2qpia",
-      swapTokenAddresses: Array(8).fill(ZERO_ADDRESS) as [Address, Address, Address, Address, Address, Address, Address, Address],
-      swapAddress: ZERO_ADDRESS,
-      exchange: BigInt(0)
-    };
     const adapter: StrategyData = {
       id: "0x0000000000000000000000005dca0b3ed7594a6613c1a2acd367d56e1f74f92d",
       data: "0x"
@@ -66,7 +60,13 @@ describe("write-only", () => {
     }
     const options: WriteOptions = {};
 
-    const hash = await vaultFactory.createVault({ vault, adapterData: adapter, strategyData: strategy, metadata, options });
+    const hash = await vaultFactory.createVault({
+      vault,
+      adapterData: adapter,
+      strategyData: strategy,
+      metadataCID: "bafkreiewrachblhjeuv4laknz7z4nwyjtzcovar5tc2rqy4xutmbx2qpia",
+      options
+    });
     const tx = await publicClient.getTransaction({
       hash,
     });
@@ -97,13 +97,6 @@ describe("write-only", () => {
       initialDeposit: BigInt(0),
       depositLimit: MAX_UINT256
     };
-
-    const metadata: VaultMetadata = {
-      metadataCID: "bafkreiewrachblhjeuv4laknz7z4nwyjtzcovar5tc2rqy4xutmbx2qpia",
-      swapTokenAddresses: Array(8).fill(ZERO_ADDRESS) as [Address, Address, Address, Address, Address, Address, Address, Address],
-      swapAddress: ZERO_ADDRESS,
-      exchange: BigInt(0)
-    };
     const adapter: StrategyData = {
       id: "0x0000000000000000000000000000000000000000000000000000000000000000",
       data: "0x"
@@ -114,7 +107,13 @@ describe("write-only", () => {
     }
     const options: WriteOptions = {};
 
-    const hash = await vaultFactory.createVault({ vault, adapterData: adapter, strategyData: strategy, metadata, options });
+    const hash = await vaultFactory.createVault({
+      vault,
+      adapterData: adapter,
+      strategyData: strategy,
+      metadataCID: "bafkreiewrachblhjeuv4laknz7z4nwyjtzcovar5tc2rqy4xutmbx2qpia",
+      options
+    });
     const tx = await publicClient.getTransaction({
       hash,
     });
@@ -142,7 +141,12 @@ describe("write-only", () => {
     }
     const options: WriteOptions = {};
 
-    const hash = await vaultFactory.createStrategy({ asset: "0x6B175474E89094C44Da98b954EedeAC495271d0F", adapterData: adapter, strategyData: strategy, initialDeposit: BigInt(0) });
+    const hash = await vaultFactory.createStrategy({
+      asset: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+      adapterData: adapter,
+      strategyData: strategy,
+      initialDeposit: BigInt(0)
+    });
     const tx = await publicClient.getTransaction({
       hash,
     });
@@ -175,14 +179,11 @@ describe("write-only", () => {
       depositLimit: MAX_UINT256
     };
 
-    const metadata: VaultMetadata = {
+    const hash = await vaultFactory.createVaultByKey({
+      vault,
       metadataCID: "bafkreiewrachblhjeuv4laknz7z4nwyjtzcovar5tc2rqy4xutmbx2qpia",
-      swapTokenAddresses: Array(8).fill(ZERO_ADDRESS) as [Address, Address, Address, Address, Address, Address, Address, Address],
-      swapAddress: ZERO_ADDRESS,
-      exchange: BigInt(0)
-    };
-
-    const hash = await vaultFactory.createVaultByKey({ vault, metadata, strategy: "yearn" });
+      strategy: "yearn"
+    });
     const tx = await publicClient.getTransaction({
       hash,
     });
@@ -199,7 +200,11 @@ describe("write-only", () => {
 
   // CREATE STRATEGY BY KEY
   test("createStrategyByKey() should deploy a strategy", async () => {
-    const hash = await vaultFactory.createStrategyByKey({ asset: "0x6B175474E89094C44Da98b954EedeAC495271d0F", initialDeposit: BigInt(0), strategy: "yearn" });
+    const hash = await vaultFactory.createStrategyByKey({
+      asset: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+      initialDeposit: BigInt(0),
+      strategy: "yearn"
+    });
     const tx = await publicClient.getTransaction({
       hash,
     });

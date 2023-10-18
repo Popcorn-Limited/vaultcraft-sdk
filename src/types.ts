@@ -41,13 +41,6 @@ export type VaultOptions = {
     initialDeposit: bigint;
 };
 
-export type VaultMetadata = {
-    metadataCID: string;
-    swapTokenAddresses: [Address, Address, Address, Address, Address, Address, Address, Address];
-    swapAddress: Address;
-    exchange: bigint;
-};
-
 export type Metadata = {
     vault: Address;
     staking: Address;

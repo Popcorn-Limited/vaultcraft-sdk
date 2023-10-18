@@ -1,5 +1,8 @@
-import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
+import { StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 
 export async function initDefault({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
-  return ERROR_RESPONSE
+  return {
+    params: [],
+    default: []
+  }
 }

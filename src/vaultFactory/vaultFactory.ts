@@ -2,7 +2,7 @@ import { Hash, Address, PublicClient, WalletClient, Transport, Chain, zeroAddres
 
 import { VaultControllerABI } from "../abi/VaultControllerABI.js";
 import { Base } from "../base.js";
-import type { VaultMetadata, VaultOptions, WriteOptions } from "../types.js";
+import type { VaultOptions, WriteOptions } from "../types.js";
 import { EMPTY_BYTES } from "../lib/constants/index.js";
 import { resolveStrategyDefaults } from "./strategyDefaults/strategyDefaults.js";
 import strategies from "@/lib/constants/strategies.js";
@@ -11,6 +11,34 @@ import { SimulationResponse, StrategyData } from "./types.js";
 import { StrategyDefault } from "./strategyDefaults/index.js";
 
 const ABI = VaultControllerABI;
+
+type BaseStrategyCreationParams = {
+    asset: Address;
+    initialDeposit: bigint;
+}
+
+type BaseVaultCreationParams = {
+    vault: VaultOptions;
+    metadataCID: string;
+}
+
+type StrategyParams = {
+    adapterData: StrategyData;
+    strategyData: StrategyData;
+}
+
+type BaseWriteParam = {
+    options?: WriteOptions;
+}
+
+type CreateVaultParams = BaseVaultCreationParams & StrategyParams & BaseWriteParam
+
+type CreateStrategyParams = BaseStrategyCreationParams & StrategyParams & BaseWriteParam
+
+type CreateStrategyByKeyParams = BaseStrategyCreationParams & BaseWriteParam & { strategy: string }
+
+type CreateVaultByKeyParams = BaseVaultCreationParams & BaseWriteParam & { strategy: string }
+
 
 export class VaultFactory extends Base {
     private baseObj;
@@ -83,7 +111,7 @@ export class VaultFactory extends Base {
         }
     }
 
-    private async simulateVaultCreation(vault: VaultOptions, metadata: VaultMetadata, adapterData: StrategyData, strategyData: StrategyData, options?: WriteOptions): Promise<SimulationResponse> {
+    private async simulateVaultCreation(vault: VaultOptions, metadataCID: string, adapterData: StrategyData, strategyData: StrategyData, options?: WriteOptions): Promise<SimulationResponse> {
         try {
             const { request } = await this.publicClient.simulateContract({
                 ...options,
@@ -103,12 +131,16 @@ export class VaultFactory extends Base {
                     false,
                     EMPTY_BYTES, // reward data should be added in a separate step
                     {
-                        ...metadata,
+                        metadataCID: metadataCID,
                         // these three will be overriden by the VaultController. Specifying them here is pointless.
                         // But, we have to include them in the type so that viem doesn't throw an error
                         vault: zeroAddress,
                         staking: zeroAddress,
                         creator: zeroAddress,
+                        swapTokenAddresses: Array(8).fill(zeroAddress) as [Address, Address, Address, Address, Address, Address, Address, Address],
+                        swapAddress: zeroAddress,
+                        exchange: BigInt(0)
+
                     },
                     vault.initialDeposit,
                 ]
@@ -138,17 +170,22 @@ export class VaultFactory extends Base {
         }
     }
 
+    getStrategyKeys({ chainId }: { chainId: number }): string[] {
+        return Object.keys(strategies).filter(k => strategies[k].chains.includes(chainId))
+    }
+
     async getStrategyParams({ strategy, asset }: { strategy: string, asset: Address }): Promise<StrategyDefault> {
         return resolveStrategyDefaults({
             client: this.publicClient,
             address: getAddress(asset),
-            resolver: strategy
+            resolver: strategies[strategy].resolver as string
         })
     }
 
-    async createVaultByKey({ vault, metadata, strategy, options }: { vault: VaultOptions, metadata: VaultMetadata, strategy: string, options?: WriteOptions }): Promise<Hash> {
+    async createVaultByKey({ vault, metadataCID, strategy, options }: CreateVaultByKeyParams): Promise<Hash> {
+        if (vault.adapter !== zeroAddress) throw new Error("Vault adapter must be zero address")
         const { adapter: adapterData, strategy: strategyData } = await this.getAdapterAndStrategyData(strategy, vault.asset)
-        const { request, success, error: simulationError } = await this.simulateVaultCreation(vault, metadata, adapterData, strategyData, options)
+        const { request, success, error: simulationError } = await this.simulateVaultCreation(vault, metadataCID, adapterData, strategyData, options)
         if (success) {
             return this.walletClient.writeContract(request);
         } else {
@@ -156,7 +193,7 @@ export class VaultFactory extends Base {
         }
     }
 
-    async createStrategyByKey({ asset, initialDeposit, strategy, options }: { asset: Address, initialDeposit: bigint, strategy: string, options?: WriteOptions }): Promise<Hash> {
+    async createStrategyByKey({ asset, initialDeposit, strategy, options }: CreateStrategyByKeyParams): Promise<Hash> {
         const { adapter: adapterData, strategy: strategyData } = await this.getAdapterAndStrategyData(strategy, asset)
         const { request, success, error: simulationError } = await this.simulateAdapterCreation(asset, adapterData, strategyData, initialDeposit, options)
         if (success) {
@@ -166,8 +203,8 @@ export class VaultFactory extends Base {
         }
     }
 
-    async createVault({ vault, adapterData, strategyData, metadata, options }: { vault: VaultOptions, adapterData: StrategyData, strategyData: StrategyData, metadata: VaultMetadata, options?: WriteOptions }): Promise<Hash> {
-        const { request, success, error: simulationError } = await this.simulateVaultCreation(vault, metadata, adapterData, strategyData, options)
+    async createVault({ vault, adapterData, strategyData, metadataCID, options }: CreateVaultParams): Promise<Hash> {
+        const { request, success, error: simulationError } = await this.simulateVaultCreation(vault, metadataCID, adapterData, strategyData, options)
         if (success) {
             return this.walletClient.writeContract(request);
         } else {
@@ -176,7 +213,7 @@ export class VaultFactory extends Base {
     }
 
 
-    async createStrategy({ asset, adapterData, strategyData, initialDeposit, options }: { asset: Address, adapterData: StrategyData, strategyData: StrategyData, initialDeposit: bigint, options?: WriteOptions }): Promise<Hash> {
+    async createStrategy({ asset, adapterData, strategyData, initialDeposit, options }: CreateStrategyParams): Promise<Hash> {
         const { request, success, error: simulationError } = await this.simulateAdapterCreation(asset, adapterData, strategyData, initialDeposit, options)
         if (success) {
             return this.walletClient.writeContract(request);
