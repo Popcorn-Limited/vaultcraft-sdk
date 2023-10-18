@@ -1,6 +1,6 @@
 import { Address } from "viem";
 import { convex } from "./convex.js";
-import { ZERO } from "@/lib/constants";
+import { ZERO } from "@/lib/constants/index.js";
 import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 
 const BASE_RESPONSE = {
