@@ -1,11 +1,9 @@
 import { Address, PublicClient } from "viem";
 
 import { VaultRegistryABI } from "./abi/VaultRegistryABI";
-import { IVaultABI } from "./abi/IVaultABI";
 import { Metadata } from "./types";
 
 const ABI = VaultRegistryABI;
-const vaultABI = IVaultABI;
 
 export class VaultRegistry {
     address: Address;

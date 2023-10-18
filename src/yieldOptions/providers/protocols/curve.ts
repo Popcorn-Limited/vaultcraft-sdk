@@ -3,8 +3,7 @@ import NodeCache from "node-cache";
 import { Address, getAddress } from "viem";
 import { ChainToAddress, ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { IProtocol, getEmptyYield } from "./index.js";
-import { networkNames } from "@/lib/helpers.js";
-
+import { networkNames } from "@/lib/constants/index.js";
 
 export const CRV: ChainToAddress = {
     1: "0xD533a949740bb3306d119CC777fa900bA034cd52",

@@ -1,6 +1,8 @@
+import { Address } from "viem";
+
 export interface BalancerData {
-    sellToken: string,
-    buyToken: string,
+    sellToken: Address,
+    buyToken: Address,
     orderKind: "sell" | "buy",
     amount: string,
     gasPrice: string
@@ -13,9 +15,9 @@ export enum SwapKind {
 
 export interface BatchSwapStep {
     poolId: string;
-    assetInIndex: number;
-    assetOutIndex: number;
-    amount: string;
+    assetInIndex: bigint;
+    assetOutIndex: bigint;
+    amount: bigint;
     userData: string;
 }
 
@@ -25,8 +27,8 @@ interface SwapResponse extends BatchSwapStep {
 
 export interface BatchSwapStruct {
     poolId: string;
-    assetInIndex: BigInt;
-    assetOutIndex: BigInt;
+    assetInIndex: bigint;
+    assetOutIndex: bigint;
 }
 
 export interface FundManagement {

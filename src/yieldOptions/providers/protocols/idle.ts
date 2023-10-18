@@ -44,7 +44,7 @@ const assets: Address[] = [
     // "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0"  // Matic
 ];
 
-const apr2apy = (apr: BigInt) => {
+const apr2apy = (apr: bigint) => {
     return (1 + (Number(apr) / 1e20) / 365) ** 365 - 1;
 };
 

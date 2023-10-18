@@ -1,11 +1,11 @@
 import { describe, test, expect, beforeEach } from "vitest";
-import { decodeFunctionData } from "viem";
+import { decodeFunctionData, maxUint256, pad, zeroAddress } from "viem";
 
 import { publicClient, walletClient } from "../setup.js";
 import { increaseTime } from "../utils.js";
 
 import { VaultControllerABI } from "../../src/abi/VaultControllerABI.js";
-import { VaultController } from "../../src/vaultController.js";
+import { VaultController} from "../../src/vaultController.js";
 import { VaultFees } from "../../src/types.js";
 
 
