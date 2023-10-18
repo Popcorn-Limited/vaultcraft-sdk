@@ -1,4 +1,4 @@
-import { mainnet } from "viem/dist/types/chains";
+import { mainnet } from "viem/chains";
 import { StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 import { Address } from "viem";
 

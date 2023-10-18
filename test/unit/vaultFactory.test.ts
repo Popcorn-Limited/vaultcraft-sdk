@@ -1,18 +1,19 @@
 import { describe, test, expect, beforeEach } from "vitest";
-import { decodeFunctionData, Address } from "viem";
+import { decodeFunctionData, encodeAbiParameters, stringToHex } from "viem";
 
 import { publicClient, walletClient } from "../setup";
 
-import { VaultControllerABI } from "../../src/abi/VaultControllerABI.js";
-import { StrategyData, VaultFactory } from "../../src/vaultFactory";
-import { WriteOptions, VaultOptions } from "../../src/types.js";
 import { MAX_UINT256 } from "../../src/lib/constants";
+import { VaultControllerABI } from "../../src/abi/VaultControllerABI.js";
+import { VaultFactory } from "../../src/vaultFactory/index.js";
+import type { StrategyData } from "../../src/vaultFactory/types.js";
+import type { WriteOptions, VaultOptions } from "../../src/types.js";
 
 let vaultFactory = new VaultFactory("0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb", publicClient, walletClient);
+
 const FORK_BLOCK_NUMBER = BigInt(17883751);
 // some random address that has a lot of ETH & DAI
-const ADMIN_ADDRESS = "0x22f5413C075Ccd56D575A54763831C4c27A37Bdb";
-const VAULT_ADDRESS = "0x5d344226578DC100b2001DA251A4b154df58194f";
+const ADMIN_ADDRESS = "0x60FaAe176336dAb62e284Fe19B885B095d29fB7F";
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 describe("write-only", () => {
@@ -51,21 +52,20 @@ describe("write-only", () => {
     };
 
     const adapter: StrategyData = {
-      id: "0x0000000000000000000000005dca0b3ed7594a6613c1a2acd367d56e1f74f92d",
-      data: "0x"
+      id: stringToHex("YearnAdapter1", { size: 32 }),
+      data: encodeAbiParameters([{ name: "maxLoss", type: "uint256" }], [BigInt(1)])
     }
     const strategy: StrategyData = {
       id: "0x0000000000000000000000000000000000000000000000000000000000000000",
       data: "0x"
     }
-    const options: WriteOptions = {};
 
     const hash = await vaultFactory.createVault({
       vault,
       adapterData: adapter,
       strategyData: strategy,
       metadataCID: "bafkreiewrachblhjeuv4laknz7z4nwyjtzcovar5tc2rqy4xutmbx2qpia",
-      options
+      options: { account: ADMIN_ADDRESS },
     });
     const tx = await publicClient.getTransaction({
       hash,
@@ -105,14 +105,13 @@ describe("write-only", () => {
       id: "0x0000000000000000000000000000000000000000000000000000000000000000",
       data: "0x"
     }
-    const options: WriteOptions = {};
 
     const hash = await vaultFactory.createVault({
       vault,
       adapterData: adapter,
       strategyData: strategy,
       metadataCID: "bafkreiewrachblhjeuv4laknz7z4nwyjtzcovar5tc2rqy4xutmbx2qpia",
-      options
+      options: { account: ADMIN_ADDRESS },
     });
     const tx = await publicClient.getTransaction({
       hash,
@@ -132,20 +131,20 @@ describe("write-only", () => {
   // CREATE STRATEGY
   test("createStrategy() should deploy a strategy", async () => {
     const adapter: StrategyData = {
-      id: "0x0000000000000000000000000000000000000000000000000000000000000000",
-      data: "0x"
+      id: stringToHex("YearnAdapter1", { size: 32 }),
+      data: encodeAbiParameters([{ name: "maxLoss", type: "uint256" }], [BigInt(1)])
     }
     const strategy: StrategyData = {
       id: "0x0000000000000000000000000000000000000000000000000000000000000000",
       data: "0x"
     }
-    const options: WriteOptions = {};
 
     const hash = await vaultFactory.createStrategy({
       asset: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
       adapterData: adapter,
       strategyData: strategy,
-      initialDeposit: BigInt(0)
+      initialDeposit: BigInt(0),
+      options: { account: ADMIN_ADDRESS },
     });
     const tx = await publicClient.getTransaction({
       hash,
@@ -182,7 +181,8 @@ describe("write-only", () => {
     const hash = await vaultFactory.createVaultByKey({
       vault,
       metadataCID: "bafkreiewrachblhjeuv4laknz7z4nwyjtzcovar5tc2rqy4xutmbx2qpia",
-      strategy: "yearn"
+      strategy: "YearnDepositor",
+      options: { account: ADMIN_ADDRESS },
     });
     const tx = await publicClient.getTransaction({
       hash,
@@ -203,7 +203,8 @@ describe("write-only", () => {
     const hash = await vaultFactory.createStrategyByKey({
       asset: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
       initialDeposit: BigInt(0),
-      strategy: "yearn"
+      strategy: "YearnDepositor",
+      options: { account: ADMIN_ADDRESS },
     });
     const tx = await publicClient.getTransaction({
       hash,
