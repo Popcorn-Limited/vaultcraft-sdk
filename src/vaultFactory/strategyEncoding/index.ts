@@ -5,7 +5,7 @@ import {
   curveCompounder,
   curveStargateCompounder
 
-} from "./resolver";
+} from "./resolver/index.js";
 
 export type StrategyEncodingResolverParams = {
   client: PublicClient,
