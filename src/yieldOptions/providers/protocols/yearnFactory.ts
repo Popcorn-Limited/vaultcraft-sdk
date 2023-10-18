@@ -4,7 +4,7 @@ import { Address, getAddress } from "viem";
 import NodeCache from "node-cache";
 import axios from "axios";
 
-const VAULT_REGISTRY_ADDRESS: ChainToAddress = { 1: "0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804", 42161: "0x3199437193625DCcD6F9C9e98BDf93582200Eb1f" };
+const VAULT_FACTORY_ADDRESS: ChainToAddress = { 1: "0x21b1FC8A52f179757bf555346130bF27c0C2A17A" };
 
 type Vault = {
     token: {
@@ -15,7 +15,7 @@ type Vault = {
     };
 }
 
-export class Yearn implements IProtocol {
+export class YearnFactory implements IProtocol {
     private cache: NodeCache;
     private clients: Clients;
     constructor(clients: Clients, ttl: number) {
@@ -47,64 +47,34 @@ export class Yearn implements IProtocol {
     }
 
     async getAssets(chainId: number): Promise<Address[]> {
-        const client = this.clients[chainId];
-        if (!client) throw new Error(`Missing public client for chain ID: ${chainId}`);
+        if (chainId !== 1) throw new Error("YearnFactory is only supported on Ethereum mainnet");
         let assets = this.cache.get("assets") as Address[];
         if (assets) {
             return assets;
         }
-        const numTokens = await client.readContract({
-            address: VAULT_REGISTRY_ADDRESS[chainId],
-            abi: abiRegistry,
-            functionName: "numTokens",
-        }) as bigint;
+        
+        const client = this.clients[chainId];
 
-        const registryTokens = await Promise.all(Array(Number(numTokens)).fill(undefined).map((_, i) =>
+        let factoryTokens: Address[] = [];
+        const allDeployedVaults = await client.readContract({
+            address: VAULT_FACTORY_ADDRESS[chainId],
+            abi: abiFactory,
+            functionName: "allDeployedVaults",
+        });
+
+        factoryTokens = await Promise.all(allDeployedVaults.map(item =>
             client.readContract({
-                address: VAULT_REGISTRY_ADDRESS[chainId],
-                abi: abiRegistry,
-                functionName: "tokens",
-                args: [BigInt(i)]
+                address: item,
+                abi: abiVault,
+                functionName: "token",
             })
         ));
-
-        assets = registryTokens.filter((item, idx, arr) => arr.indexOf(item) === idx).map(asset => getAddress(asset));
+        assets = factoryTokens.filter((item, idx, arr) => arr.indexOf(item) === idx).map(asset => getAddress(asset));
         this.cache.set("assets", assets);
         return assets;
     }
 }
 
-const abiRegistry = [
-    {
-        "stateMutability": "view",
-        "type": "function",
-        "name": "tokens",
-        "inputs": [
-            {
-                "name": "arg0",
-                "type": "uint256"
-            }
-        ],
-        "outputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ]
-    },
-    {
-        "stateMutability": "view",
-        "type": "function",
-        "name": "numTokens",
-        "inputs": [],
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ]
-    },
-] as const;
 const abiFactory = [
     {
         "inputs": [],

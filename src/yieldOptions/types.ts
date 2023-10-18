@@ -61,7 +61,7 @@ export enum InitParamRequirement {
 
 // @dev Dont forget to add the protocol name in here after adding a new one
 export type ProtocolName = 'aaveV2' | 'aaveV3' | 'aura' | 'balancer' | 'beefy' | 'compoundV2' | 'compoundV3'
-  | 'convex' | 'curve' | 'flux' | 'idleJunior' | 'idleSenior' | 'origin' | 'stargate' | 'yearn';
+  | 'convex' | 'curve' | 'flux' | 'idleJunior' | 'idleSenior' | 'origin' | 'stargate' | 'yearn' | 'yearnFactory';
 
 export type Protocol = {
   name: string;

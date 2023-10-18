@@ -35,3 +35,4 @@ export { IdleJunior, IdleSenior } from "./idle.js";
 export { Origin } from "./origin.js";
 export { Stargate } from "./stargate.js";
 export { Yearn } from "./yearn.js";
+export { YearnFactory } from "./yearnFactory.js";

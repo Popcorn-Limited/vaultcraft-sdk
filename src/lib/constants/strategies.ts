@@ -284,6 +284,15 @@ const strategies: { [key: string]: Strategy } = {
     protocol: "yearn",
     chains: [1, 1337, 42161],
     resolver: "yearn"
+  },
+  YearnFactoryDepositor: {
+    description: "description",
+    logoURI: "/images/icons/popLogo.svg",
+    name: "Yearn Factory Depositor",
+    key: "YearnFactoryAdapter",
+    protocol: "yearn",
+    chains: [1],
+    resolver: "yearn"
   }
 }
 
