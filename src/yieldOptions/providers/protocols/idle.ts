@@ -98,7 +98,7 @@ abstract class IdleAbstract implements IProtocol {
 
     private async _getStEthApy(client: PublicClient, cdo: Address, isBBTranche: boolean): Promise<bigint> {
         const poLidoStats = (await axios.get('https://api.idle.finance/poLidoStats', { headers: { Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRJZCI6IkFwcDciLCJpYXQiOjE2NzAyMzc1Mjd9.L12KJEt8fW1Cvy3o7Nl4OJ2wtEjzlObaAYJ9aC_CY6M` } })).data
-        const strategyApr = poLidoStats.apr;
+        const strategyApr = BigInt(poLidoStats.apr);
         const FULL_ALLOC = await client.readContract({
             address: cdo,
             abi: IDLE_CDO_ABI,

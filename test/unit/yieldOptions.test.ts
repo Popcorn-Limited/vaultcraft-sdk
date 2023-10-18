@@ -28,7 +28,8 @@ test("getProtocols() should return a list of protocols for the given chain ID", 
         'idleSenior',
         'origin',
         'stargate',
-        'yearn'
+        'yearn',
+        'yearnFactory'
     ];
     expect(result.map(protocol => protocol.key)).toEqual(want);
 });

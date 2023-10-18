@@ -120,6 +120,14 @@ const protocols: { [key: string]: Protocol } = {
     description: "",
     tags: [],
     chains: [1]
+  },
+  yearnFactory: {
+    name: "Yearn",
+    key: "yearnFactory",
+    logoURI: "https://cryptologos.cc/logos/yearn-finance-yfi-logo.png?v=024",
+    description: "",
+    tags: [],
+    chains: [1]
   }
 }
 export default protocols;
