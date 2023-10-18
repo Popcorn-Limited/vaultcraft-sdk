@@ -1,4 +1,4 @@
-import { Protocol } from "src/yieldOptions";
+import type { Protocol } from "src/yieldOptions/types.js";
 
 const protocols: { [key: string]: Protocol } = {
   aaveV2: {

@@ -1,4 +1,4 @@
-import { Strategy } from "src/vaultFactory/types"
+import type { Strategy } from "src/vaultFactory/types.js"
 
 const strategies: { [key: string]: Strategy } = {
   CurveStargateCompounder: {
