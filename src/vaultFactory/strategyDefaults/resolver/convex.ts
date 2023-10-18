@@ -1,4 +1,4 @@
-import { getConvexPools } from "@/lib/external/convex";
+import { getConvexPools } from "@/lib/external/convex/index.js";
 import { getAddress } from "viem";
 import { StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 

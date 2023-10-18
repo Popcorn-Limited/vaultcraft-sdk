@@ -1,4 +1,4 @@
-import StrategyDefaultResolvers, { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from ".";
+import StrategyDefaultResolvers, { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "./index.js";
 import { getAddress } from "viem";
 
 

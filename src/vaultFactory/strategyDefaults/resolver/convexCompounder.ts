@@ -1,5 +1,5 @@
 import { Address } from "viem";
-import { convex } from "./convex";
+import { convex } from "./convex.js";
 import { ZERO } from "@/lib/constants";
 import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 

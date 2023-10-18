@@ -1,6 +1,6 @@
-import { balancer } from "./balancer";
+import { balancer } from "./balancer.js";
 import { Address } from "viem";
-import { ZERO } from "@/lib/constants";
+import { ZERO } from "@/lib/constants/index.js";
 import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 
 const BASE_RESPONSE = {

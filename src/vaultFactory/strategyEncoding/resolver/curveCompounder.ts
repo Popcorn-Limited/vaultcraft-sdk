@@ -1,6 +1,6 @@
-import { curveApiCallToBytes } from "@/lib/external/curve/router/call";
+import { curveApiCallToBytes } from "@/lib/external/curve/router/call.js";
 import { StrategyEncodingResolverParams } from "../index.js";
-import { MAX_UINT256 } from "@/lib/constants";
+import { MAX_UINT256 } from "@/lib/constants/index.js";
 import { Hash } from "viem";
 
 export async function curveCompounder({ client, address, params }: StrategyEncodingResolverParams): Promise<Hash> {

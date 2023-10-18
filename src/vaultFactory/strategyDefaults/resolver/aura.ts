@@ -1,5 +1,5 @@
 import { StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
-import getAuraPools from "@/lib/external/aura/getAuraPools";
+import getAuraPools from "@/lib/external/aura/getAuraPools.js";
 import { getAddress } from "viem";
 
 const BASE_RESPONSE = {

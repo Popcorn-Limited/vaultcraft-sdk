@@ -1,3 +1,3 @@
-export * from "./balancerLpCompounder";
-export * from "./curveCompounder";
-export * from "./curveStargateCompounder"; 
+export * from "./balancerLpCompounder.js";
+export * from "./curveCompounder.js";
+export * from "./curveStargateCompounder.js"; 

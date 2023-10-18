@@ -1,4 +1,4 @@
-import StrategyEncodingResolvers, { StrategyEncodingResolverParams } from ".";
+import StrategyEncodingResolvers, { StrategyEncodingResolverParams } from "./index.js";
 import { Hash, getAddress } from "viem";
 
 export async function resolveStrategyEncoding({ client, address, params, resolver }: StrategyEncodingResolverParams & { resolver?: string }): Promise<Hash> {

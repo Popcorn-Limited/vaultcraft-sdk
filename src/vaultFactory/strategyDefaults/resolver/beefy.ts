@@ -1,6 +1,6 @@
 import { getAddress } from "viem";
 import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
-import { ADDRESS_ZERO } from "@/lib/constants";
+import { ADDRESS_ZERO } from "@/lib/constants/index.js";
 import axios from "axios";
 
 interface Vault {
