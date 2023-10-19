@@ -1,7 +1,7 @@
 import { ADDRESS_ZERO, ZERO } from "../../../constants/index.js";
 import { Address, Hash, encodeAbiParameters, getAddress } from "viem";
-import { IRoute } from '@curvefi/api/lib/interfaces.js';
 import curve from "@curvefi/api";
+import { IRoute } from "@curvefi/api/lib/interfaces.js";
 
 export interface CurveRoute {
     route: Address[];
@@ -30,7 +30,7 @@ function processRoute(route: IRoute): CurveRoute {
     const routeSteps: Address[] = [];
     const swapParams: bigint[][] = [];
     for (let i = 0; i < route.length; i++) {
-        swapParams[i] = [BigInt(route[i].swapParams[0]), BigInt(route[i].swapParams[1]), BigInt(route[i].swapParams[2])];
+        swapParams[i] = [BigInt(route[i].i), BigInt(route[i].j), BigInt(route[i].swapType)];
         if (i === 0) {
             routeSteps.push(getAddress(route[i].inputCoinAddress));
             routeSteps.push(getAddress(route[i].poolAddress));

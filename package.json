@@ -1,6 +1,6 @@
 {
   "name": "vaultcraft-sdk",
-  "version": "0.1.12",
+  "version": "0.1.14",
   "description": "TypeScript library for VaultCraft",
   "main": "dist/index.js",
   "types": "./dist/index.d.ts",
@@ -41,6 +41,6 @@
     "rimraf": "^5.0.1",
     "vite-tsconfig-paths": "^4.2.0",
     "vitest": "^0.34.1",
-    "@curvefi/api": "2.49.1"
+    "@curvefi/api": "2.44.0"
   }
 }
