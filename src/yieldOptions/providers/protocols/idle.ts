@@ -1,6 +1,6 @@
 import type { ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { Clients, IProtocol, getEmptyYield } from "./index.js";
-import { Address, PublicClient, getAddress } from "viem";
+import { Address, PublicClient, getAddress, parseUnits } from "viem";
 import { IDLE_CDO_ABI } from "./abi/idle_cdo.js";
 import axios from "axios";
 
@@ -96,24 +96,24 @@ abstract class IdleAbstract implements IProtocol {
         });
     }
 
-    private async _getStEthApy(client: PublicClient, cdo: Address, isBBTranche: boolean): Promise<number> {
+    private async _getStEthApy(client: PublicClient, cdo: Address, isBBTranche: boolean): Promise<bigint> {
         const poLidoStats = (await axios.get('https://api.idle.finance/poLidoStats', { headers: { Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRJZCI6IkFwcDciLCJpYXQiOjE2NzAyMzc1Mjd9.L12KJEt8fW1Cvy3o7Nl4OJ2wtEjzlObaAYJ9aC_CY6M` } })).data
-        const strategyApr = poLidoStats.apr as number;
-        const FULL_ALLOC = Number(await client.readContract({
+        const strategyApr = BigInt(poLidoStats.apr) * parseUnits("1", 18);
+        const FULL_ALLOC = await client.readContract({
             address: cdo,
             abi: IDLE_CDO_ABI,
             functionName: 'FULL_ALLOC',
-        }));
-        let currentAARatio = Number(await client.readContract({
+        });
+        let currentAARatio = await client.readContract({
             address: cdo,
             abi: IDLE_CDO_ABI,
             functionName: 'getCurrentAARatio',
-        }));
-        let trancheAPRSplitRatio = Number(await client.readContract({
+        });
+        let trancheAPRSplitRatio = await client.readContract({
             address: cdo,
             abi: IDLE_CDO_ABI,
             functionName: 'trancheAPRSplitRatio',
-        }));
+        });
 
         if (isBBTranche) {
             trancheAPRSplitRatio = FULL_ALLOC - trancheAPRSplitRatio;
