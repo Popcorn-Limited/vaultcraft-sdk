@@ -1,7 +1,7 @@
-import curve from '@curvefi/api'
 import { ADDRESS_ZERO, ZERO } from "../../../constants/index.js";
-import type { IRoute } from "@curvefi/api/lib/interfaces";
 import { Address, Hash, encodeAbiParameters, getAddress } from "viem";
+import { IRoute } from '@curvefi/api/lib/interfaces.js';
+import curve from "@curvefi/api";
 
 export interface CurveRoute {
     route: Address[];
