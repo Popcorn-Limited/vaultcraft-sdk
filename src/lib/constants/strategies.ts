@@ -290,9 +290,9 @@ const strategies: { [key: string]: Strategy } = {
     logoURI: "/images/icons/popLogo.svg",
     name: "Yearn Factory Depositor",
     key: "YearnFactoryAdapter",
-    protocol: "yearn",
+    protocol: "yearnFactory",
     chains: [1],
-    resolver: "yearn"
+    resolver: "yearnFactory"
   }
 }
 

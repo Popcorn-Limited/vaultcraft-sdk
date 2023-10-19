@@ -96,24 +96,24 @@ abstract class IdleAbstract implements IProtocol {
         });
     }
 
-    private async _getStEthApy(client: PublicClient, cdo: Address, isBBTranche: boolean): Promise<bigint> {
+    private async _getStEthApy(client: PublicClient, cdo: Address, isBBTranche: boolean): Promise<number> {
         const poLidoStats = (await axios.get('https://api.idle.finance/poLidoStats', { headers: { Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRJZCI6IkFwcDciLCJpYXQiOjE2NzAyMzc1Mjd9.L12KJEt8fW1Cvy3o7Nl4OJ2wtEjzlObaAYJ9aC_CY6M` } })).data
-        const strategyApr = BigInt(poLidoStats.apr);
-        const FULL_ALLOC = await client.readContract({
+        const strategyApr = poLidoStats.apr as number;
+        const FULL_ALLOC = Number(await client.readContract({
             address: cdo,
             abi: IDLE_CDO_ABI,
             functionName: 'FULL_ALLOC',
-        });
-        let currentAARatio = await client.readContract({
+        }));
+        let currentAARatio = Number(await client.readContract({
             address: cdo,
             abi: IDLE_CDO_ABI,
             functionName: 'getCurrentAARatio',
-        });
-        let trancheAPRSplitRatio = await client.readContract({
+        }));
+        let trancheAPRSplitRatio = Number(await client.readContract({
             address: cdo,
             abi: IDLE_CDO_ABI,
             functionName: 'trancheAPRSplitRatio',
-        });
+        }));
 
         if (isBBTranche) {
             trancheAPRSplitRatio = FULL_ALLOC - trancheAPRSplitRatio;

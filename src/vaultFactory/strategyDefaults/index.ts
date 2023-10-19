@@ -24,6 +24,7 @@ import {
   stargate,
   velodrome,
   yearn,
+  yearnFactory
 } from "./resolver/index.js";
 
 export type ParamAbi = {
@@ -73,6 +74,7 @@ export const StrategyDefaultResolvers: { [key: string]: ({ client, address }: St
   origin,
   stargate,
   yearn,
+  yearnFactory,
   aaveV2: initDefault,
   aaveV3: initDefault,
   default: initDefault,

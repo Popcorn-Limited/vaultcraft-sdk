@@ -22,3 +22,4 @@ export * from "./origin.js";
 export * from "./stargate.js";
 export * from "./velodrome.js";
 export * from "./yearn.js";
+export * from "./yearnFactory.js";
