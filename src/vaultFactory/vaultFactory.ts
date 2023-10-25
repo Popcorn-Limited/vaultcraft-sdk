@@ -42,6 +42,7 @@ type CreateVaultByKeyParams = BaseVaultCreationParams & BaseWriteParam & { strat
 
 export class VaultFactory extends Base {
     private baseObj;
+    private chainId;
 
     constructor(address: Address, publicClient: PublicClient, walletClient: WalletClient<Transport, Chain>) {
         super(address, publicClient, walletClient);
@@ -50,6 +51,7 @@ export class VaultFactory extends Base {
             address,
             abi: ABI,
         };
+        this.chainId = walletClient.chain.id;
     }
 
     private strategyDefaultsAreValid(data: StrategyDefault): boolean {
@@ -174,7 +176,10 @@ export class VaultFactory extends Base {
         return Object.keys(strategies).filter(k => strategies[k].chains.includes(chainId))
     }
 
+
     async getStrategyParams({ strategy, asset }: { strategy: string, asset: Address }): Promise<StrategyDefault> {
+        if (!strategies[strategy].chains.includes(this.chainId)) throw new Error("Strategy doesnt exist on your network");
+
         return resolveStrategyDefaults({
             client: this.publicClient,
             address: getAddress(asset),
@@ -183,7 +188,9 @@ export class VaultFactory extends Base {
     }
 
     async createVaultByKey({ vault, metadataCID, strategy, options }: CreateVaultByKeyParams): Promise<Hash> {
+        if (!strategies[strategy].chains.includes(this.chainId)) throw new Error("Strategy doesnt exist on your network");
         if (vault.adapter !== zeroAddress) throw new Error("Vault adapter must be zero address")
+
         const { adapter: adapterData, strategy: strategyData } = await this.getAdapterAndStrategyData(strategy, vault.asset)
         const { request, success, error: simulationError } = await this.simulateVaultCreation(vault, metadataCID, adapterData, strategyData, options)
         if (success) {
@@ -194,6 +201,8 @@ export class VaultFactory extends Base {
     }
 
     async createStrategyByKey({ asset, initialDeposit, strategy, options }: CreateStrategyByKeyParams): Promise<Hash> {
+        if (!strategies[strategy].chains.includes(this.chainId)) throw new Error("Strategy doesnt exist on your network");
+
         const { adapter: adapterData, strategy: strategyData } = await this.getAdapterAndStrategyData(strategy, asset)
         const { request, success, error: simulationError } = await this.simulateAdapterCreation(asset, adapterData, strategyData, initialDeposit, options)
         if (success) {
