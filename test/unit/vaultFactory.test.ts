@@ -9,7 +9,7 @@ import { VaultFactory } from "../../src/vaultFactory/index.js";
 import type { StrategyData } from "../../src/vaultFactory/types.js";
 import type { WriteOptions, VaultOptions } from "../../src/types.js";
 
-let vaultFactory = new VaultFactory("0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb", publicClient, walletClient);
+let vaultFactory = new VaultFactory({ address: "0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb", publicClient, walletClient });
 
 const FORK_BLOCK_NUMBER = BigInt(17883751);
 // some random address that has a lot of ETH & DAI

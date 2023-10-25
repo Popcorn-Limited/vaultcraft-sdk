@@ -44,7 +44,7 @@ export class VaultFactory extends Base {
     private baseObj;
     private chainId;
 
-    constructor(address: Address, publicClient: PublicClient, walletClient: WalletClient<Transport, Chain>) {
+    constructor({ address, publicClient, walletClient }: { address: Address, publicClient: PublicClient, walletClient: WalletClient<Transport, Chain> }) {
         super(address, publicClient, walletClient);
 
         this.baseObj = {
@@ -172,7 +172,7 @@ export class VaultFactory extends Base {
         }
     }
 
-    getStrategyKeys({ chainId }: { chainId: number }): string[] {
+    getStrategyKeys(chainId: number): string[] {
         return Object.keys(strategies).filter(k => strategies[k].chains.includes(chainId))
     }
 
