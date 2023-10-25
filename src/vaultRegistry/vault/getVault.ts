@@ -1,13 +1,13 @@
-import { Address, PublicClient, ReadContractParameters, getAddress } from "viem"
+import { Address, PublicClient, ReadContractParameters, getAddress, parseEther } from "viem"
 import axios from "axios"
-import { ERC20Abi, VaultAbi, VaultRegistyAbi } from "@/lib/constants/abi"
-import { ADDRESS_ZERO, networkMap } from "@/lib/helpers"
-import getAssetIcon from "./getAssetIcon"
-import getOptionalMetadata from "./getOptionalMetadata"
-import getVaultName from "./getVaultName"
-import { getTokenPrice } from "@/lib/getTokenPrice"
-import { VaultData } from "../types"
-import { Token } from "src/types"
+import { ERC20Abi, VaultAbi, VaultRegistyAbi } from "@/lib/constants/abi/index.js"
+import { ADDRESS_ZERO, ZERO, networkMap } from "@/lib/helpers.js"
+import getAssetIcon from "./getAssetIcon.js"
+import getOptionalMetadata from "./getOptionalMetadata.js"
+import getVaultName from "./getVaultName.js"
+import { getTokenPrice } from "@/lib/getTokenPrice.js"
+import type { VaultData } from "../types.js"
+import type { Token } from "src/types.js"
 
 export const VaultRegistryByChain: { [key: number]: Address } = {
   1: "0x007318Dc89B314b47609C684260CfbfbcD412864",
@@ -102,7 +102,15 @@ function prepareTokenContracts(address: Address, account: Address): ReadContract
   ]
 }
 
-export async function getVaults({ vaults, account = ADDRESS_ZERO, owner, client }: { vaults: Address[], account?: Address, owner?: Address, client: PublicClient }): Promise<VaultData[]> {
+interface GetVaultProps {
+  vaults: Address[];
+  account?: Address;
+  owner?: Address;
+  client: PublicClient;
+}
+
+export async function getVaults({ vaults, account = ADDRESS_ZERO, owner, client }: GetVaultProps): Promise<VaultData[]> {
+  // TODO limit batch size to 50
   const hasAccount = account !== ADDRESS_ZERO
   const chainId = client.chain?.id as number
 
@@ -113,7 +121,7 @@ export async function getVaults({ vaults, account = ADDRESS_ZERO, owner, client 
     allowFailure: false
   }) as unknown as string[][]
 
-  let result: any[] = registryMetadata.map((entry, i) => {
+  let result = registryMetadata.map((entry, i) => {
     return {
       address: getAddress(vaults[i]),
       metadata: {
@@ -134,8 +142,8 @@ export async function getVaults({ vaults, account = ADDRESS_ZERO, owner, client 
   // Add core metadata
   result = vaultData.map((vault, i) => {
     if (i > 0) i = i * 10
-    const assetsPerShare = Number(vaultData[i + 6]) > 0 ? Number(vaultData[i + 5]) / Number(vaultData[i + 6]) : Number(1)
-    const fees = vaultData[i + 7] as [BigInt, BigInt, BigInt, BigInt]
+    const assetsPerShare = (vaultData[i + 6] as bigint) > ZERO ? (vaultData[i + 5] as bigint) / (vaultData[i + 6] as bigint) : BigInt(1e-9)
+    const fees = vaultData[i + 7] as [bigint, bigint, bigint, bigint]
     return {
       ...result[i],
       vault: {
@@ -143,24 +151,24 @@ export async function getVaults({ vaults, account = ADDRESS_ZERO, owner, client 
         name: String(vaultData[i + 0]),
         symbol: String(vaultData[i + 1]),
         decimals: Number(vaultData[i + 2]),
-        logoURI: "/images/tokens/pop.svg",
-        balance: hasAccount ? Number(vaultData[i + 9]) : 0
+        logoURI: "https://app.pop.network/images/tokens/pop.svg",
+        balance: hasAccount ? vaultData[i + 9] : ZERO
       },
       assetAddress: getAddress(vaultData[i + 3] as string),
       adapterAddress: getAddress(vaultData[i + 4] as string),
-      totalAssets: Number(vaultData[i + 5]),
-      totalSupply: Number(vaultData[i + 6]),
+      totalAssets: vaultData[i + 5],
+      totalSupply: vaultData[i + 6],
       assetsPerShare: assetsPerShare,
       fees: {
-        deposit: Number(fees[0]),
-        withdrawal: Number(fees[1]),
-        management: Number(fees[2]),
-        performance: Number(fees[3]),
+        deposit: fees[0],
+        withdrawal: fees[1],
+        management: fees[2],
+        performance: fees[3],
       },
-      depositLimit: Number(vaultData[i + 8]),
+      depositLimit: vaultData[i + 8],
       chainId: chainId
     }
-  }) as any[]
+  })
 
   // Add token and adapter metadata
   const assetAndAdapterMeta = await client.multicall({
@@ -177,21 +185,22 @@ export async function getVaults({ vaults, account = ADDRESS_ZERO, owner, client 
       symbol: String(assetAndAdapterMeta[i + 1]),
       decimals: entry.vault.decimals - 9,
       logoURI: "",
-      balance: hasAccount ? Number(assetAndAdapterMeta[i + 2]) : 0,
-      price: 0,
-    }
+      balance: hasAccount ? assetAndAdapterMeta[i + 2] : ZERO,
+      price: Bigint,
+    } as Token
     const adapter = {
       address: getAddress(entry.adapterAddress),
       name: String(assetAndAdapterMeta[i + 3]),
       symbol: String(assetAndAdapterMeta[i + 4]),
       decimals: entry.vault.decimals,
       logoURI: "",  // wont be used, just here for consistency
-      balance: 0,
-      price: 0,
-    }
+      balance: ZERO,
+      price: ZERO,
+    } as Token
     return {
       ...entry,
-      asset: {
+      asset,
+      assetToken: {
         ...asset,
         logoURI: getAssetIcon({ asset, adapter, chainId: chainId })
       },
@@ -273,8 +282,8 @@ export async function getVault({ vault, account = ADDRESS_ZERO, client }: { vaul
     symbol: String(assetAndAdapterMeta[4]),
     decimals: Number(results[2]),
     logoURI: "", // wont be used, just here for consistency,
-    balance: 0, // wont be used, just here for consistency,
-    price: 0, // wont be used, just here for consistency,
+    balance: ZERO, // wont be used, just here for consistency,
+    price: ZERO, // wont be used, just here for consistency,
   }
   return {
     address: getAddress(vault),
@@ -283,7 +292,7 @@ export async function getVault({ vault, account = ADDRESS_ZERO, client }: { vaul
       name: String(results[0]),
       symbol: String(results[1]),
       decimals: Number(results[2]),
-      logoURI: "/images/tokens/pop.svg", // TODO how do we have to add these images?
+      logoURI: "https://app.pop.network/images/tokens/pop.svg",
       balance: hasAccount ? Number(results[9]) : 0,
       price: pricePerShare * 1e9,  // @dev -- normalize vault price for previews (watch this if errors occur)
     },

@@ -1,15 +1,15 @@
 import { Address, getAddress } from "viem";
-import { getAssetsByChain } from "@/lib/helpers";
-import { Token } from "src/types";
+import { getAssetsByChain } from "@/lib/helpers.js";
+import type { Token } from "src/types.js";
 
 const EmptyTokenByChain: { [key: number]: string } = {
   1: "https://etherscan.io/images/main/empty-token.png",
   1337: "https://etherscan.io/images/main/empty-token.png",
   5: "https://etherscan.io/images/main/empty-token.png",
   137: "https://polygonscan.com/images/main/empty-token.png",
-  10: "/images/networks/empty-op.svg",
+  10: "https://app.pop.network/images/networks/empty-op.svg",
   42161: "https://arbiscan.io/images/main/empty-token.png",
-  56: "/images/networks/empty-bsc.svg",
+  56: "https://app.pop.network/images/networks/empty-bsc.svg",
 }
 
 function getProtocolIcon(asset: Token, adapter: Token, chainId: number): string | undefined {

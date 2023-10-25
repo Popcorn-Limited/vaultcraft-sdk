@@ -1,5 +1,5 @@
-import { VaultAbi } from "@/lib/constants/abi"
 import { Address, PublicClient } from "viem"
+import { VaultAbi } from "@/lib/constants/abi/index.js"
 
 type AssetAndValue = {
   vault: Address,

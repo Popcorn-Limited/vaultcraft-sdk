@@ -37,8 +37,8 @@ export type Token = {
     symbol: string;
     decimals: number;
     logoURI: string;
-    balance: number;
-    price: number;
+    balance: bigint;
+    price: bigint;
 };
 
 // @dev Dont forget to add the protocol name in here after adding a new one

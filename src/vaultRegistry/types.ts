@@ -1,5 +1,5 @@
-import { ProtocolName, Token } from "src/types";
 import { Address } from "viem";
+import type { ProtocolName, Token } from "src/types.js";
 
 export type TokenConstant = {
   chains: number[];

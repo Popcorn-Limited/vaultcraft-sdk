@@ -1,8 +1,8 @@
 import { Address, PublicClient } from "viem";
-import { VaultRegistyAbi } from "@/lib/constants/abi";
-import { ADDRESS_ZERO } from "@/lib/helpers";
-import { getVault, getVaults } from "./vault/getVault";
-import { VaultData } from "./types";
+import { VaultRegistyAbi } from "@/lib/constants/abi/index.js";
+import { ADDRESS_ZERO } from "@/lib/helpers.js";
+import { getVault, getVaults } from "./vault/getVault.js";
+import type { VaultData } from "./types.js";
 
 export class VaultRegistry {
     address: Address;
