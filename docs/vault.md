@@ -35,7 +35,7 @@ const walletClient = createWalletClient({
   transport: custom(window.ethereum)
 })
 
-const vault = new Vault(vaultAddress, publicClient, walletClient);
+const vault = new Vault({address:vaultAddress, publicClient, walletClient});
 ```
 
 
@@ -400,22 +400,30 @@ const depositLimit = vault.depositLimit();
 __________
 ### ERC-20 Writes
 
-### `approve(spender: Address, amount: bigint, options: WriteOptions): Promise<Hash>`
+### `approve({spender: Address, amount: bigint, options: WriteOptions}): Promise<Hash>`
 
 Sets `amount` as the allowance of `spender` over the caller’s tokens.
 
 ```ts
-const txHash = vault.approve("0xd8da6bf26964af9d7eed9e03e53415d37aa96045",BigInt("1e18"));
+const txHash = vault.approve({
+  spender:"0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+  amount:BigInt("1e18"),
+  options:{ account: "0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb" }
+  });
 // txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
 ```
 
 
-### `transfer(receiver: Address, amount: bigint, options: WriteOptions): Promise<Hash>`
+### `transfer({receiver: Address, amount: bigint, options: WriteOptions}): Promise<Hash>`
 
 Moves `amount` tokens from the caller’s account to `receiver`.
 
 ```ts
-const txHash = vault.transfer("0xd8da6bf26964af9d7eed9e03e53415d37aa96045", BigInt("1e18"));
+const txHash = vault.transfer({
+  receiver:"0xd8da6bf26964af9d7eed9e03e53415d37aa96045", 
+  amount:BigInt("1e18"),
+  options:{ account: "0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb" }
+  });
 // txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
 ```
 
@@ -424,41 +432,59 @@ __________
 
 ### ERC-4626 Writes
 
-### `deposit(amount: bigint, receiver: Address, options: WriteOptions): Promise<Hash>`
+### `deposit({amount: bigint, receiver: Address, options: WriteOptions}): Promise<Hash>`
 
 Mints vault shares to `receiver` by depositing exact `amount` of underlying tokens (assets).
 
 ```ts
-const txHash = vault.deposit(BigInt("1e18"), "0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
+const txHash = vault.deposit({
+  amount:BigInt("1e18"), 
+  receiver:"0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+  options:{ account: "0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb" }
+  });
 // txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
 ```
 
 
-### `mint(amount: bigint, receiver: Address, options: WriteOptions): Promise<Hash>`
+### `mint({amount: bigint, receiver: Address, options: WriteOptions}): Promise<Hash>`
 
 Mints exact `amount` of vault shares to `receiver` by depositing the required amount underlying tokens (assets).
 
 ```ts
-const txHash = vault.mint(BigInt("1e18"), "0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
+const txHash = vault.mint({
+  amount:BigInt("1e18"), 
+  receiver:"0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+  options:{ account: "0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb" }
+  });
 // txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
 ```
 
 
-### `withdraw(amount: bigint, receiver: Address, owner: Address, options: WriteOptions): Promise<Hash>`
+### `withdraw({amount: bigint, receiver: Address, owner: Address, options: WriteOptions}): Promise<Hash>`
 
 Burns required amount of shares from `owner` to send exact `amount` of underlying tokens (assets) to `receiver`.
 
 ```ts
-const txHash = vault.withdraw(BigInt("1e18"), "0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
+const txHash = vault.withdraw({
+  amount:BigInt("1e18"), 
+  receiver:"0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+  owner:"0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+  options:{ account: "0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb" }
+  });
 // txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
 ```
 
 
-### `redeem(amount: bigint, receiver: Address, owner: Address, options: WriteOptions): Promise<Hash>`
+### `redeem({amount: bigint, receiver: Address, owner: Address, options: WriteOptions}): Promise<Hash>`
 
 Burns exact `amount` of shares from `owner` and sends underlying tokens (assets) to `receiver`.
 
 ```ts
-const txHash = vault.redeem(BigInt("1e18"), "0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
+const txHash = vault.redeem({
+  amount:BigInt("1e18"), 
+  receiver:"0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+  woner:"0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+  options:{ account: "0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb" }
+  });
 // txHash = "0xb315ebed9539d8f46c1b3f95a538ff38db9716f83fd37789d2458f2b6c812bb6"
 ```

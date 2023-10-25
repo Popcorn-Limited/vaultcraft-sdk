@@ -8,7 +8,7 @@ const ABI = IVaultABI;
 export class Vault extends Base {
     private baseObj;
 
-    constructor(address: Address, publicClient: PublicClient, walletClient: WalletClient<Transport, Chain>) {
+    constructor({ address, publicClient, walletClient }: { address: Address, publicClient: PublicClient, walletClient: WalletClient<Transport, Chain> }) {
         super(address, publicClient, walletClient);
 
         this.baseObj = {
@@ -40,7 +40,7 @@ export class Vault extends Base {
         });
     }
 
-    allowance(owner: Address, spender: Address): Promise<bigint> {
+    allowance({ owner, spender }: { owner: Address, spender: Address }): Promise<bigint> {
         return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "allowance",
@@ -48,11 +48,11 @@ export class Vault extends Base {
         });
     }
 
-    balanceOf(who: Address): Promise<bigint> {
+    balanceOf(user: Address): Promise<bigint> {
         return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "balanceOf",
-            args: [who],
+            args: [user],
         });
     }
 
@@ -261,10 +261,10 @@ export class Vault extends Base {
             functionName: "depositLimit",
         });
     }
- 
+
     // ERC-20 WRITES
 
-    async approve(spender: Address, amount: bigint, options: WriteOptions): Promise<Hash> {
+    async approve({ spender, amount, options }: { spender: Address, amount: bigint, options: WriteOptions }): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,
@@ -274,7 +274,7 @@ export class Vault extends Base {
         return this.walletClient.writeContract(request);
     }
 
-    async transfer(receiver: Address, amount: bigint, options: WriteOptions): Promise<Hash> {
+    async transfer({ receiver, amount, options }: { receiver: Address, amount: bigint, options: WriteOptions }): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,
@@ -286,7 +286,7 @@ export class Vault extends Base {
 
     // ERC-4626 WRITES
 
-    async deposit(amount: bigint, receiver: Address, options: WriteOptions): Promise<Hash> {
+    async deposit({ amount, receiver, options }: { amount: bigint, receiver: Address, options: WriteOptions }): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,
@@ -297,7 +297,7 @@ export class Vault extends Base {
         return this.walletClient.writeContract(request);
     };
 
-    async mint(amount: bigint, receiver: Address, options: WriteOptions): Promise<Hash> {
+    async mint({ amount, receiver, options }: { amount: bigint, receiver: Address, options: WriteOptions }): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,
@@ -307,7 +307,7 @@ export class Vault extends Base {
         return this.walletClient.writeContract(request);
     }
 
-    async withdraw(amount: bigint, receiver: Address, owner: Address, options: WriteOptions): Promise<Hash> {
+    async withdraw({ amount, receiver, owner, options }: { amount: bigint, receiver: Address, owner: Address, options: WriteOptions }): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,
@@ -317,7 +317,7 @@ export class Vault extends Base {
         return this.walletClient.writeContract(request);
     }
 
-    async redeem(amount: bigint, receiver: Address, owner: Address, options: WriteOptions): Promise<Hash> {
+    async redeem({ amount, receiver, owner, options }: { amount: bigint, receiver: Address, owner: Address, options: WriteOptions }): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,

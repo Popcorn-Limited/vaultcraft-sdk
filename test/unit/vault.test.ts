@@ -6,7 +6,7 @@ import { ERC20ABI } from "../abis/erc20ABI";
 import { Vault } from "../../src/vault";
 import { IVaultABI } from "../../src/abi/IVaultABI";
 
-let vault = new Vault("0x5d344226578DC100b2001DA251A4b154df58194f", publicClient, walletClient);
+let vault = new Vault({ address: "0x5d344226578DC100b2001DA251A4b154df58194f", publicClient, walletClient });
 const FORK_BLOCK_NUMBER = BigInt(17883751);
 // some random address that has a lot of ETH & DAI
 const USER_ADDRESS = "0x6FF8E4DB500cBd77d1D181B8908E022E29e0Ec4A";
@@ -38,7 +38,7 @@ describe.concurrent("read-only", () => {
     });
 
     test("allowance() should return correct value", async () => {
-        const allowance = await vault.allowance("0x22f5413C075Ccd56D575A54763831C4c27A37Bdb", "0xF2F02200aEd0028fbB9F183420D3fE6dFd2d3EcD");
+        const allowance = await vault.allowance({ owner: "0x22f5413C075Ccd56D575A54763831C4c27A37Bdb", spender: "0xF2F02200aEd0028fbB9F183420D3fE6dFd2d3EcD" });
 
         expect(allowance).toBe(BigInt("115792089237316195423570985008687907853269984665640564039457584007913129639935"));
     });
@@ -233,12 +233,12 @@ describe("write-only", () => {
     test("approve() should approve vault shares for another spender", async () => {
         // Get Vault Shares
         await approve(BigInt(1e18));
-        await vault.mint(BigInt(1e18), USER_ADDRESS, { account: USER_ADDRESS });
+        await vault.mint({ amount: BigInt(1e18), receiver: USER_ADDRESS, options: { account: USER_ADDRESS } });
         const spender = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
 
         // Actual Test
 
-        const hash = await vault.approve(spender, BigInt(1e18), { account: USER_ADDRESS });
+        const hash = await vault.approve({ spender, amount: BigInt(1e18), options: { account: USER_ADDRESS } });
         const tx = await publicClient.getTransaction({
             hash,
         });
@@ -257,10 +257,10 @@ describe("write-only", () => {
     test("transfer() should transfer vault shares to another address", async () => {
         // Get Vault Shares
         await approve(BigInt(1e18));
-        await vault.mint(BigInt(1e18), USER_ADDRESS, { account: USER_ADDRESS });
-        const recipient = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+        await vault.mint({ amount: BigInt(1e18), receiver: USER_ADDRESS, options: { account: USER_ADDRESS } });
+        const receiver = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
 
-        const hash = await vault.transfer(recipient, BigInt(1e18), { account: USER_ADDRESS });
+        const hash = await vault.transfer({ receiver, amount: BigInt(1e18), options: { account: USER_ADDRESS } });
         const tx = await publicClient.getTransaction({
             hash,
         });
@@ -273,7 +273,7 @@ describe("write-only", () => {
         expect(tx.from).toBe(USER_ADDRESS.toLowerCase());
         expect(tx.to).toBe(vault.address.toLowerCase());
         expect(functionName).toBe("transfer");
-        expect(args).toEqual([recipient, BigInt(1e18)]);
+        expect(args).toEqual([receiver, BigInt(1e18)]);
     });
 
     // ERC-4626 WRITES
@@ -281,7 +281,7 @@ describe("write-only", () => {
     test("deposit() should deposit funds into the vault", async () => {
         await approve(BigInt(1e18));
 
-        const hash = await vault.deposit(BigInt(1e18), USER_ADDRESS, { account: USER_ADDRESS });
+        const hash = await vault.deposit({ amount: BigInt(1e18), receiver: USER_ADDRESS, options: { account: USER_ADDRESS } });
         const tx = await publicClient.getTransaction({
             hash,
         });
@@ -300,7 +300,7 @@ describe("write-only", () => {
     test("mint() should mint vault shares", async () => {
         await approve(BigInt(1e18));
 
-        const hash = await vault.mint(BigInt(1e18), USER_ADDRESS, { account: USER_ADDRESS });
+        const hash = await vault.mint({ amount: BigInt(1e18), receiver: USER_ADDRESS, options: { account: USER_ADDRESS } });
         const tx = await publicClient.getTransaction({
             hash,
         });
@@ -324,7 +324,7 @@ describe("write-only", () => {
         await publicClient.impersonateAccount({
             address: user,
         });
-        const hash = await vault.withdraw(BigInt(1e18), user, user, { account: user });
+        const hash = await vault.withdraw({ amount: BigInt(1e18), receiver: user, owner: user, options: { account: user } });
         const tx = await publicClient.getTransaction({
             hash,
         });
@@ -348,7 +348,7 @@ describe("write-only", () => {
         await publicClient.impersonateAccount({
             address: user,
         });
-        const hash = await vault.redeem(BigInt(1e18), user, user, { account: user });
+        const hash = await vault.redeem({ amount: BigInt(1e18), receiver: user, owner: user, options: { account: user } });
         const tx = await publicClient.getTransaction({
             hash,
         });

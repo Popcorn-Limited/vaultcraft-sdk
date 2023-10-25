@@ -27,11 +27,11 @@ export class VaultRegistry {
         }) as Promise<Address[]>;
     }
 
-    getVault({ vault }: { vault: Address }): Promise<Metadata> {
-        return this.metadata({ vault });
+    getVault(vault: Address): Promise<Metadata> {
+        return this.metadata(vault);
     }
 
-    private metadata({ vault }: { vault: Address }): Promise<Metadata> {
+    private metadata(vault: Address): Promise<Metadata> {
         return this.publicClient.readContract({
             ...this.baseObj,
             functionName: "metadata",
@@ -50,7 +50,7 @@ export class VaultRegistry {
             });
     }
 
-    async getVaultByDeployer({ creator }: { creator: Address }): Promise<Address[]> {
+    async getVaultByDeployer(creator: Address): Promise<Address[]> {
         const allVaults: readonly Address[] = await this.publicClient.readContract({
             ...this.baseObj,
             functionName: "getRegisteredAddresses",
@@ -58,7 +58,7 @@ export class VaultRegistry {
 
         return (await Promise.all(
             allVaults.map(async (vault: Address) => {
-                const metaData: Metadata = await this.metadata({ vault });
+                const metaData: Metadata = await this.metadata(vault);
                 return metaData.creator === creator ? vault : null;
             })
         )).filter(v => v !== null) as Address[];
