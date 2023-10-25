@@ -1,15 +1,15 @@
 import { describe, test, expect, beforeEach } from "vitest";
-import { decodeFunctionData, maxUint256, pad, zeroAddress } from "viem";
+import { decodeFunctionData } from "viem";
 
 import { publicClient, walletClient } from "../setup.js";
 import { increaseTime } from "../utils.js";
 
 import { VaultControllerABI } from "../../src/abi/VaultControllerABI.js";
-import { VaultController} from "../../src/vaultController.js";
+import { VaultController } from "../../src/vaultController.js";
 import { VaultFees } from "../../src/types.js";
 
 
-let controller = new VaultController("0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb", publicClient, walletClient);
+let controller = new VaultController({ address: "0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb", publicClient, walletClient });
 const FORK_BLOCK_NUMBER = BigInt(17883751);
 const ADMIN_ADDRESS = "0x22f5413C075Ccd56D575A54763831C4c27A37Bdb";
 const VAULT_ADDRESS = "0x5d344226578DC100b2001DA251A4b154df58194f";
@@ -35,7 +35,11 @@ describe("write-only", () => {
     // CHANGE ADAPTER
 
     test("proposeVaultAdapters() should propose the given adapters for the given vaults", async () => {
-        const hash = await controller.proposeVaultAdapters([VAULT_ADDRESS], ["0x612465C8d6F1B2Bc85DF43224a8A3b5e04F634fc"], { account: ADMIN_ADDRESS });
+        const hash = await controller.proposeVaultAdapters({
+            vaults: [VAULT_ADDRESS],
+            adapters: ["0x612465C8d6F1B2Bc85DF43224a8A3b5e04F634fc"],
+            options: { account: ADMIN_ADDRESS }
+        });
         const tx = await publicClient.getTransaction({
             hash,
         });
@@ -54,10 +58,14 @@ describe("write-only", () => {
     // This test times out regulary. Increasing the timeout to 10 secs should fix that
     test("changeVaultAdapters() should change the adapters for the given vaults", async () => {
         // got to propose fees first before we can change them.
-        await controller.proposeVaultAdapters([VAULT_ADDRESS], ["0x612465C8d6F1B2Bc85DF43224a8A3b5e04F634fc"], { account: ADMIN_ADDRESS });
+        await controller.proposeVaultAdapters({
+            vaults: [VAULT_ADDRESS],
+            adapters: ["0x612465C8d6F1B2Bc85DF43224a8A3b5e04F634fc"],
+            options: { account: ADMIN_ADDRESS }
+        });
         await increaseTime(86400 * 2);
 
-        const hash = await controller.changeVaultAdapters([VAULT_ADDRESS], { account: ADMIN_ADDRESS });
+        const hash = await controller.changeVaultAdapters({ vaults: [VAULT_ADDRESS], options: { account: ADMIN_ADDRESS } });
         const tx = await publicClient.getTransaction({
             hash,
         });
@@ -82,7 +90,7 @@ describe("write-only", () => {
             performance: BigInt(0),
             management: BigInt(10),
         };
-        const hash = await controller.proposeVaultFees([VAULT_ADDRESS], [fees], { account: ADMIN_ADDRESS });
+        const hash = await controller.proposeVaultFees({ vaults: [VAULT_ADDRESS], fees: [fees], options: { account: ADMIN_ADDRESS } });
         const tx = await publicClient.getTransaction({
             hash,
         });
@@ -106,13 +114,11 @@ describe("write-only", () => {
             performance: BigInt(0),
             management: BigInt(10),
         };
-        await controller.proposeVaultFees([VAULT_ADDRESS], [fees], { account: ADMIN_ADDRESS });
+        await controller.proposeVaultFees({ vaults: [VAULT_ADDRESS], fees: [fees], options: { account: ADMIN_ADDRESS } });
         await increaseTime(86400 * 2);
 
-        const hash = await controller.changeVaultFees([VAULT_ADDRESS], { account: ADMIN_ADDRESS });
-        const tx = await publicClient.getTransaction({
-            hash,
-        });
+        const hash = await controller.changeVaultFees({ vaults: [VAULT_ADDRESS], options: { account: ADMIN_ADDRESS } });
+        const tx = await publicClient.getTransaction({ hash });
 
         const { functionName, args } = decodeFunctionData({
             abi: VaultControllerABI,
@@ -126,7 +132,7 @@ describe("write-only", () => {
     });
 
     test("setVaultFeeRecipients() should return correct object", async () => {
-        const hash = await controller.setVaultFeeRecipients([VAULT_ADDRESS], [VAULT_ADDRESS], { account: ADMIN_ADDRESS });
+        const hash = await controller.setVaultFeeRecipients({ vaults: [VAULT_ADDRESS], recipients: [VAULT_ADDRESS], options: { account: ADMIN_ADDRESS } });
         const tx = await publicClient.getTransaction({
             hash,
         });
@@ -145,7 +151,7 @@ describe("write-only", () => {
     // PAUSING
 
     test("pauseVaults() should return correct object", async () => {
-        const hash = await controller.pauseVaults([VAULT_ADDRESS], { account: ADMIN_ADDRESS });
+        const hash = await controller.pauseVaults({ vaults: [VAULT_ADDRESS], options: { account: ADMIN_ADDRESS } });
         const tx = await publicClient.getTransaction({
             hash,
         });
@@ -163,9 +169,9 @@ describe("write-only", () => {
 
     test("unpauseVaults() should return correct object", async () => {
         // got to pause first so that unpause doesn't revert
-        await controller.pauseVaults([VAULT_ADDRESS], { account: ADMIN_ADDRESS });
+        await controller.pauseVaults({ vaults: [VAULT_ADDRESS], options: { account: ADMIN_ADDRESS } });
 
-        const hash = await controller.unpauseVaults([VAULT_ADDRESS], { account: ADMIN_ADDRESS });
+        const hash = await controller.unpauseVaults({ vaults: [VAULT_ADDRESS], options: { account: ADMIN_ADDRESS } });
         const tx = await publicClient.getTransaction({
             hash,
         });
@@ -184,7 +190,7 @@ describe("write-only", () => {
     // OTHER
 
     test("setVaultDepositLimits() should return correct object", async () => {
-        const hash = await controller.setVaultDepositLimits([VAULT_ADDRESS], [BigInt(10)], { account: ADMIN_ADDRESS });
+        const hash = await controller.setVaultDepositLimits({ vaults: [VAULT_ADDRESS], limits: [BigInt(10)], options: { account: ADMIN_ADDRESS } });
         const tx = await publicClient.getTransaction({
             hash,
         });
@@ -202,7 +208,7 @@ describe("write-only", () => {
 
     test("setVaultQuitPeriods() should return correct object", async () => {
         const newQuitPeriod = BigInt(86400 * 2);
-        const hash = await controller.setVaultQuitPeriods([VAULT_ADDRESS], [newQuitPeriod], { account: ADMIN_ADDRESS });
+        const hash = await controller.setVaultQuitPeriods({ vaults: [VAULT_ADDRESS], quitPeriods: [newQuitPeriod], options: { account: ADMIN_ADDRESS } });
         const tx = await publicClient.getTransaction({
             hash,
         });

@@ -1,4 +1,4 @@
-import type { Hash, Address, PublicClient, WalletClient, Transport, Chain} from "viem";
+import type { Hash, Address, PublicClient, WalletClient, Transport, Chain } from "viem";
 import type { VaultFees, WriteOptions } from "./types.js";
 
 import { VaultControllerABI } from "./abi/VaultControllerABI.js";
@@ -9,7 +9,7 @@ const ABI = VaultControllerABI;
 export class VaultController extends Base {
     private baseObj;
 
-    constructor(address: Address, publicClient: PublicClient, walletClient: WalletClient<Transport, Chain>) {
+    constructor({ address, publicClient, walletClient }: { address: Address, publicClient: PublicClient, walletClient: WalletClient<Transport, Chain> }) {
         super(address, publicClient, walletClient);
 
         this.baseObj = {
@@ -20,7 +20,7 @@ export class VaultController extends Base {
 
     // CHANGE ADAPTER
 
-    async proposeVaultAdapters(vaults: Address[], adapters: Address[], options: WriteOptions): Promise<Hash> {
+    async proposeVaultAdapters({ vaults, adapters, options }: { vaults: Address[], adapters: Address[], options: WriteOptions }): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,
@@ -30,7 +30,7 @@ export class VaultController extends Base {
         return this.walletClient.writeContract(request);
     }
 
-    async changeVaultAdapters(vaults: Address[], options: WriteOptions): Promise<Hash> {
+    async changeVaultAdapters({ vaults, options }: { vaults: Address[], options: WriteOptions }): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,
@@ -42,7 +42,7 @@ export class VaultController extends Base {
 
     // CHANGE FEES
 
-    async proposeVaultFees(vaults: Address[], fees: VaultFees[], options: WriteOptions): Promise<Hash> {
+    async proposeVaultFees({ vaults, fees, options }: { vaults: Address[], fees: VaultFees[], options: WriteOptions }): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,
@@ -52,7 +52,7 @@ export class VaultController extends Base {
         return this.walletClient.writeContract(request);
     }
 
-    async changeVaultFees(vaults: Address[], options: WriteOptions): Promise<Hash> {
+    async changeVaultFees({ vaults, options }: { vaults: Address[], options: WriteOptions }): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,
@@ -62,7 +62,7 @@ export class VaultController extends Base {
         return this.walletClient.writeContract(request);
     }
 
-    async setVaultFeeRecipients(vaults: Address[], recipients: Address[], options: WriteOptions): Promise<Hash> {
+    async setVaultFeeRecipients({ vaults, recipients, options }: { vaults: Address[], recipients: Address[], options: WriteOptions }): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,
@@ -74,7 +74,7 @@ export class VaultController extends Base {
 
     // PAUSING
 
-    async pauseVaults(vaults: Address[], options: WriteOptions): Promise<Hash> {
+    async pauseVaults({ vaults, options }: { vaults: Address[], options: WriteOptions }): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,
@@ -84,7 +84,7 @@ export class VaultController extends Base {
         return this.walletClient.writeContract(request);
     }
 
-    async unpauseVaults(vaults: Address[], options: WriteOptions): Promise<Hash> {
+    async unpauseVaults({ vaults, options }: { vaults: Address[], options: WriteOptions }): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,
@@ -96,7 +96,7 @@ export class VaultController extends Base {
 
     // OTHER
 
-    async setVaultDepositLimits(vaults: Address[], limits: bigint[], options: WriteOptions): Promise<Hash> {
+    async setVaultDepositLimits({ vaults, limits, options }: { vaults: Address[], limits: bigint[], options: WriteOptions }): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,
@@ -106,7 +106,7 @@ export class VaultController extends Base {
         return this.walletClient.writeContract(request);
     }
 
-    async setVaultQuitPeriods(vaults: Address[], quitPeriods: bigint[], options: WriteOptions): Promise<Hash> {
+    async setVaultQuitPeriods({ vaults, quitPeriods, options }: { vaults: Address[], quitPeriods: bigint[], options: WriteOptions }): Promise<Hash> {
         const { request } = await this.publicClient.simulateContract({
             ...options,
             ...this.baseObj,
