@@ -76,6 +76,6 @@ export type ChainToAddress = { [key: number]: Address };
 
 export interface IProtocolProvider {
   getProtocols(chainId: number): Protocol[];
-  getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]>;
-  getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield>;
+  getProtocolAssets({ chainId, protocol }: { chainId: number, protocol: ProtocolName }): Promise<Address[]>;
+  getApy({ chainId, protocol, asset }: { chainId: number, protocol: ProtocolName, asset: Address }): Promise<Yield>;
 }

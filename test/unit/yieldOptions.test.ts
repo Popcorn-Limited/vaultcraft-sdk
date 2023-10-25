@@ -11,7 +11,7 @@ const clients: Clients = {
 
 test("getProtocols() should return a list of protocols for the given chain ID", () => {
     const ttl = 360_000;
-    const yieldOptions = new YieldOptions(new LiveProvider(clients, ttl), ttl);
+    const yieldOptions = new YieldOptions({ provider: new LiveProvider({ clients, ttl }), ttl });
     const result = yieldOptions.getProtocols(1);
     const want = [
         'aaveV2',
@@ -48,7 +48,7 @@ describe.concurrent("getAssets()", () => {
                 },
             },
         });
-        const yieldOptions = new YieldOptions(mockLiveProvider, 360_000);
+        const yieldOptions = new YieldOptions({ provider: mockLiveProvider, ttl: 360_000 });
         const result = await yieldOptions.getAssets(1);
         expect(result).toEqual([
             "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff",
@@ -72,7 +72,7 @@ describe.concurrent("getAssets()", () => {
 
         };
         const mockLiveProvider = new MockLiveProvider(protocolData);
-        const yieldOptions = new YieldOptions(mockLiveProvider, 360_000);
+        const yieldOptions = new YieldOptions({ provider: mockLiveProvider, ttl: 360_000 });
         let result = await yieldOptions.getAssets(1);
         expect(result).toEqual([
             "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff",
@@ -107,8 +107,8 @@ describe.concurrent("getProtocolAssets()", () => {
                 },
             },
         });
-        const yieldOptions = new YieldOptions(mockLiveProvider, 360_000);
-        const result = await yieldOptions.getProtocolAssets(1, "aaveV2");
+        const yieldOptions = new YieldOptions({ provider: mockLiveProvider, ttl: 360_000 });
+        const result = await yieldOptions.getProtocolAssets({ chainId: 1, protocol: "aaveV2" });
         expect(result).toEqual([
             "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff",
             "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
@@ -133,8 +133,8 @@ describe.concurrent("getProtocolsByAsset()", () => {
                 },
             },
         });
-        const yieldOptions = new YieldOptions(mockLiveProvider, 360_000);
-        const result = await yieldOptions.getProtocolsByAsset(1, "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff");
+        const yieldOptions = new YieldOptions({ provider: mockLiveProvider, ttl: 360_000 });
+        const result = await yieldOptions.getProtocolsByAsset({ chainId: 1, asset: "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff" });
         expect(result.map(protocol => protocol.key)).toEqual([
             "aaveV2",
             "aaveV3"
@@ -156,8 +156,8 @@ describe.concurrent("getYieldOptionsByProtocol", () => {
                 },
             },
         });
-        const yieldOptions = new YieldOptions(mockLiveProvider, 360_000);
-        const result = await yieldOptions.getYieldOptionsByProtocol(1, "aaveV2");
+        const yieldOptions = new YieldOptions({ provider: mockLiveProvider, ttl: 360_000 });
+        const result = await yieldOptions.getYieldOptionsByProtocol({ chainId: 1, protocol: "aaveV2" });
         expect(result).toEqual([
             {
                 asset: '0xc4AD29ba4B3c580e6D59105FFf484999997675Ff',
@@ -183,8 +183,8 @@ describe.concurrent("getYieldOptionsByProtocol", () => {
                 },
             },
         });
-        const yieldOptions = new YieldOptions(mockLiveProvider, 360_000);
-        let result = await yieldOptions.getYieldOptionsByProtocol(1, "aaveV2");
+        const yieldOptions = new YieldOptions({ provider: mockLiveProvider, ttl: 360_000 });
+        let result = await yieldOptions.getYieldOptionsByProtocol({ chainId: 1, protocol: "aaveV2" });
         expect(result).toEqual([
             {
                 asset: '0xc4AD29ba4B3c580e6D59105FFf484999997675Ff',
@@ -197,7 +197,7 @@ describe.concurrent("getYieldOptionsByProtocol", () => {
         ]);
 
         mockLiveProvider.setAsset(1, "aaveV2", "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff", 15);
-        result = await yieldOptions.getYieldOptionsByProtocol(1, "aaveV2");
+        result = await yieldOptions.getYieldOptionsByProtocol({ chainId: 1, protocol: "aaveV2" });
         expect(result).toEqual([
             {
                 asset: '0xc4AD29ba4B3c580e6D59105FFf484999997675Ff',
@@ -223,8 +223,8 @@ describe.concurrent("getYieldOptionsByProtocol", () => {
                 },
             },
         });
-        const yieldOptions = new YieldOptions(mockLiveProvider, 360_000);
-        const apy = await yieldOptions.getApy(1, "aaveV2", "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff");
+        const yieldOptions = new YieldOptions({ provider: mockLiveProvider, ttl: 360_000 });
+        const apy = await yieldOptions.getApy({ chainId: 1, protocol: "aaveV2", asset: "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff" });
         expect(apy).toEqual({
             total: 12,
             apy: [{
@@ -235,7 +235,7 @@ describe.concurrent("getYieldOptionsByProtocol", () => {
 
         mockLiveProvider.setAsset(1, "aaveV2", "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff", 15);
 
-        let result = await yieldOptions.getYieldOptionsByProtocol(1, "aaveV2");
+        let result = await yieldOptions.getYieldOptionsByProtocol({ chainId: 1, protocol: "aaveV2" });
         expect(result).toEqual([
             {
                 asset: '0xc4AD29ba4B3c580e6D59105FFf484999997675Ff',
@@ -248,12 +248,3 @@ describe.concurrent("getYieldOptionsByProtocol", () => {
         ]);
     });
 });
-
-// Priority:
-// - Beefy ->> DONE
-// - Convex/Aura
-// - Curve/Balancer
-// - Idle ->> DONE
-// - Origin ->> DONE
-// - Aave V3 ->> DONE
-// - Compound V3

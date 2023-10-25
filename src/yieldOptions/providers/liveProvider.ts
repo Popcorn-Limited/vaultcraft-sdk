@@ -9,7 +9,7 @@ export class LiveProvider implements IProtocolProvider {
     };
 
     // @dev Dont forget to add the protocolName in ./types.ts after adding a new protocol
-    constructor(clients: Clients, ttl: number, protocols?: IProtocol[]) {
+    constructor({ clients, ttl, protocols }: { clients: Clients, ttl: number, protocols?: IProtocol[] }) {
         // if a user passes their own list of protocols, we only use those in the provider.
         // Otherwise, we use all the available ones (default behaviour).
         if (protocols) {
@@ -45,12 +45,12 @@ export class LiveProvider implements IProtocolProvider {
             .map(([key, protocol]) => protocol);
     }
 
-    async getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
+    async getProtocolAssets({ chainId, protocol }: { chainId: number, protocol: ProtocolName }): Promise<Address[]> {
         if (!this.protocols[protocol]) throw new Error(`${protocol} not supported`);
         return (await this.protocols[protocol].getAssets(chainId)).map(asset => getAddress(asset));
     }
 
-    async getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield> {
+    async getApy({ chainId, protocol, asset }: { chainId: number, protocol: ProtocolName, asset: Address }): Promise<Yield> {
         if (!this.protocols[protocol]) throw new Error(`${protocol} not supported`);
         const result = await this.protocols[protocol].getApy(chainId, getAddress(asset));
         result.apy = result.apy?.map(e => { return { rewardToken: getAddress(e.rewardToken), apy: e.apy } });

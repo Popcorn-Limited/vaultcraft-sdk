@@ -43,11 +43,11 @@ export class MockLiveProvider implements IProtocolProvider {
         return Object.keys(this.data[chainId]).map(key => protocols[key]);
     }
 
-    getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
+    getProtocolAssets({ chainId, protocol }: { chainId: number, protocol: ProtocolName }): Promise<Address[]> {
         return Promise.resolve(Object.keys(this.data[chainId][protocol]).map(address => getAddress(address)));
     }
 
-    getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield> {
+    getApy({ chainId, protocol, asset }: { chainId: number, protocol: ProtocolName, asset: Address }): Promise<Yield> {
         const assetYield = this.data[chainId][protocol][getAddress(asset)];
         return Promise.resolve({
             total: assetYield,

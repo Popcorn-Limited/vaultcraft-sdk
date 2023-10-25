@@ -33,11 +33,11 @@ export class CachedProvider implements IProtocolProvider {
         return Object.entries(protocols).filter(([key, protocol]) => protocol.chains.includes(chainId)).map(([key, protocol]) => protocol);
     }
 
-    getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
+    getProtocolAssets({ chainId, protocol }: { chainId: number, protocol: ProtocolName }): Promise<Address[]> {
         return Promise.resolve(Object.keys(this.data[chainId][protocol]).map(asset => getAddress(asset)));
     }
 
-    getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield> {
+    getApy({ chainId, protocol, asset }: { chainId: number, protocol: ProtocolName, asset: Address }): Promise<Yield> {
         const result = this.data[chainId][protocol][getAddress(asset)];
         if (!result) {
             return Promise.resolve(getEmptyYield(getAddress(asset)))

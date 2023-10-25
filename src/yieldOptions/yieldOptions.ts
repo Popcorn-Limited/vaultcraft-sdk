@@ -2,18 +2,14 @@ import NodeCache from "node-cache";
 import { Address, getAddress } from "viem";
 import type { IProtocolProvider, Protocol, ProtocolName, Yield, YieldOption } from "./types.js";
 
-
-// TODO deal with multichain
-
 export class YieldOptions {
     private cache: NodeCache;
     private provider: IProtocolProvider;
 
-    constructor(provider: IProtocolProvider, ttl: number) {
+    constructor({ provider, ttl }: { provider: IProtocolProvider, ttl: number }) {
         this.cache = new NodeCache({ stdTTL: ttl });
         this.provider = provider;
     }
-
 
     getProtocols(chainId: number): Protocol[] {
         return this.provider.getProtocols(chainId);
@@ -23,22 +19,22 @@ export class YieldOptions {
         const cacheKey = `${chainId}_assets`;
         let allAssets = this.cache.get(cacheKey) as Address[];
         if (!allAssets) {
-            allAssets = (await Promise.all(this.getProtocols(chainId).map(async (protocol) => await this.provider.getProtocolAssets(chainId, protocol.key)))).flat();
+            allAssets = (await Promise.all(this.getProtocols(chainId).map(async (protocol) => await this.provider.getProtocolAssets({ chainId, protocol: protocol.key })))).flat();
             allAssets = allAssets.filter((asset, i, arr) => arr.indexOf(asset) === i);
             this.cache.set(cacheKey, allAssets);
         }
         return allAssets;
     }
 
-    async getProtocolAssets(chainId: number, protocol: ProtocolName): Promise<Address[]> {
-        return this.provider.getProtocolAssets(chainId, protocol);
+    async getProtocolAssets({ chainId, protocol }: { chainId: number, protocol: ProtocolName }): Promise<Address[]> {
+        return this.provider.getProtocolAssets({ chainId, protocol });
     }
 
-    async getProtocolsByAsset(chainId: number, asset: Address): Promise<Protocol[]> {
+    async getProtocolsByAsset({ chainId, asset }: { chainId: number, asset: Address }): Promise<Protocol[]> {
         const protocols = this.getProtocols(chainId);
         const result: Protocol[] = [];
         protocols.forEach(async (protocol) => {
-            const assets = await this.provider.getProtocolAssets(1, protocol.key as ProtocolName);
+            const assets = await this.provider.getProtocolAssets({ chainId, protocol: protocol.key as ProtocolName });
             if (assets.indexOf(getAddress(asset)) !== -1) {
                 result.push(protocol);
             }
@@ -46,15 +42,15 @@ export class YieldOptions {
         return result;
     }
 
-    async getYieldOptionsByProtocol(chainId: number, protocol: ProtocolName): Promise<YieldOption[]> {
+    async getYieldOptionsByProtocol({ chainId, protocol }: { chainId: number, protocol: ProtocolName }): Promise<YieldOption[]> {
         const cacheKey = `${chainId}_${protocol}_assets`;
         let result = this.cache.get(cacheKey) as YieldOption[];
         if (!result) {
-            const assetList = await this.provider.getProtocolAssets(chainId, protocol);
+            const assetList = await this.provider.getProtocolAssets({ chainId, protocol });
             result = await Promise.all(assetList.map(async (asset) => {
                 return {
                     asset: asset,
-                    yield: await this.getApy(chainId, protocol, asset),
+                    yield: await this.getApy({ chainId, protocol, asset }),
                 };
             }));
             this.cache.set(cacheKey, result);
@@ -62,11 +58,11 @@ export class YieldOptions {
         return result;
     }
 
-    async getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield> {
+    async getApy({ chainId, protocol, asset }: { chainId: number, protocol: ProtocolName, asset: Address }): Promise<Yield> {
         const cacheKey = `${chainId}_${protocol}_${asset}`;
         let apy = this.cache.get(cacheKey) as Yield;
         if (!apy) {
-            apy = await this.provider.getApy(chainId, protocol, asset);
+            apy = await this.provider.getApy({ chainId, protocol, asset });
             this.cache.set(cacheKey, apy);
         }
         return apy;

@@ -35,7 +35,7 @@ To initialize it, you need to provide a yield data source and specify the time-t
 
 ```ts
 const ttl = 3600; // cache for 1 hour
-const yieldOptions = new YieldOptions(provider, ttl);
+const yieldOptions = new YieldOptions({provider, ttl});
 ```
 
 There are two options for the provider:
@@ -49,7 +49,7 @@ const provider = new CachedProvider();
 await provider.initialize("https://raw.githubusercontent.com/Popcorn-Limited/apy-data/main/apy-data.json");
 
 const ttl = 3600;
-const yieldOptions = new YieldOptions(provider, 3600);
+const yieldOptions = new YieldOptions({provider, ttl:3600});
 ```
 
 The CachedProvider is the most efficient solution 
@@ -70,8 +70,8 @@ const clients = {
         transport: http()
     }),
 };
-const provider = new LiveProvider(clients, ttl);
-const yieldOptions = new YieldOptions(provider, ttl);
+const provider = new LiveProvider({clients, ttl});
+const yieldOptions = new YieldOptions({provider, ttl});
 ```
 
 
@@ -95,21 +95,21 @@ const assets = await yieldOptions.getAssets(1);
 // assets = ["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", ...]
 ```
 
-### `getProtocolsByAsset(chainId: number, asset: Address): Promise<ProtocolName[]>`
+### `getProtocolsByAsset({chainId: number, asset: Address}): Promise<ProtocolName[]>`
 
 Returns a list of protocols that give you yield for a given asset.
 
 ```ts
-const protocols = await yieldOptions.getProtocolsByAsset(1,"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2");
+const protocols = await yieldOptions.getProtocolsByAsset({chainId:1, asset: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"});
 // protocols = ["aaveV2", "compoundV2", "curve", ...]
 ```
 
-### `getYieldOptionsByProtocol(chainId: number, protocol: ProtocolName): Promise<YieldOptions[]>`
+### `getYieldOptionsByProtocol({chainId: number, protocol: ProtocolName}): Promise<YieldOptions[]>`
 
 Returns a list of assets and their apy for a given protocol.
 
 ```ts
-const yields = await yieldOptions.getYieldOptionsByProtocol(1, "aaveV2");
+const yields = await yieldOptions.getYieldOptionsByProtocol({chainId:1, protocol: "aaveV2"});
 ```
 
 A YieldOptions is defined as:
@@ -133,11 +133,11 @@ type Yield = {
   - `apy.rewardToken` is the token in which you're paid.
   - `apy.apy` is the percentage you earn.
 
-### `getApy(chainId: number, protocol: ProtocolName, asset: Address): Promise<Yield>`
+### `getApy({chainId: number, protocol: ProtocolName, asset: Address}): Promise<Yield>`
 
 Returns the yield for a given asset & proctol:
 
 ```ts
-const yield = await yieldOptions.getApy(1, "aaveV2", "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2");
+const yield = await yieldOptions.getApy({chainId:1, protocol: "aaveV2", asset:"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"});
 ```
 See more information about the Yield type above in 'getYieldOptionsByProtocol'.
