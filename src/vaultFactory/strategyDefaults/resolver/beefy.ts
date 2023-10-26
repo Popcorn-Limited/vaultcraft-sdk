@@ -46,7 +46,6 @@ export async function beefy({ client, address }: StrategyDefaultResolverParams):
 
     const vaultAddress = vaults.find(vault => getAddress(vault.tokenAddress) === getAddress(address))?.earnContractAddress;
     const boost = boosts.find(boost => getAddress(boost.tokenAddress) === getAddress(vaultAddress as string));
-    console.log({ vaultAddress, boost })
 
     return vaultAddress ?
       {

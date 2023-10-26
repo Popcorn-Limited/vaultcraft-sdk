@@ -154,18 +154,6 @@ export class VaultFactory extends Base {
     }
 
     private async simulateAdapterCreation(asset: Address, adapterData: StrategyData, strategyData: StrategyData, initialDeposit: bigint, options?: WriteOptions): Promise<SimulationResponse> {
-        console.log({
-            ...options,
-            ...this.baseObj,
-            functionName: "deployAdapter",
-            args: [
-                asset,
-                adapterData,
-                strategyData,
-                initialDeposit
-            ]
-        })
-        console.log(this.publicClient)
         try {
             const { request } = await this.publicClient.simulateContract({
                 ...options,

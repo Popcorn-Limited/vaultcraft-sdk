@@ -11,8 +11,8 @@ import { CachedProvider, Protocol, YieldOptions } from "../../src/yieldOptions/i
 import { privateKeyToAccount } from 'viem/accounts'
 import { Strategy } from "../../src/vaultFactory";
 
-
-const FORK_BLOCK_NUMBER = BigInt(17883751);
+const ARCHIVE_PATH = "./archive";
+const FORK_BLOCK_NUMBER = BigInt(18433934);
 // some random address that has a lot of ETH & DAI
 const ADMIN_ADDRESS = "0x6FF8E4DB500cBd77d1D181B8908E022E29e0Ec4A";
 
@@ -20,15 +20,13 @@ async function deployStrategiesForProtocol(yieldOptions: YieldOptions, vaultFact
   console.log(`deploying strategies using ${protocol.key} on network ${chainId}`);
 
   const strategy = Object.keys(strategies).map(key => { return { strategy: strategies[key], key: key } }).find(strategy => strategy.strategy.protocol === protocol.key)
-  const assets: Address[] = ["0x3FA8C89704e5d07565444009e5d9e624B40Be813"] //await yieldOptions.getProtocolAssets({ chainId, protocol: protocol.key })
+  const assets: Address[] = ["0x3175Df0976dFA876431C2E9eE6Bc45b65d3473CC", "0xdf0770dF86a8034b3EFEf0A1Bb3c889B8332FF56"] //await yieldOptions.getProtocolAssets({ chainId, protocol: protocol.key })
 
   // Slice assets into smaller chucks to run parallel without hitting rate limits
   const chunkSize = 40;
   const assetChunks: Address[][] = []
   for (let i = 0; i < assets.length; i += chunkSize)
     assetChunks.push(assets.slice(i, i + chunkSize));
-
-  console.log(strategy, assetChunks)
 
   // Deploy Strategies and store the result
   const result: { [key: Address]: { success: boolean, error: any | null } } = {}
@@ -76,9 +74,6 @@ describe("read-only", () => {
     const provider = new CachedProvider();
     await provider.initialize("https://raw.githubusercontent.com/Popcorn-Limited/apy-data/main/apy-data.json");
     const yieldOptions = new YieldOptions({ provider, ttl: 1000 });
-    
-
-    console.log(walletClient.chain.id)
 
     const vaultFactory = new VaultFactory({
       address: "0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb",
@@ -104,8 +99,13 @@ describe("read-only", () => {
       result[protocol.key] = res;
     }))
 
-    console.log(result)
+    console.log("saving result in new json");
+    if (!existsSync(ARCHIVE_PATH)) {
+      mkdirSync(ARCHIVE_PATH);
+    }
+    const date = new Date().toISOString().slice(0, 10)
 
+    writeFileSync(`${ARCHIVE_PATH}/${date}-deployment-test.json`, JSON.stringify(result), "utf-8");
     return true
   }, 100_000)
 })
