@@ -155,6 +155,12 @@ export class VaultFactory extends Base {
 
     private async simulateAdapterCreation(asset: Address, adapterData: StrategyData, strategyData: StrategyData, initialDeposit: bigint, options?: WriteOptions): Promise<SimulationResponse> {
         try {
+            console.log({
+                asset,
+                adapterData,
+                strategyData,
+                initialDeposit
+            })
             const { request } = await this.publicClient.simulateContract({
                 ...options,
                 ...this.baseObj,
@@ -166,8 +172,10 @@ export class VaultFactory extends Base {
                     initialDeposit
                 ]
             });
+            console.log({ request })
             return { request: request, success: true, error: undefined }
         } catch (error: any) {
+            console.log({ error })
             return { request: undefined, success: false, error: error.shortMessage }
         }
     }
