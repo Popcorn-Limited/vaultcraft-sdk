@@ -20,10 +20,10 @@ async function deployStrategiesForProtocol(yieldOptions: YieldOptions, vaultFact
   console.log(`deploying strategies using ${protocol.key} on network ${chainId}`);
 
   const strategy = Object.keys(strategies).map(key => { return { strategy: strategies[key], key: key } }).find(strategy => strategy.strategy.protocol === protocol.key)
-  const assets: Address[] = ["0x3175Df0976dFA876431C2E9eE6Bc45b65d3473CC", "0xdf0770dF86a8034b3EFEf0A1Bb3c889B8332FF56"] //await yieldOptions.getProtocolAssets({ chainId, protocol: protocol.key })
+  const assets: Address[] = await yieldOptions.getProtocolAssets({ chainId, protocol: protocol.key })
 
   // Slice assets into smaller chucks to run parallel without hitting rate limits
-  const chunkSize = 40;
+  const chunkSize = 20;
   const assetChunks: Address[][] = []
   for (let i = 0; i < assets.length; i += chunkSize)
     assetChunks.push(assets.slice(i, i + chunkSize));
@@ -31,6 +31,7 @@ async function deployStrategiesForProtocol(yieldOptions: YieldOptions, vaultFact
   // Deploy Strategies and store the result
   const result: { [key: Address]: { success: boolean, error: any | null } } = {}
   for (let i = 0; i < assetChunks.length; i++) {
+    console.log(`deploying chunk-${i}`)
     await Promise.all(
       assetChunks[i].map(async (asset) => {
         try {
@@ -42,6 +43,7 @@ async function deployStrategiesForProtocol(yieldOptions: YieldOptions, vaultFact
           })
           result[asset] = { success: true, error: null }
         } catch (e: any) {
+          console.log(e)
           result[asset] = { success: false, error: e }
         }
       })
