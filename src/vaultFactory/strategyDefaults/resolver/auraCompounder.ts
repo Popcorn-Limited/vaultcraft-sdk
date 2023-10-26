@@ -2,7 +2,7 @@
 import { Address } from "viem";
 import { aura } from "./aura.js";
 import { ZERO } from "@/lib/constants/index.js";
-import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
+import { ERROR_RESPONSE, LOCAL_NETWORKS, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 
 const BASE_RESPONSE = {
   params: [
@@ -35,7 +35,7 @@ const AURA: { [key: number]: Address } = { 1: "0xC0c293ce456fF0ED870ADd98a0828Dd
 const BALANCER_VAULT: { [key: number]: Address } = { 1: "0xBA12222222228d8Ba445958a75a0704d566BF2C8" }
 
 export async function auraCompounder({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
-  const chainId = client.chain?.id as number
+  const chainId = LOCAL_NETWORKS.includes(client.chain?.id as number) ? 1 : client.chain?.id as number;
   if (Object.keys(BAL).indexOf(chainId.toString()) === -1) {
     return ERROR_RESPONSE;
   } else {

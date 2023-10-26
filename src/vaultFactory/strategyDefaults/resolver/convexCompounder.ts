@@ -1,7 +1,7 @@
 import { Address } from "viem";
 import { convex } from "./convex.js";
 import { ZERO } from "@/lib/constants/index.js";
-import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
+import { ERROR_RESPONSE, LOCAL_NETWORKS, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 
 const BASE_RESPONSE = {
   params: [
@@ -33,7 +33,7 @@ const CRV: { [key: number]: Address } = { 1: "0xD533a949740bb3306d119CC777fa900b
 const CVX: { [key: number]: Address } = { 1: "0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B" }
 
 export async function convexCompounder({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
-  const chainId = client.chain?.id as number
+  const chainId = LOCAL_NETWORKS.includes(client.chain?.id as number) ? 1 : client.chain?.id as number;
   if (Object.keys(CRV).indexOf(chainId.toString()) === -1) {
     return ERROR_RESPONSE;
   } else {

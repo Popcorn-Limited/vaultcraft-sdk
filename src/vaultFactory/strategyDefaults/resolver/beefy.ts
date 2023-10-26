@@ -1,5 +1,5 @@
 import { getAddress } from "viem";
-import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
+import { ERROR_RESPONSE, LOCAL_NETWORKS, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 import { ADDRESS_ZERO } from "@/lib/constants/index.js";
 import axios from "axios";
 
@@ -35,7 +35,8 @@ const networkNameByChainId: { [key: number]: string } = {
 }
 
 export async function beefy({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
-  const chainId = client.chain?.id as number
+  const chainId = LOCAL_NETWORKS.includes(client.chain?.id as number) ? 1 : client.chain?.id as number;
+
   if (Object.keys(networkNameByChainId).indexOf(chainId.toString()) === -1) {
     return ERROR_RESPONSE;
   } else {
@@ -45,7 +46,7 @@ export async function beefy({ client, address }: StrategyDefaultResolverParams):
 
     const vaultAddress = vaults.find(vault => getAddress(vault.tokenAddress) === getAddress(address))?.earnContractAddress;
     const boost = boosts.find(boost => getAddress(boost.tokenAddress) === getAddress(vaultAddress as string));
-
+    console.log({ vaultAddress, boost })
 
     return vaultAddress ?
       {

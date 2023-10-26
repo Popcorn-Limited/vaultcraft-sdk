@@ -55,6 +55,8 @@ export const ERROR_RESPONSE = {
   default: [{ name: "error", value: null }]
 }
 
+export const LOCAL_NETWORKS = [123, 1337]
+
 export const StrategyDefaultResolvers: { [key: string]: ({ client, address }: StrategyDefaultResolverParams) => Promise<StrategyDefault> } = {
   aura,
   auraCompounder,

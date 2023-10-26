@@ -1,5 +1,5 @@
 import { Address, getAddress } from "viem";
-import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
+import { ERROR_RESPONSE, LOCAL_NETWORKS, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 import axios from "axios"
 
 
@@ -25,7 +25,7 @@ const BASE_RESPONSE = {
 }
 
 export async function yearnFactory({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
-  const chainId = client.chain?.id as number;
+  const chainId = LOCAL_NETWORKS.includes(client.chain?.id as number) ? 1 : client.chain?.id as number;;
 
   const balancerGauges = await getBalancerGauges(chainId);
   const balResult = balancerGauges.find(bal => getAddress(bal.lpToken) === getAddress(address));

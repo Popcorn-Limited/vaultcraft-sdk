@@ -1,7 +1,7 @@
 import { Address } from "viem";
 import { stargate } from "./stargate.js";
 import { ZERO } from "@/lib/constants/index.js";
-import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
+import { ERROR_RESPONSE, LOCAL_NETWORKS, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 
 const BASE_RESPONSE = {
   params: [
@@ -32,7 +32,7 @@ const STG_ADDRESS: { [key: number]: Address } = { 1: "0xAf5191B0De278C7286d6C7CC
 const STARGATE_ROUTER: { [key: number]: Address } = { 1: "0x8731d54E9D02c286767d56ac03e8037C07e01e98" }
 
 export async function curveStargateCompounder({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
-  const chainId = client.chain?.id as number
+  const chainId = LOCAL_NETWORKS.includes(client.chain?.id as number) ? 1 : client.chain?.id as number;
 
   if (Object.keys(STARGATE_ROUTER).indexOf(chainId.toString()) === -1) {
     return ERROR_RESPONSE;

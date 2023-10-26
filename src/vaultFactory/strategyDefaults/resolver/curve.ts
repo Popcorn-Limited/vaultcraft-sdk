@@ -1,5 +1,5 @@
 import { Address, getAddress } from "viem";
-import { StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
+import { LOCAL_NETWORKS, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 
 const BASE_RESPONSE = {
       params: [{
@@ -16,7 +16,7 @@ const GaugeTypesToSkip = [1, 2, 4, 7, 8, 9, 10, 11]
 
 
 export async function curve({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
-    const chainId = client.chain?.id as number
+    const chainId = LOCAL_NETWORKS.includes(client.chain?.id as number) ? 1 : client.chain?.id as number;
     
     const poolLength = await client.readContract({
         address: CurveControllerByChain[chainId],

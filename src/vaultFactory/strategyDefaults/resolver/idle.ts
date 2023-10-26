@@ -1,5 +1,5 @@
 import { mainnet } from "viem/chains";
-import { StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
+import { LOCAL_NETWORKS, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 import { Address, getAddress } from "viem";
 
 const BASE_RESPONSE = {
@@ -18,7 +18,7 @@ const assetToCdo: { [key: Address]: Address } = {
 }
 
 export async function idle({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
-  const chainId = client.chain?.id as number
+  const chainId = LOCAL_NETWORKS.includes(client.chain?.id as number) ? 1 : client.chain?.id as number;
 
   return {
     ...BASE_RESPONSE,

@@ -1,7 +1,7 @@
 import { balancer } from "./balancer.js";
 import { Address } from "viem";
 import { ZERO } from "@/lib/constants/index.js";
-import { ERROR_RESPONSE, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
+import { ERROR_RESPONSE, LOCAL_NETWORKS, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 
 const BASE_RESPONSE = {
   params: [
@@ -33,7 +33,7 @@ const BAL: { [key: number]: Address } = { 1: "0xba100000625a3754423978a60c9317c5
 const BALANCER_VAULT: { [key: number]: Address } = { 1: "0xBA12222222228d8Ba445958a75a0704d566BF2C8" }
 
 export async function balancerLpCompounder({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
-  const chainId = client.chain?.id as number
+  const chainId = LOCAL_NETWORKS.includes(client.chain?.id as number) ? 1 : client.chain?.id as number;
   if (Object.keys(BAL).indexOf(chainId.toString()) === -1) {
     return ERROR_RESPONSE;
   } else {

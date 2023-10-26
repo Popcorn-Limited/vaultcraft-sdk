@@ -7,7 +7,7 @@ const strategies: { [key: string]: Strategy } = {
     resolver: "curveStargateCompounder",
     protocol: "stargate",
     adapter: "StargateDepositor",
-    chains: [1],
+    chains: [1,123],
     description: "description",
     logoURI: "/images/icons/popLogo.svg",
   },
@@ -17,7 +17,7 @@ const strategies: { [key: string]: Strategy } = {
     resolver: "curveCompounder",
     protocol: "curve",
     adapter: "CurveGaugeDepositor",
-    chains: [1],
+    chains: [1,123],
     description: "description",
     logoURI: "/images/icons/popLogo.svg",
   },
@@ -27,7 +27,7 @@ const strategies: { [key: string]: Strategy } = {
     resolver: "convexCompounder",
     protocol: "convex",
     adapter: "ConvexDepositor",
-    chains: [1],
+    chains: [1,123],
     description: "description",
     logoURI: "/images/icons/popLogo.svg",
   },
@@ -37,7 +37,7 @@ const strategies: { [key: string]: Strategy } = {
     resolver: "balancerLpCompounder",
     protocol: "balancer",
     adapter: "BalancerGaugeDepositor",
-    chains: [1],
+    chains: [1,123],
     description: "description",
     logoURI: "/images/icons/popLogo.svg",
   },
@@ -47,7 +47,7 @@ const strategies: { [key: string]: Strategy } = {
     resolver: "auraCompounder",
     protocol: "aura",
     adapter: "AuraDepositor",
-    chains: [1],
+    chains: [1,123],
     description: "description",
     logoURI: "/images/icons/popLogo.svg",
   },
@@ -57,7 +57,7 @@ const strategies: { [key: string]: Strategy } = {
     name: "AaveV2 Depositor",
     key: "AaveV2Adapter",
     protocol: "aaveV2",
-    chains: [1, 1337],
+    chains: [1, 123],
     resolver: "aaveV2"
   },
   AaveV3Depositor: {
@@ -66,7 +66,7 @@ const strategies: { [key: string]: Strategy } = {
     name: "AaveV3 Depositor",
     key: "AaveV3Adapter",
     protocol: "aaveV3",
-    chains: [1, 1337, 42161],
+    chains: [1, 123, 42161],
     resolver: "aaveV3"
   },
   AlpacaLendV1Depositor: {
@@ -111,7 +111,7 @@ const strategies: { [key: string]: Strategy } = {
     name: "Beefy Depositor",
     key: "BeefyAdapter3",
     protocol: "beefy",
-    chains: [1, 1337, 42161],
+    chains: [1, 123, 42161],
     resolver: "beefy"
   },
   CompoundV2Depositor: {
@@ -120,7 +120,7 @@ const strategies: { [key: string]: Strategy } = {
     name: "CompoundV2 Depositor",
     key: "CompoundAdapter",
     protocol: "compoundV2",
-    chains: [1],
+    chains: [1,123],
     resolver: "compoundV2"
   },
   CompoundV3Depositor: {
@@ -129,7 +129,7 @@ const strategies: { [key: string]: Strategy } = {
     name: "CompoundV3 Depositor",
     key: "CompoundV3Adapter",
     protocol: "compoundV3",
-    chains: [1, 1337],
+    chains: [1, 123],
     resolver: "compoundV3"
   },
   FluxFinanceDepositor: {
@@ -138,7 +138,7 @@ const strategies: { [key: string]: Strategy } = {
     name: "Flux Finance Depositor",
     key: "CompoundV2Adapter",
     protocol: "flux",
-    chains: [1, 1337],
+    chains: [1, 123],
     resolver: "flux"
   },
   ConvexDepositor: {
@@ -201,7 +201,7 @@ const strategies: { [key: string]: Strategy } = {
     name: "Idle Junior Depositor",
     key: "IdleJuniorAdapterV2",
     protocol: "idleJunior",
-    chains: [1, 1337],
+    chains: [1, 123],
     resolver: "idle"
   },
   IdleSeniorDepositor: {
@@ -210,7 +210,7 @@ const strategies: { [key: string]: Strategy } = {
     name: "Idle Senior Depositor",
     key: "IdleSeniorAdapterV2",
     protocol: "idleSenior",
-    chains: [1, 1337],
+    chains: [1, 123],
     resolver: "idle"
   },
   OriginDepositor: {
@@ -219,7 +219,7 @@ const strategies: { [key: string]: Strategy } = {
     name: "Origin Depositor",
     key: "OriginAdapter",
     protocol: "origin",
-    chains: [1, 1337],
+    chains: [1, 123],
     resolver: "origin"
   },
   RadiantDepositor: {
@@ -246,7 +246,7 @@ const strategies: { [key: string]: Strategy } = {
     name: "Stargate Depositor",
     key: "StargateLpStakingAdapter",
     protocol: "stargate",
-    chains: [1, 1337],
+    chains: [1, 123],
     resolver: "stargate"
   },
   MasterChefV1Depositor: {
@@ -282,7 +282,7 @@ const strategies: { [key: string]: Strategy } = {
     name: "Yearn Depositor",
     key: "YearnAdapter1",
     protocol: "yearn",
-    chains: [1, 1337, 42161],
+    chains: [1, 123, 42161],
     resolver: "yearn"
   },
   YearnFactoryDepositor: {
@@ -291,7 +291,7 @@ const strategies: { [key: string]: Strategy } = {
     name: "Yearn Factory Depositor",
     key: "YearnFactoryAdapter",
     protocol: "yearnFactory",
-    chains: [1],
+    chains: [1,123],
     resolver: "yearnFactory"
   }
 }

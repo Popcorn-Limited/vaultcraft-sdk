@@ -1,10 +1,12 @@
 import { createPool } from "@viem/anvil";
-import { Address, createPublicClient, http } from "viem";
+import { Address, Chain, Transport, WalletClient, createPublicClient, createWalletClient, http } from "viem";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { mainnet, polygon, arbitrum, optimism } from "viem/chains";
-import strategies from "../src/lib/constants/strategies.js";
-import { VaultFactory } from "../src/vaultFactory/vaultFactory.js";
-import { CachedProvider, Protocol, YieldOptions } from "../src/yieldOptions/index.js";
+import strategies from "../src/lib/constants/strategies";
+import { VaultFactory } from "../src/vaultFactory/vaultFactory";
+import { CachedProvider, Protocol, YieldOptions } from "../src/yieldOptions/index";
+import { privateKeyToAccount } from 'viem/accounts'
+import { Strategy } from "../src/vaultFactory";
 
 const MAINNET_URL = "https://eth.llamarpc.com";
 const POLYGON_URL = "https://polygon.llamarpc.com";
@@ -28,8 +30,16 @@ const anvilPool = createPool();
   const vaultFactory = new VaultFactory({ address: "0x7D51BABA56C2CA79e15eEc9ECc4E92d9c0a7dbeb", publicClient: mainnetClient, walletClient })
 
   // Test deployment of each asset for each protocol and store results
-  const protocols = yieldOptions.getProtocols(1)
-  const result = {}
+  const sampleProtocol: Protocol = {
+    name: "Beefy",
+    key: "beefy",
+    logoURI: "https://cryptologos.cc/logos/beefy-finance-bifi-logo.png?v=024",
+    description: "",
+    tags: [],
+    chains: [1, 137, 10, 42161, 56]
+  }
+  const protocols = [sampleProtocol] //yieldOptions.getProtocols(1)
+  const result: { [key: string]: any } = {}
 
   protocols.forEach(async protocol => {
     const res = await deployStrategiesForProtocol(yieldOptions, vaultFactory, protocol, 1);
@@ -51,7 +61,7 @@ const anvilPool = createPool();
   writeFileSync(`./${date}-deployment-test.json`, JSON.stringify(result), "utf-8");
 })();
 
-async function createClient(chain, forkUrl, port) {
+async function createClient(chain: Chain, forkUrl: string, port: number) {
   await anvilPool.start(chain.id, {
     port,
     forkUrl,
@@ -67,19 +77,27 @@ async function createClient(chain, forkUrl, port) {
       },
     },
   };
-  const client = createPublicClient({
+  const publicClient = createPublicClient({
     chain: anvilChain,
     transport: http(),
   });
 
-  return client;
+  const account = privateKeyToAccount(process.env.PRIVATE_KEY as `0x${string}`)
+
+  const walletClient = createWalletClient({
+    account,
+    chain: anvilChain,
+    transport: http(),
+  })
+
+  return { publicClient, walletClient };
 }
 
 async function deployStrategiesForProtocol(yieldOptions: YieldOptions, vaultFactory: VaultFactory, protocol: Protocol, chainId: number) {
-  console.log(`deploying strategies using ${protocol} on network ${chainId}`);
+  console.log(`deploying strategies using ${protocol.key} on network ${chainId}`);
 
-  const strategy = strategies.find(strategy => strategy.protocol === protocol.key)
-  const assets: Address[] = await yieldOptions.getProtocolAssets({ chainId, protocol: protocol.key })
+  const strategy = Object.keys(strategies).map(key => { return { strategy: strategies[key], key: key } }).find(strategy => strategy.strategy.protocol === protocol.key)
+  const assets: Address[] = ["0x3FA8C89704e5d07565444009e5d9e624B40Be813"] //await yieldOptions.getProtocolAssets({ chainId, protocol: protocol.key })
 
   // Slice assets into smaller chucks to run parallel without hitting rate limits
   const chunkSize = 40;
@@ -88,7 +106,7 @@ async function deployStrategiesForProtocol(yieldOptions: YieldOptions, vaultFact
     assetChunks.push(assets.slice(i, i + chunkSize));
 
   // Deploy Strategies and store the result
-  const result = {}
+  const result: { [key: Address]: { success: boolean, error: any | null } } = {}
   for (let i = 0; i < assetChunks.length; i++) {
     await Promise.all(
       assetChunks[i].map(async (asset) => {
@@ -96,11 +114,11 @@ async function deployStrategiesForProtocol(yieldOptions: YieldOptions, vaultFact
           await vaultFactory.createStrategyByKey({
             asset,
             initialDeposit: BigInt(0),
-            strategy: strategy.key,
+            strategy: strategy?.key as string,
             options: { account: "0x22f5413C075Ccd56D575A54763831C4c27A37Bdb" }
           })
           result[asset] = { success: true, error: null }
-        } catch (e) {
+        } catch (e: any) {
           result[asset] = { success: false, error: e }
         }
       })
