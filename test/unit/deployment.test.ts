@@ -20,7 +20,7 @@ async function deployStrategiesForProtocol(yieldOptions: YieldOptions, vaultFact
   console.log(`deploying strategies using ${protocol.key} on network ${chainId}`);
 
   const strategy = Object.keys(strategies).map(key => { return { strategy: strategies[key], key: key } }).find(strategy => strategy.strategy.protocol === protocol.key)
-  const assets: Address[] = ["0x6B175474E89094C44Da98b954EedeAC495271d0F", "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", "0x5f98805A4E8be255a32880FDeC7F6728C6568bA0"]//await yieldOptions.getProtocolAssets({ chainId, protocol: protocol.key })
+  const assets: Address[] = await yieldOptions.getProtocolAssets({ chainId, protocol: protocol.key })
 
   // Slice assets into smaller chucks to run parallel without hitting rate limits
   // const chunkSize = 20;
@@ -41,8 +41,7 @@ async function deployStrategiesForProtocol(yieldOptions: YieldOptions, vaultFact
       })
       result[assets[i]] = { success: true, error: null }
     } catch (e: any) {
-      console.log({ e })
-      result[assets[i]] = { success: false, error: e }
+      result[assets[i]] = { success: false, error: e.message }
     }
   }
 
@@ -79,15 +78,7 @@ describe("read-only", () => {
 
 
     // Test deployment of each asset for each protocol and store results
-    const sampleProtocol: Protocol = {
-      name: "Yearn",
-      key: "yearn",
-      logoURI: "https://cryptologos.cc/logos/yearn-finance-yfi-logo.png?v=024",
-      description: "",
-      tags: [],
-      chains: [1]
-    }
-    const protocols = [sampleProtocol] //yieldOptions.getProtocols(1)
+    const protocols = yieldOptions.getProtocols(1)
     const result: { [key: string]: any } = {}
 
     for (let i = 0; i < protocols.length; i++) {
@@ -103,5 +94,5 @@ describe("read-only", () => {
 
     writeFileSync(`${ARCHIVE_PATH}/${date}-deployment-test.json`, JSON.stringify(result), "utf-8");
     return true
-  }, 100_000)
+  }, 3_600_000)
 })
