@@ -2,7 +2,7 @@ import { Address, getAddress } from "viem";
 import { LOCAL_NETWORKS, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 
 const BASE_RESPONSE = {
-      params: [{
+    params: [{
         name: "poolId",
         type: "uint256",
     }]
@@ -17,7 +17,7 @@ const GaugeTypesToSkip = [1, 2, 4, 7, 8, 9, 10, 11]
 
 export async function curve({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
     const chainId = LOCAL_NETWORKS.includes(client.chain?.id as number) ? 1 : client.chain?.id as number;
-    
+
     const poolLength = await client.readContract({
         address: CurveControllerByChain[chainId],
         abi: controllerAbi,
@@ -52,19 +52,29 @@ export async function curve({ client, address }: StrategyDefaultResolverParams):
     const gaugesWithIdAndType = gaugesWithId.map((gauge, idx) => { return { ...gauge, type: Number(gaugeTypes[idx]) } })
 
     const filtered = gaugesWithIdAndType.filter(gauge => !GaugeTypesToSkip.includes(gauge.type))
+    let lpTokens: any[] = [];
+    const chunkSize = 100
 
-    const lpToken = await client.multicall({
-        contracts: filtered.map((gauge, idx) => {
-            return {
-                address: gauge.gauge,
-                abi: gaugeAbi,
-                functionName: "lp_token"
-            }
-        })
+    for (let i = 0; i < filtered.length; i += chunkSize)
+        lpTokens.push(await client.multicall({
+            contracts: filtered.slice(i, i + chunkSize).map((gauge, idx) => {
+                return {
+                    address: gauge.gauge,
+                    abi: gaugeAbi,
+                    functionName: "lp_token"
+                }
+            })
+        }))
+    lpTokens = lpTokens.flat(2)
+    
+    const filteredWithLp = filtered.map((gauge, idx) => {
+        return {
+            ...gauge,
+            lp: lpTokens[idx].status === "success" ? getAddress(lpTokens[idx].result as string) : null,
+            success: lpTokens[idx].status === "success"
+        }
     })
-    const filteredWithLp = filtered.map((gauge, idx) => { return { ...gauge, lp: lpToken[idx].status === "success" ? getAddress(lpToken[idx].result as string) : null, success: lpToken[idx].status === "success" } })
     const successFiltered = filteredWithLp.filter(gauge => gauge.success)
-
     const result = successFiltered.find(gauge => gauge.lp === getAddress(address))
     return {
         ...BASE_RESPONSE,

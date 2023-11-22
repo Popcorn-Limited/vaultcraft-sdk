@@ -3,6 +3,7 @@ import NodeCache from "node-cache";
 import { ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { Address, getAddress } from "viem";
 import { getEmptyYield, IProtocol } from "./index.js";
+import getAuraPools, { AuraPool } from "@/lib/external/aura/getAuraPools.js";
 
 
 export class Aura implements IProtocol {
@@ -57,62 +58,4 @@ export class Aura implements IProtocol {
         }
         return pools;
     }
-}
-
-export interface AuraPool {
-    id: string;
-    isShutdown: boolean;
-    aprs: {
-        total: number;
-        breakdown: {
-            // there are cases where only `id` is defined.
-            id: string;
-            token?: {
-                symbol: string;
-                name: string;
-                address: string;
-            };
-            name?: string;
-            value?: number;
-        }[];
-    };
-    lpToken: {
-        address: string;
-    };
-}
-
-export async function getAuraPools(chainId: number): Promise<AuraPool[]> {
-    const res = await axios.post('https://data.aura.finance/graphql', {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        query: `
-        query Pools($chainId: Int = 1) {
-          pools(chainId: $chainId){
-            id
-            lpToken
-            {
-              address
-            }
-            aprs {
-              total
-              breakdown {
-                id
-                token{
-                  symbol
-                  name
-                  address
-                }
-              name
-              value
-              }
-            }
-          }
-        }
-      `,
-        variables: {
-            chainId: chainId,
-        },
-    });
-    return res.data.data.pools;
 }

@@ -17,17 +17,16 @@
     "test:integration": "vitest run integration",
     "test:yieldOptions": "vitest run yieldOptions",
     "test:deployment": "vitest run deployment"
-
   },
   "dependencies": {
+    "@balancer-labs/sdk": "^1.1.5",
+    "@curvefi/api": "2.44.0",
     "axios": "^1.5.0",
     "dotenv": "^16.3.1",
     "node-cache": "^5.1.2",
-    "viem": "^1.5.3",
-    "@curvefi/api": "2.44.0"
+    "viem": "^1.5.3"
   },
   "devDependencies": {
-    "typescript": "^5.1.6",
     "@babel/cli": "^7.22.10",
     "@babel/core": "^7.22.11",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
@@ -42,6 +41,7 @@
     "eslint-config-next": "^13.3.4",
     "prettier": "^2.8.8",
     "rimraf": "^5.0.1",
+    "typescript": "^5.1.6",
     "vite-tsconfig-paths": "^4.2.0",
     "vitest": "^0.34.1"
   }

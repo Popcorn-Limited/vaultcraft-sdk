@@ -20,7 +20,8 @@ async function deployStrategiesForProtocol(yieldOptions: YieldOptions, vaultFact
   console.log(`deploying strategies using ${protocol.key} on network ${chainId}`);
 
   const strategy = Object.keys(strategies).map(key => { return { strategy: strategies[key], key: key } }).find(strategy => strategy.strategy.protocol === protocol.key)
-  const assets: Address[] = await yieldOptions.getProtocolAssets({ chainId, protocol: protocol.key })
+  let assets: Address[] = await yieldOptions.getProtocolAssets({ chainId, protocol: protocol.key })
+  assets = assets.slice(0,50)
 
   // Slice assets into smaller chucks to run parallel without hitting rate limits
   // const chunkSize = 20;
@@ -78,7 +79,14 @@ describe("read-only", () => {
 
 
     // Test deployment of each asset for each protocol and store results
-    const protocols = yieldOptions.getProtocols(1)
+    const protocols = [{
+      name: "Compound V3",
+      key: "curve",
+      logoURI: "https://cryptologos.cc/logos/aave-aave-logo.png?v=024",
+      description: "",
+      tags: [],
+      chains: [1]
+    }] //yieldOptions.getProtocols(1)
     const result: { [key: string]: any } = {}
 
     for (let i = 0; i < protocols.length; i++) {

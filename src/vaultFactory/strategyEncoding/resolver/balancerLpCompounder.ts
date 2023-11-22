@@ -61,7 +61,7 @@ export async function balancerLpCompounder({ client, address, params }: Strategy
     const route2 = await createRoute(params[0][0], params[2], chainId, client, parseUnits("1", 9).toString()) // TODO - fetch gas price dynamically
     values.push(route2)
   }
-
+  console.log("params3", params[3])
   return encodeAbiParameters(encodeAbi,
     [
       params[2] as Address, // baseAsset

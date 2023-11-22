@@ -64,6 +64,7 @@ export class VaultFactory extends Base {
             address: getAddress(asset),
             resolver
         })
+        //console.log(data)
         if (!this.strategyDefaultsAreValid(data)) throw new Error(`Invalid adapter defaults for ${resolver} on ${asset}`);
 
         return encodeAbiParameters(data.params, data.default.map(v => v.value))
@@ -77,7 +78,7 @@ export class VaultFactory extends Base {
             resolver
         })
         if (!this.strategyDefaultsAreValid(data)) throw new Error(`Invalid strategy defaults for ${resolver} on ${asset}`);
-
+        
         return resolveStrategyEncoding({
             client: this.publicClient,
             address: getAddress(asset),
