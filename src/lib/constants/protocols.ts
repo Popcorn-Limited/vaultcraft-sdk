@@ -135,7 +135,7 @@ const protocols: { [key: string]: Protocol } = {
     logoURI: "https://icons.llamao.fi/icons/protocols/pirex?w=48&h=48",
     description: "",
     tags: [],
-    chains: [1, 41621]
+    chains: [1, 42161]
   },
   sommelier: {
     name: "Sommelier",
