@@ -87,7 +87,7 @@ const protocols: { [key: string]: Protocol } = {
     logoURI: "https://icons.llamao.fi/icons/protocols/idle",
     description: "",
     tags: [],
-    chains: [1]
+    chains: [1, 10]
   },
   idleSenior: {
     name: "Idle Senior",
@@ -95,7 +95,7 @@ const protocols: { [key: string]: Protocol } = {
     logoURI: "https://icons.llamao.fi/icons/protocols/idle",
     description: "",
     tags: [],
-    chains: [1]
+    chains: [1, 10]
   },
   origin: {
     name: "Origin",
@@ -125,6 +125,22 @@ const protocols: { [key: string]: Protocol } = {
     name: "Yearn",
     key: "yearnFactory",
     logoURI: "https://cryptologos.cc/logos/yearn-finance-yfi-logo.png?v=024",
+    description: "",
+    tags: [],
+    chains: [1]
+  },
+  pirex: {
+    name: "Pirex",
+    key: "pirex",
+    logoURI: "https://icons.llamao.fi/icons/protocols/pirex?w=48&h=48",
+    description: "",
+    tags: [],
+    chains: [1, 41621]
+  },
+  sommelier: {
+    name: "Sommelier",
+    key: "sommelier",
+    logoURI: "https://icons.llamao.fi/icons/protocols/sommelier?w=48&h=48",
     description: "",
     tags: [],
     chains: [1]
