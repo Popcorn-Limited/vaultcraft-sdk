@@ -79,3 +79,11 @@ export interface IProtocolProvider {
   getProtocolAssets({ chainId, protocol }: { chainId: number, protocol: ProtocolName }): Promise<Address[]>;
   getApy({ chainId, protocol, asset }: { chainId: number, protocol: ProtocolName, asset: Address }): Promise<Yield>;
 }
+
+export interface LlamaPool {
+  chain: string;
+  project: string;
+  underlyingTokens: string[];
+  apy: number;
+  pool:string;
+}

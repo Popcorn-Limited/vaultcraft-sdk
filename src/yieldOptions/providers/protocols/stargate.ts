@@ -1,5 +1,5 @@
 import { Address, getAddress } from "viem";
-import { ProtocolName, Yield } from "src/yieldOptions/types.js";
+import { LlamaPool, ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { Clients, IProtocol, getEmptyYield } from "./index.js";
 import axios from "axios";
 import NodeCache from "node-cache";
@@ -10,13 +10,6 @@ const STARGATE_LP_STAKING_ADDRESS: { [key: number]: Address } = { 1: "0xB0D502E9
 
 // @dev Make sure the keys here are correct checksum addresses
 const STG_ADDRESS: { [key: number]: Address } = { 1: "0xAf5191B0De278C7286d6C7CC6ab6BB8A73bA2Cd6", 42161: "0x6694340fc020c5E6B96567843da2df01b2CE1eb6" }
-
-interface Pool {
-  chain: string;
-  project: string;
-  underlyingTokens: string[];
-  apy: number;
-}
 
 export class Stargate implements IProtocol {
   private clients: Clients;
@@ -41,14 +34,14 @@ export class Stargate implements IProtocol {
       functionName: "token"
     });
 
-    let pools = this.cache.get("llama-pools") as Pool[];
+    let pools = this.cache.get("llama-pools") as LlamaPool[];
     if (!pools) {
       const res = (await axios.get("https://yields.llama.fi/pools")).data;
       pools = res.data;
       this.cache.set("llama-pools", pools);
     }
 
-    const filteredPools: Pool[] = pools.filter((pool: Pool) => pool.chain === networkNames[chainId] && pool.project === "stargate")
+    const filteredPools: LlamaPool[] = pools.filter((pool: LlamaPool) => pool.chain === networkNames[chainId] && pool.project === "stargate")
     const pool = filteredPools.find(pool => getAddress(pool.underlyingTokens[0]) === getAddress(token))
 
     // TODO - Lps earn 1BPS on each transfer. Defillama has no data for this though so i currently dont know how to access that data.

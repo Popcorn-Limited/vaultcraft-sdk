@@ -35,7 +35,7 @@ export class LiveProvider implements IProtocolProvider {
                 "stargate": new Stargate(clients, ttl),
                 "yearn": new Yearn(clients, ttl),
                 "yearnFactory": new YearnFactory(clients, ttl),
-                "pirex": new Pirex(clients[1]),
+                "pirex": new Pirex(clients, ttl),
                 "sommelier": new Sommelier(clients[1])
             };
         }
