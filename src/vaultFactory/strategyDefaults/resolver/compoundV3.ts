@@ -1,5 +1,5 @@
 import { Address } from "viem";
-import { StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
+import { LOCAL_NETWORKS, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 
 const BASE_RESPONSE = {
   params: [{
@@ -47,7 +47,7 @@ const COMET_REWARDER: { [key: number]: Address } = {
 }
 
 export async function compoundV3({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
-  const chainId = client.chain?.id as number
+  const chainId = LOCAL_NETWORKS.includes(client.chain?.id as number) ? 1 : client.chain?.id as number;
   if (Object.keys(assetToCToken).includes(String(chainId)) && Object.keys(assetToCToken[chainId]).includes(address)) {
     return {
       ...BASE_RESPONSE,

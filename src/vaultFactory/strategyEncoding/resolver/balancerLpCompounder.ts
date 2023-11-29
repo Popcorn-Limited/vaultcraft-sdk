@@ -3,6 +3,7 @@ import { balancerApiProxyCall } from "@/lib/external/balancer/router/call.js";
 import { BatchSwapStep } from "@/lib/external/balancer/router/interfaces.js";
 import { Address, Hash, PublicClient, encodeAbiParameters, getAddress, parseUnits } from "viem";
 import { StrategyEncodingResolverParams } from "../index.js";
+import { LOCAL_NETWORKS } from "src/vaultFactory/strategyDefaults/index.js";
 
 interface BalancerRoute {
   swaps: BatchSwapStep[];
@@ -51,7 +52,7 @@ async function createRoute(sellToken: Address, buyToken: Address, chainId: numbe
 }
 
 export async function balancerLpCompounder({ client, address, params }: StrategyEncodingResolverParams): Promise<Hash> {
-  const chainId = client.chain?.id as number
+  const chainId = LOCAL_NETWORKS.includes(client.chain?.id as number) ? 1 : client.chain?.id as number;
 
   const route1 = await createRoute(params[0][0], params[2], chainId, client, parseUnits("1", 9).toString()) // TODO - fetch gas price dynamically
   const values = [route1]
@@ -60,7 +61,7 @@ export async function balancerLpCompounder({ client, address, params }: Strategy
     const route2 = await createRoute(params[0][0], params[2], chainId, client, parseUnits("1", 9).toString()) // TODO - fetch gas price dynamically
     values.push(route2)
   }
-
+  console.log("params3", params[3])
   return encodeAbiParameters(encodeAbi,
     [
       params[2] as Address, // baseAsset

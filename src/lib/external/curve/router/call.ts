@@ -18,7 +18,7 @@ const EMPTY_SWAP_PARAMS = [
 ]
 
 const curveInit: () => Promise<void> = async () => {
-    await curve.init("Alchemy", { network: "homestead", apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string }, { chainId: 1 });
+    await curve.init("Alchemy", { network: "homestead", apiKey: "KsuP431uPWKR3KFb-K_0MT1jcwpUnjAg" }, { chainId: 1 });
     await curve.factory.fetchPools();
     await curve.crvUSDFactory.fetchPools();
     await curve.EYWAFactory.fetchPools();
@@ -79,21 +79,22 @@ export const curveApiCall = async ({
     if (rewardTokens.length !== minTradeAmounts.length) {
         throw new Error("rewardTokens and minTradeAmounts must be the same length");
     }
-
+    // console.log("curveApiCall", { depositAsset, rewardTokens, baseAsset, router, minTradeAmounts, optionalData })
     await curveInit();
-
+    //console.log("res", await curve.router.expected("0x6B175474E89094C44Da98b954EedeAC495271d0F", "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", '1000'))
     const toBaseAssetRoutes: CurveRoute[] = [];
     for (let i = 0; i < rewardTokens.length; i++) {
         const inputToken = rewardTokens[i];
         const outputToken = baseAsset;
-        const { route: rewardRoute, } = await curve.router.getBestRouteAndOutput(inputToken, outputToken, '100000000');
+        const { route: rewardRoute, } = await curve.router.getBestRouteAndOutput(inputToken, outputToken, '1000');
+        //console.log({ rewardRoute })
         const toBaseAssetRoute = processRoute(rewardRoute);
         toBaseAssetRoutes.push(toBaseAssetRoute);
     }
 
     let toAssetRoute;
     if (getAddress(baseAsset) !== getAddress(depositAsset)) {
-        const { route: assetRoute, } = await curve.router.getBestRouteAndOutput(baseAsset, depositAsset, '100000000');
+        const { route: assetRoute, } = await curve.router.getBestRouteAndOutput(baseAsset, depositAsset, '1000');
         toAssetRoute = processRoute(assetRoute);
     } else {
         // fill empty route
@@ -123,7 +124,7 @@ export const curveApiCallToBytes = async ({
     optionalData: Hash
 }): Promise<Hash> => {
     const curveData = await curveApiCall({ depositAsset, rewardTokens, baseAsset, router, minTradeAmounts, optionalData });
-
+    console.log({ curveData })
     // Prepare the data for encoding.
     const values = [
         curveData.baseAsset,

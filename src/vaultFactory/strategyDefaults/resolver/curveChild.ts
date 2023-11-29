@@ -1,5 +1,5 @@
 import { Address, getAddress } from "viem";
-import { StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
+import { LOCAL_NETWORKS, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 
 const BASE_RESPONSE = {
       params: [{
@@ -17,7 +17,7 @@ export const CURVE_ADDRESS: { [chainId: number]: Address; } = {
 };
 
 export async function curveChild({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
-    const chainId = client.chain?.id as number
+    const chainId = LOCAL_NETWORKS.includes(client.chain?.id as number) ? 1 : client.chain?.id as number;
 
     return {
         ...BASE_RESPONSE,

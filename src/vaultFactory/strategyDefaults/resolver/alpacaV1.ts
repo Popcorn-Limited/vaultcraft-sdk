@@ -1,6 +1,6 @@
 import axios from "axios";
 import { getAddress } from "viem";
-import { StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
+import { LOCAL_NETWORKS, StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 
 type VaultsResponse = {
     Vaults: {
@@ -22,7 +22,7 @@ const TOKEN_ADDRESS = {
 } as { [chainId: number]: string }
 
 export async function alpacaV1({ client, address }: StrategyDefaultResolverParams): Promise<StrategyDefault> {
-    const chainId = client.chain?.id as number
+    const chainId = LOCAL_NETWORKS.includes(client.chain?.id as number) ? 1 : client.chain?.id as number;
     const { data } = await axios.get(TOKEN_ADDRESS?.[chainId])
     const { Vaults: vaults } = JSON.parse(atob(data.content)) as VaultsResponse
 

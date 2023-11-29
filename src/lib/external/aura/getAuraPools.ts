@@ -1,18 +1,20 @@
 import axios from "axios";
 
-interface AuraPool {
+export interface AuraPool {
   id: string;
   isShutdown: boolean;
   aprs: {
     total: number;
     breakdown: {
+      // there are cases where only `id` is defined.
       id: string;
-      token: {
+      token?: {
         symbol: string;
         name: string;
+        address: string;
       };
-      name: string;
-      value: number;
+      name?: string;
+      value?: number;
     }[];
   };
   lpToken: {
@@ -21,11 +23,11 @@ interface AuraPool {
 }
 
 export default async function getAuraPools(chainId: number): Promise<AuraPool[]> {
-  const res = await (await axios.post('https://data.aura.finance/graphql', {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
+  const res = await axios({
+    url: "https://data.aura.finance/graphql",
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify({
       query: `
         query Pools($chainId: Int = 1) {
           pools(chainId: $chainId){
@@ -41,6 +43,7 @@ export default async function getAuraPools(chainId: number): Promise<AuraPool[]>
                 token{
                   symbol
                   name
+                  address
                 }
               name
               value
@@ -52,7 +55,7 @@ export default async function getAuraPools(chainId: number): Promise<AuraPool[]>
       variables: {
         chainId: chainId,
       },
-    }),
-  }))
+    })
+  });
   return res.data.data.pools
 }
