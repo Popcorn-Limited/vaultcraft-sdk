@@ -71,7 +71,7 @@ const protocols: { [key: string]: Protocol } = {
     logoURI: "https://cryptologos.cc/logos/curve-dao-token-crv-logo.png?v=025",
     description: "",
     tags: [],
-    chains: [1]
+    chains: [] // TODO -- add chain once curve adapter is fixed
   },
   flux: {
     name: "Flux Finance",
