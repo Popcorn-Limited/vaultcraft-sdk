@@ -32,10 +32,11 @@ export class Yearn implements IProtocol {
         let vaults = this.cache.get("vaults") as Vault[];
         if (!vaults) {
             vaults = (await
-                axios.get(`https://api.yexporter.io/v1/chains/${chainId}/vaults/all`,
+                axios.get(`https://app.vaultcraft.io//api/yVaults?chainId=${chainId}`,
                     { timeout: 30000, httpsAgent: new https.Agent({ keepAlive: true }) }
                 )
             ).data;
+            console.log({ vaults })
             this.cache.set("vaults", vaults);
         }
         console.log({ vaults: vaults.length })

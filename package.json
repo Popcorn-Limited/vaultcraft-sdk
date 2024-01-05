@@ -1,6 +1,6 @@
 {
   "name": "vaultcraft-sdk",
-  "version": "0.1.29",
+  "version": "0.1.30",
   "description": "TypeScript library for VaultCraft",
   "main": "dist/index.js",
   "types": "./dist/index.d.ts",
