@@ -3,7 +3,12 @@ import { ChainToAddress, ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { Clients, IProtocol } from "./index.js";
 import { LENDING_POOL_ABI } from "./abi/aave_v3_lending_pool.js";
 
-const LENDING_POOL: ChainToAddress = { 1: "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2" };
+const LENDING_POOL: ChainToAddress = {
+    1: "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+    10: "0x794a61358D6845594F94dc1DB02A252b5b4814aD",
+    42161: "0x794a61358D6845594F94dc1DB02A252b5b4814aD",
+    137: "0x794a61358D6845594F94dc1DB02A252b5b4814aD"
+};
 
 export class AaveV3 implements IProtocol {
     private clients: Clients;

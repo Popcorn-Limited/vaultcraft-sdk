@@ -5,7 +5,7 @@ import { IDLE_CDO_ABI } from "./abi/idle_cdo.js";
 import axios from "axios";
 
 // @dev Make sure the keys here are correct checksum addresses
-const tranches: {
+export const tranches: {
     [key: number]: {
         [key: Address]: {
             cdo: Address,
