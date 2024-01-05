@@ -3,6 +3,7 @@ import { Clients, IProtocol, getEmptyYield } from "./index.js";
 import { Address, getAddress } from "viem";
 import NodeCache from "node-cache";
 import axios from "axios";
+import https from "https";
 
 const VAULT_FACTORY_ADDRESS: ChainToAddress = { 1: "0x21b1FC8A52f179757bf555346130bF27c0C2A17A" };
 
@@ -30,7 +31,11 @@ export class YearnFactory implements IProtocol {
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         let vaults = this.cache.get("vaults") as Vault[];
         if (!vaults) {
-            vaults = (await axios.get(`https://api.yexporter.io/v1/chains/${chainId}/vaults/all`)).data;
+            vaults = (await
+                axios.get(`https://api.yexporter.io/v1/chains/${chainId}/vaults/all`,
+                    { timeout: 30000, httpsAgent: new https.Agent({ keepAlive: true }) }
+                )
+            ).data;
             this.cache.set("vaults", vaults);
         }
         const vault = vaults.find((vault: any) => getAddress(vault.token.address) === getAddress(asset));
@@ -52,7 +57,7 @@ export class YearnFactory implements IProtocol {
         if (assets) {
             return assets;
         }
-        
+
         const client = this.clients[chainId];
 
         let factoryTokens: Address[] = [];

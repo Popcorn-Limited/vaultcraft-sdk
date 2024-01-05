@@ -1,9 +1,10 @@
 import { ProtocolName, Yield } from "src/yieldOptions/types.js";
+import { networkNames } from "@/lib/constants/index.js";
 import { getEmptyYield, IProtocol } from "./index.js";
 import { Address, getAddress } from "viem";
 import NodeCache from "node-cache";
 import axios from "axios";
-import { networkNames } from "@/lib/constants/index.js";
+import https from "https";
 
 interface BeefyVault {
     id: string;
@@ -63,7 +64,7 @@ export class Beefy implements IProtocol {
     private async getActiveVaults(): Promise<BeefyVault[]> {
         let vaults = this.cache.get("vaults") as BeefyVault[];
         if (!vaults) {
-            vaults = (await axios.get("https://api.beefy.finance/vaults")).data;
+            vaults = (await axios.get("https://api.beefy.finance/vaults", { timeout: 30000, httpsAgent: new https.Agent({ keepAlive: true }) })).data;
             vaults = vaults.filter((vault) => vault.status === "active");
             this.cache.set("vaults", vaults);
         }
@@ -73,7 +74,7 @@ export class Beefy implements IProtocol {
     private async getApys(): Promise<ApyBreakdown> {
         let apy = this.cache.get("apy") as ApyBreakdown;
         if (!apy) {
-            apy = (await axios("https://api.beefy.finance/apy/breakdown")).data;
+            apy = (await axios("https://api.beefy.finance/apy/breakdown", { timeout: 30000, httpsAgent: new https.Agent({ keepAlive: true }) })).data;
             this.cache.set("apy", apy);
         }
         return apy;

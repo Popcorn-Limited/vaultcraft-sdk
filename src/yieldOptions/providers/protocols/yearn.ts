@@ -3,6 +3,7 @@ import { Clients, IProtocol, getEmptyYield } from "./index.js";
 import { Address, getAddress } from "viem";
 import NodeCache from "node-cache";
 import axios from "axios";
+import https from "https";
 
 const VAULT_REGISTRY_ADDRESS: ChainToAddress = { 1: "0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804", 42161: "0x3199437193625DCcD6F9C9e98BDf93582200Eb1f" };
 
@@ -30,7 +31,11 @@ export class Yearn implements IProtocol {
     async getApy(chainId: number, asset: Address): Promise<Yield> {
         let vaults = this.cache.get("vaults") as Vault[];
         if (!vaults) {
-            vaults = (await axios.get(`https://api.yexporter.io/v1/chains/${chainId}/vaults/all`, { timeout: 10000 })).data;
+            vaults = (await
+                axios.get(`https://api.yexporter.io/v1/chains/${chainId}/vaults/all`,
+                    { timeout: 30000, httpsAgent: new https.Agent({ keepAlive: true }) }
+                )
+            ).data;
             this.cache.set("vaults", vaults);
         }
         console.log({ vaults: vaults.length })
