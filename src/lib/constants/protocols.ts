@@ -15,7 +15,7 @@ const protocols: { [key: string]: Protocol } = {
     logoURI: "https://cryptologos.cc/logos/aave-aave-logo.png?v=024",
     description: "",
     tags: [],
-    chains: [1]
+    chains: [1, 42161]
   },
   aura: {
     name: "Aura",
@@ -55,7 +55,7 @@ const protocols: { [key: string]: Protocol } = {
     logoURI: "https://cdn.furucombo.app/assets/img/token/COMP.svg",
     description: "",
     tags: [],
-    chains: [1]
+    chains: [1, 42161]
   },
   convex: {
     name: "Convex",
@@ -119,7 +119,7 @@ const protocols: { [key: string]: Protocol } = {
     logoURI: "https://cryptologos.cc/logos/yearn-finance-yfi-logo.png?v=024",
     description: "",
     tags: [],
-    chains: [1]
+    chains: [1, 42161]
   },
   yearnFactory: {
     name: "Yearn",
