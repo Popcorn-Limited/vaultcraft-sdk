@@ -36,12 +36,9 @@ export class Yearn implements IProtocol {
                     { timeout: 30000, httpsAgent: new https.Agent({ keepAlive: true }) }
                 )
             ).data;
-            console.log({ vaults })
             this.cache.set("vaults", vaults);
         }
-        console.log({ vaults: vaults.length })
         const vault = vaults.find((vault: any) => getAddress(vault.token.address) === getAddress(asset));
-        console.log({ vault })
 
         return !vault ?
             getEmptyYield(asset) :
