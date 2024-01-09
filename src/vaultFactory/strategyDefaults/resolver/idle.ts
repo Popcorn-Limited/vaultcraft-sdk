@@ -1,7 +1,7 @@
 import { mainnet } from "viem/chains";
 import { StrategyDefault, StrategyDefaultResolverParams } from "../index.js";
 import { getAddress } from "viem";
-import { tranches } from "src/yieldOptions/providers/protocols/idle.js";
+import { tranches } from "@/lib/external/idle/index.js";
 
 const BASE_RESPONSE = {
   params: [{
