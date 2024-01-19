@@ -38,3 +38,4 @@ export { Yearn } from "./yearn.js";
 export { YearnFactory } from "./yearnFactory.js";
 export { Pirex } from "./pirex.js";
 export { Sommelier } from "./sommelier.js"
+export { Velodrome } from "./velodrome.js"

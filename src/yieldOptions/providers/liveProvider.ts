@@ -1,4 +1,4 @@
-import { AaveV2, AaveV3, Aura, Beefy, Clients, CompoundV2, Curve, IProtocol, IdleJunior, IdleSenior, Origin, Yearn, Balancer, CompoundV3, Flux, Convex, Stargate, YearnFactory, Pirex, Sommelier } from "./protocols/index.js";
+import { AaveV2, AaveV3, Aura, Beefy, Clients, CompoundV2, Curve, IProtocol, IdleJunior, IdleSenior, Origin, Yearn, Balancer, CompoundV3, Flux, Convex, Stargate, YearnFactory, Pirex, Sommelier, Velodrome } from "./protocols/index.js";
 import { Address, getAddress } from "viem";
 import { IProtocolProvider, Protocol, ProtocolName, Yield } from "../types.js";
 import protocols from "@/lib/constants/protocols.js";
@@ -36,7 +36,8 @@ export class LiveProvider implements IProtocolProvider {
                 "yearn": new Yearn(clients, ttl),
                 "yearnFactory": new YearnFactory(clients, ttl),
                 "pirex": new Pirex(clients, ttl),
-                "sommelier": new Sommelier(clients[1])
+                "sommelier": new Sommelier(clients[1]),
+                "velodrome": new Velodrome(clients[10])
             };
         }
     }
