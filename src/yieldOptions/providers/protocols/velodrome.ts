@@ -2,7 +2,7 @@ import { ProtocolName, Yield } from "src/yieldOptions/types.js";
 import { IProtocol, getEmptyYield } from "./index.js";
 import { Address, PublicClient, getAddress, parseEther, zeroAddress } from "viem";
 import axios from "axios";
-import { ERC20Abi } from "src/abi/ERC20.js";
+import { ERC20Abi } from "@/lib/constants/abi/ERC20.js";
 
 const velo = "0x9560e827aF36c94D2Ac33a39bCE1Fe78631088Db"
 

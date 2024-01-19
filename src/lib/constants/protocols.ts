@@ -144,6 +144,14 @@ const protocols: { [key: string]: Protocol } = {
     description: "",
     tags: [],
     chains: [1]
+  },
+  velodrome: {
+    name: "Velodrome",
+    key: "velodrome",
+    logoURI: "https://icons.llamao.fi/icons/protocols/velodrome?w=48&h=48",
+    description: "",
+    tags: [],
+    chains: [10]
   }
 }
 export default protocols;

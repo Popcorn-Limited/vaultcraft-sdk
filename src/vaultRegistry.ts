@@ -1,6 +1,6 @@
 import { Address, PublicClient } from "viem";
 
-import { VaultRegistryABI } from "./abi/VaultRegistryABI.js";
+import { VaultRegistryABI } from "@/lib/constants/abi/VaultRegistryABI.js";
 import { Metadata } from "./types.js";
 
 const ABI = VaultRegistryABI;

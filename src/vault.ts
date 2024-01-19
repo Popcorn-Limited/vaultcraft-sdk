@@ -1,5 +1,5 @@
 import type { Address, PublicClient, WalletClient, Transport, Hash, Chain } from "viem";
-import { IVaultABI } from "./abi/IVaultABI.js";
+import { IVaultABI } from "@/lib/constants/abi/IVaultABI.js";
 import { Base } from "./base.js";
 import type { WriteOptions, VaultFees } from "./types.js";
 

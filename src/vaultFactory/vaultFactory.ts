@@ -1,6 +1,6 @@
 import { Hash, Address, PublicClient, WalletClient, Transport, Chain, zeroAddress, getAddress, stringToHex, encodeAbiParameters } from "viem";
 
-import { VaultControllerABI } from "../abi/VaultControllerABI.js";
+import { VaultControllerABI } from "@/lib/constants/abi/VaultControllerABI.js";
 import { Base } from "../base.js";
 import type { VaultOptions, WriteOptions } from "../types.js";
 import { EMPTY_BYTES } from "../lib/constants/index.js";
