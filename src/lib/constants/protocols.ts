@@ -152,6 +152,22 @@ const protocols: { [key: string]: Protocol } = {
     description: "",
     tags: [],
     chains: [10]
+  },
+  stader: {
+    name: "Stader",
+    key: "stader",
+    logoURI: "https://icons.llamao.fi/icons/protocols/stader?w=48&h=48",
+    description: "",
+    tags: [],
+    chains: [1]
+  },
+  kelpDao: {
+    name: "KelpDao",
+    key: "kelpDao",
+    logoURI: "https://icons.llamao.fi/icons/protocols/kelp-dao?w=48&h=48",
+    description: "",
+    tags: [],
+    chains: [1]
   }
 }
 export default protocols;

@@ -39,3 +39,5 @@ export { YearnFactory } from "./yearnFactory.js";
 export { Pirex } from "./pirex.js";
 export { Sommelier } from "./sommelier.js"
 export { Velodrome } from "./velodrome.js"
+export { Stader } from "./stader.js"
+export { KelpDao } from "./kelpDao.js"

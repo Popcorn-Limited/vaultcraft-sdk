@@ -96,7 +96,7 @@ export class Velodrome implements IProtocol {
             functionName: "allPoolsLength",
         });
 
-        const iterations = Math.ceil(Number(allPoolsLength) / 100)
+        const iterations = Math.ceil(Number(allPoolsLength) / 50)
         return (await Promise.all(new Array(iterations).fill(0).map(async (v, i) => {
             const pools = await this.client.readContract({
                 address: "0xE180829A166d1e0bec705C1eB25758F645C9E317",
