@@ -21,13 +21,13 @@ export class KelpDao implements IProtocol {
   async getApy(chainId: number, asset: Address): Promise<Yield> {
     if (chainId !== 1) throw new Error("KelpDao is only available on Ethereum mainnet");
 
-    const apyBase7d = (await axios.get(`https://yields.llama.fi/chart/90bfb3c2-5d35-4959-a275-ba5085b08aa3`)).data.data.pop().apyBase7d
+    const apy = (await axios.get(`https://universe.kelpdao.xyz/rseth/apy`)).data.value
 
-    return apyBase7d ? {
-      total: apyBase7d,
+    return apy ? {
+      total: apy,
       apy: [{
         rewardToken: getAddress(asset),
-        apy: apyBase7d
+        apy: apy
       }]
     } : getEmptyYield(asset);
   }
