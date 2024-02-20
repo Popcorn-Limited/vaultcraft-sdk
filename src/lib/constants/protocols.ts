@@ -63,7 +63,7 @@ const protocols: { [key: string]: Protocol } = {
     logoURI: "https://cdn.furucombo.app/assets/img/token/CVX.png",
     description: "",
     tags: [],
-    chains: [] // TODO -- add chain once CurveCompounder is fixed
+    chains: [1]
   },
   curve: {
     name: "Curve",
@@ -71,7 +71,7 @@ const protocols: { [key: string]: Protocol } = {
     logoURI: "https://cryptologos.cc/logos/curve-dao-token-crv-logo.png?v=025",
     description: "",
     tags: [],
-    chains: [] // TODO -- add chain once curve adapter and CurveCompounder are fixed
+    chains: [1]
   },
   flux: {
     name: "Flux Finance",
