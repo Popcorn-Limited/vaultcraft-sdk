@@ -168,6 +168,14 @@ const protocols: { [key: string]: Protocol } = {
     description: "",
     tags: [],
     chains: [1]
+  },
+  ion: {
+    name: "ION",
+    key: "ion",
+    logoURI: "https://www.app.ionprotocol.io/logo.svg",
+    description: "",
+    tags: [],
+    chains: [1]
   }
 }
 export default protocols;
